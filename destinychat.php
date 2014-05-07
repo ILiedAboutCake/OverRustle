@@ -92,6 +92,9 @@ if($t == "")
 	<body>
 		<div class="container-full">
 			<div class="text-center header">
+				<div class="pull-left">
+					We on <a href="https://github.com/ILiedAboutCake/OverRustle">GitHub!</a>
+				</div>
 				Watch Streams while chatting in <a href="http://destiny.gg/">destiny.gg</a>!
 				<div class="pull-right">
 					<form action="destinychat.php">
