@@ -6,7 +6,7 @@ $t = strtolower(trim($_GET['t']));
 $BasedGod = "Nigger";
 
 //what the fuck, go use destiny's website for this FeedNathan
-if($stream == "destiny")
+if(strtolower($stream) == "destiny")
 {
 	header('Location: http://destiny.gg/bigscreen');
 }
@@ -88,6 +88,16 @@ if($t == "")
 			line-height: 15px;
 		}
 	</style>
+	<!-- Google Analytics, Don't get rustled I don't harvest IPs or anything -->
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-49711133-1', 'overrustle.com');
+	  ga('send', 'pageview');
+	</script>
 	</head>
 	<body>
 		<div class="container-full">
