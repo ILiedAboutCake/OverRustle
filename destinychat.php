@@ -18,7 +18,7 @@ if($s == "")
 }
 
 //set the page default
-if($stream == "" && $s == "" && $t == "")
+if($stream == "" && $s == "twitch" && $t == "")
 {
 	$stream = "kaceytron";
 }
@@ -33,6 +33,59 @@ if($t == "")
 	Inspired by Dicedlemming's work on http://dl.dropboxusercontent.com/u/2337991/gameon.html 
 	This site is run by ILiedAboutCake in destiny.gg chat. Pls bitch at him with all your problems Kappa.
 	Copyright >2014 pls no copypasterino source code without credit
+	
+                                                                  
+                                      WellRight                                         
+                                  ToBearArmsLOL,hon                                     
+                              estly,IthinkImighttalkto                                  
+                      Stevenaboutyour           oddrheto                                
+                   ric.Thischati                  sdefini                               
+                 telyanintegralp                   arttoh                               
+                 isstreamandyouar                   esull                               
+                 yingitbytel lingme    andmanyothe  rstok                               
+                 illthemselves.You'v egotsomemajorpr oble                               
+                 msandIworrytheyar  enevergoingtobesolved                               
+                ifyou  loiterhere,  lettingotherpeople'ss                               
+               adnessandderisioninc ulcateyouro wnbittern                               
+              ess.Becausenewsflas   h!:NoonelikesyouWellR                               
+             ightToBearArmsLOL,honestly,IthinkImi  ghtta                                
+            lktoS          tevenaboutyouroddr     hetori                                
+           c.Thi                      schatis     defini                                
+          telyan                                 integr                                 
+         alpart                                 tohiss                                  
+        treama                                  ndyoua                                  
+        resul                      lyin        gitbyt                                   
+        elli                      ngmea ndm   anyoth                                    
+        erst                      okillthems  elves                         .You'vego   
+       tsome                      majorprob  lemsa                        ndIworrythey  
+       arene                     vergoingto besol                       vedify    oulo  
+       iterh                     ere,letti  ngoth                     erpeopl    e'ssa  
+       dness                    andderisi  onincu                   lcateyo     urown   
+       bitte                    rness.Be   causenewsflash!:Noon   elikesy     ouWel     
+        lRig                   htToBear    ArmsLOL,honestly,IthinkImigh      ttalk      
+        toSt                   evenabo     utyou   roddr   hetoric.Th      ischat       
+        isde                  finitely      ani   ntegralparttohiss      treama         
+        ndyou               aresu llyin         gitbytellingmeandm     anyothe          
+         rsto             killt  hemselv         es.You'vegotsomemaj   orproble         
+         msand            Iworrytheyaren                     evergoin    gtobesolv      
+          edify            ouloiterhere              ,let       tingot  herp eople      
+          'ssadn              essa                   ndde        rision  inculcat       
+           eyouro                                wnb              itter    ness         
+            .Because                            news              flash     !:No        
+               onelike                          syou              WellRightToBea        
+     rAr        msLOL,hone                       stly           ,IthinkImightta         
+    lktoSte    venaboutyouroddrh                  eto         ric.Thi    s              
+    chatisdefinite lyanintegralparttohis           stre    amandyo                      
+    uare sullyingitbyte    llingmeandmanyo therstokillthemselves                        
+     .You  'vegotsome         majorproble msandIworrytheyaren                           
+      ever   goingt         obesolvedify ouloi terhere,let                              
+       tingotherp           eople'ssadn  essa                                           
+        ndderis              ionincul   cate                                            
+          you                rownbi    tter                                             
+                              ness.B  ecau                                              
+                               senewsflas                                               
+                                 h!:Noon                                                
+                                   eli                                                
 -->
 <html>
 	<head>
@@ -105,7 +158,16 @@ if($t == "")
 				<div class="pull-left">
 					We on <a href="https://github.com/ILiedAboutCake/OverRustle">GitHub!</a>
 				</div>
-				Watch Streams while chatting in <a href="http://destiny.gg/">destiny.gg</a>!
+				<?php
+				if ($s == "twitch")
+				{
+					echo 'Watch ' . $stream . ' while chatting in <a href="http://destiny.gg/">destiny.gg</a>!';
+				}
+				else
+				{
+					echo 'Watch videos while chatting in <a href="http://destiny.gg/">destiny.gg</a>!';					
+				}
+				?>
 				<div class="pull-right">
 					<form action="destinychat.php">
 					Player:
