@@ -169,14 +169,15 @@ if($t == "")
 				}
 				?>
 				<div class="pull-right">
-					<form action="destinychat.php">
+					<form action="destinychat">
 					Player:
 					<select name="s">
 						<option value="twitch">Twitch</option>
 						<option value="twitch-hls">Twitch - HTML5</option>
 						<option value="twitch-vod">Twitch - VOD</option>
+						<option value="justin">Justin.TV</option>
 						<option value="youtube">Youtube</option>
-						<option value="mlg">MLG</option>
+						<option value="mlg">MLG (Beta*)</option>
 						<option value="dailymotion">Dailymotion</option>
 					</select>
 					
@@ -208,12 +209,16 @@ if($t == "")
 						</object>";
 					break;
 					
+				case "justin":
+					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.justin.tv/swflibs/JustinPlayer.swf?channel=' . $stream . '" scrolling="no"></iframe>';
+					break;
+					
 				case "youtube":
 					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/' . $stream . '?autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
 					break;
 					
 				case "mlg":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://tv.majorleaguegaming.com/player/' . $stream . '" scrolling="no"></iframe>';
+					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
 					break;
 
 				case "dailymotion":
@@ -228,4 +233,3 @@ if($t == "")
 		</div>
 	</body>
 </html>
-

@@ -10,8 +10,9 @@ Tools to make destiny.gg suck less
 * Twitch (live)
 * Twitch HTML5 HLS Streams (only works on mobile)
 * Twitch VOD's
+* Justin.TV (live)
 * Youtube live / Videos
-* MLG.TV Streams (In beta)
+* MLG.TV Streams** (In beta)
 * Dailymotion
 
 
@@ -25,18 +26,11 @@ Tools to make destiny.gg suck less
 
 * You can set Youtube and twitch-VOD time by adding &s=time in seconds to the URL.
 
-# IRC Logging
+## Help MLG does not work
 
-## Logging Location
+* **Because apparently I am killing e-sports, MLG disabled embedding their stream. Except they still allow TeamLiquid embed, so I embed that embed. To get this to work you need to know the TL embed name. Use the name in-between /embed/ and /popout.
 
-http://overrustle.com/logs/
-
-## To-do
-
-* change time to CST vs EST
-* Individual user logs
-
-### Feed Me?
+# Feed Me?
 
 OverRustle.com runs free of charge, and donations are appreciated
 
