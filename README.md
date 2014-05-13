@@ -34,6 +34,7 @@ Tools to make destiny.gg suck less
 
 OverRustle.com runs free of charge, and donations are appreciated
 
+* Paypal: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG
 * Bitcoin: 14j82o37d8AShtVP5LydYCptVxwMhbu4Z1
 * Dogecoin: DS6JdMnt96CVXEXZ2LNdjKq6kmcSD7mC88
 * ISK: Feed my EVE Online addiction, and donate ISK to "Tyrone Rigah"
