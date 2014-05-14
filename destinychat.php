@@ -28,6 +28,12 @@ if($t == "")
 {
 	$t = "0";
 }
+
+//lets check if "basedgod" or "nigger" is in the stream/ID and alert if they are about to copy a bannable phrase into chat
+if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nigger') !== false)
+{
+	echo '<script language="javascript" type="text/javascript">alert("WARNING: This stream name contains a bannable word in destiny.gg! Please share with caution!");</script>';
+}
 ?>
 <!-- 
 	Inspired by Dicedlemming's work on http://dl.dropboxusercontent.com/u/2337991/gameon.html 
