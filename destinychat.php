@@ -30,7 +30,7 @@ if($t == "")
 }
 
 //lets check if "basedgod" or "nigger" is in the stream/ID and alert if they are about to copy a bannable phrase into chat
-if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nigger') !== false)
+if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nig') !== false)
 {
 	echo '<script language="javascript" type="text/javascript">alert("WARNING: This stream name contains a bannable word in destiny.gg! Please share with caution!");</script>';
 }
@@ -182,8 +182,10 @@ if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nigger') !== false)
 						<option value="twitch-hls">Twitch - HTML5</option>
 						<option value="twitch-vod">Twitch - VOD</option>
 						<option value="justin">Justin.TV</option>
+						<option value="hitbox">Hitbox</option>						
 						<option value="youtube">Youtube</option>
 						<option value="mlg">MLG (Beta*)</option>
+						<option value="ustream">Ustream (Beta*)</option>
 						<option value="dailymotion">Dailymotion</option>
 					</select>
 					
@@ -219,6 +221,10 @@ if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nigger') !== false)
 					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.justin.tv/swflibs/JustinPlayer.swf?channel=' . $stream . '" scrolling="no"></iframe>';
 					break;
 					
+				case "hitbox":
+					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embed/' . $stream . '?autoplay=true" scrolling="no"></iframe>';
+					break; //stop fucking asking, I'm not going to add azubu TV. It's shit and so are you for thinking about it			
+					
 				case "youtube":
 					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/' . $stream . '?autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
 					break;
@@ -226,10 +232,14 @@ if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nigger') !== false)
 				case "mlg":
 					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
 					break;
+					
+				case "ustream":
+					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.ustream.tv/embed/' . $stream . '?v=3&wmode=direct&autoplay=true" scrolling="no"></iframe>';
+					break;
 
 				case "dailymotion":
 					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.dailymotion.com/embed/video/' . $stream . '" scrolling="no"></iframe>';
-					break;						
+					break;
 			}
 			?>
 			</div>
