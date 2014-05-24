@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+	<ShortName>OverRustle</ShortName>
+	<Description>BasedGod</Description>
+	<Url type="application/rss+xml" template="http://overrustle.com/destinychat_beta?stream={searchTerms}"/>
+</OpenSearchDescription>

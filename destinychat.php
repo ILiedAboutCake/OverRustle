@@ -1,9 +1,7 @@
 <?php
-$stream = trim($_GET['stream']);
-$s = strtolower(trim($_GET['s']));
-$t = strtolower(trim($_GET['t']));
-
-$BasedGod = "Nigger";
+$stream = strip_tags(trim($_GET['stream']));
+$s = strip_tags(strtolower(trim($_GET['s'])));
+$t = strip_tags(strtolower(trim($_GET['t'])));
 
 //what the fuck, go use destiny's website for this FeedNathan
 if(strtolower($stream) == "destiny")
@@ -28,19 +26,13 @@ if($t == "")
 {
 	$t = "0";
 }
-
-//lets check if "basedgod" or "nigger" is in the stream/ID and alert if they are about to copy a bannable phrase into chat
-if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nig') !== false)
-{
-	echo '<script language="javascript" type="text/javascript">alert("WARNING: This stream name contains a bannable word in destiny.gg! Please share with caution!");</script>';
-}
 ?>
 <!-- 
-	Inspired by Dicedlemming's work on http://dl.dropboxusercontent.com/u/2337991/gameon.html 
+	GitHub can be found at https://github.com/ILiedAboutCake/OverRustle
 	This site is run by ILiedAboutCake in destiny.gg chat. Pls bitch at him with all your problems Kappa.
 	Copyright >2014 pls no copypasterino source code without credit
-	
-                                                                  
+
+
                                       WellRight                                         
                                   ToBearArmsLOL,hon                                     
                               estly,IthinkImighttalkto                                  
@@ -96,8 +88,10 @@ if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nig') !== false)
 <html>
 	<head>
 		<title>Destiny.gg chat + <?php echo $stream; ?></title>
+		<link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="OverRustle.com" />
 		<link rel="stylesheet" href="/lib/bootstrap.min.css">
-		<link rel="shortcut icon" href="/favicon.ico" />		
+		<link rel="shortcut icon" href="/favicon.ico" />	
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<style>
 		.container-full 
 		{
@@ -135,7 +129,7 @@ if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nig') !== false)
 		}		
 		select, input
 		{
-			color: black;		
+			color: black;
 		}
 		input, form
 		{
@@ -157,23 +151,41 @@ if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nig') !== false)
 	  ga('create', 'UA-49711133-1', 'overrustle.com');
 	  ga('send', 'pageview');
 	</script>
+	<!-- ajax code to pull down viewer numbers -->
+    <script>
+	function twitchAPI() {
+		$.ajax({
+			url: "https://api.twitch.tv/kraken/streams/<?php echo $stream; ?>?callback=?",
+			jsonp: "callback",
+			dataType: "jsonp",
+			data: {
+				format: "json"
+			},
+		 
+			success: function(apiData) {
+				var output = apiData.stream.channel.display_name + " playing " + apiData.stream.game + " with " + apiData.stream.viewers + " viewers";
+				document.getElementById("twitch-ajax").innerHTML = output;
+			}
+		});
+	} 
+    </script>
 	</head>
 	<body>
 		<div class="container-full">
 			<div class="text-center header">
 				<div class="pull-left">
-					We on <a href="https://github.com/ILiedAboutCake/OverRustle">GitHub!</a>
-				</div>
 				<?php
 				if ($s == "twitch")
 				{
-					echo 'Watch ' . $stream . ' while chatting in <a href="http://destiny.gg/">destiny.gg</a>!';
+
+					echo '<div id="twitch-ajax">Waiting for Twitch API to respond...</a></div><script>twitchAPI(); window.setInterval(function(){twitchAPI()}, 600000);</script>';
 				}
 				else
 				{
-					echo 'Watch videos while chatting in <a href="http://destiny.gg/">destiny.gg</a>!';					
+					echo 'Watch videos while chatting in <a href="http://destiny.gg/">destiny.gg</a>!';
 				}
 				?>
+				</div>
 				<div class="pull-right">
 					<form action="destinychat">
 					Player:
@@ -245,7 +257,7 @@ if(strpos($stream, 'basedgod') !== false || strpos($stream, 'nig') !== false)
 			</div>
 			<div class="text-center pull-right give-header" style="width: 390px;">
 				<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no"></iframe>
-			</div>		  
+			</div>
 		</div>
 	</body>
 </html>

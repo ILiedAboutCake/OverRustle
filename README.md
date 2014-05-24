@@ -40,6 +40,11 @@ Tool to make destiny.gg suck less
 
 * Since Azubu does not run its own streaming servers embedding is 100x more tricky, as they use brightcove and the embed process is more than 1 variable. http://pastebin.com/f8vBNJvp
 
+## Contact
+
+* send /u/ILiedAboutTheCake an orangered on reddit
+* email iliedaboutthecake@gmail.com
+* Skype message ILiedAboutCake, note I might not always be able to get back to you, or even see it for a few days 
 
 # Feed Me?
 
