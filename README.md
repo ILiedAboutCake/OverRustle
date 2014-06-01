@@ -42,9 +42,8 @@ Tool to make destiny.gg suck less
 
 ## Contact
 
-* send /u/ILiedAboutTheCake an orangered on reddit
+* send /u/ILiedAboutTheCake an message on reddit
 * email iliedaboutthecake@gmail.com
-* Skype message ILiedAboutCake, note I might not always be able to get back to you, or even see it for a few days 
 
 # Feed Me?
 

@@ -90,7 +90,8 @@ if($t == "")
 		<title>Destiny.gg chat + <?php echo $stream; ?></title>
 		<link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="OverRustle.com" />
 		<link rel="stylesheet" href="/lib/bootstrap.min.css">
-		<link rel="shortcut icon" href="/favicon.ico" />	
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="socket.io/socket.io.js"></script>
 		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<style>
 		.container-full 
@@ -169,6 +170,15 @@ if($t == "")
 		});
 	} 
     </script>
+	<script>
+    var socket = io.connect('http://overrustle.com:9998');
+    socket.on('notification', function (returned) {
+        var pushData = JSON.parse(returned);
+		
+		var pushOutput = "Server Broadcast: " + pushData.info.text + " <a href=\"" + pushData.info.link + " \">See it now!</a>";
+        document.getElementById("server-broadcast").innerHTML = pushOutput;
+    });
+    </script>
 	</head>
 	<body>
 		<div class="container-full">
@@ -178,7 +188,7 @@ if($t == "")
 				if ($s == "twitch")
 				{
 
-					echo '<div id="twitch-ajax">Waiting for Twitch API to respond...</a></div><script>twitchAPI(); window.setInterval(function(){twitchAPI()}, 600000);</script>';
+					echo '<div id="twitch-ajax">Waiting for Twitch API to respond...</a></div><script>twitchAPI(); window.setInterval(function(){twitchAPI()}, 60000);</script>';
 				}
 				else
 				{
@@ -205,6 +215,7 @@ if($t == "")
 					<input type="text" name="stream" /> 
 					</form>
 				</div>
+				<div id="server-broadcast"></div>
 			</div>			
 			<div class="text-center pull-left stream-box give-header">
 			<?php
