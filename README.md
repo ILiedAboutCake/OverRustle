@@ -1,7 +1,7 @@
 OverRustle
 ==========
 
-Tool to make destiny.gg suck less
+A tool to make destiny.gg suck less
 
 # Destinychat.php
 
@@ -42,7 +42,7 @@ Tool to make destiny.gg suck less
 
 ## Contact
 
-* send /u/ILiedAboutTheCake an message on reddit
+* send /u/ILiedAboutTheCake a message on reddit
 * email iliedaboutthecake@gmail.com
 
 # Feed Me?
