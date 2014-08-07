@@ -10,7 +10,6 @@ A tool to make destiny.gg suck less
 * Twitch (live)
 * Twitch HTML5 HLS Streams (only works on mobile)
 * Twitch VOD's
-* Justin.TV (live)
 * Hitbox
 * Youtube live / Videos
 * MLG.TV Streams** (In beta)

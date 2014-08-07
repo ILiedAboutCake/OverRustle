@@ -240,10 +240,6 @@ if($t == "")
 						</object>";
 					break;
 					
-				case "justin":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.justin.tv/swflibs/JustinPlayer.swf?channel=' . $stream . '" scrolling="no"></iframe>';
-					break;
-					
 				case "hitbox":
 					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embed/' . $stream . '?autoplay=true" scrolling="no"></iframe>';
 					break; //stop fucking asking, I'm not going to add azubu TV. It's shit and so are you for thinking about it			
