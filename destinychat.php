@@ -203,7 +203,6 @@ if($t == "")
 						<option value="twitch">Twitch</option>
 						<option value="twitch-hls">Twitch - HTML5</option>
 						<option value="twitch-vod">Twitch - VOD</option>
-						<option value="justin">Justin.TV</option>
 						<option value="hitbox">Hitbox</option>						
 						<option value="youtube">Youtube</option>
 						<option value="mlg">MLG (Beta*)</option>
