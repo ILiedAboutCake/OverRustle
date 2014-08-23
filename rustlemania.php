@@ -1,38 +1,4 @@
-<?php
-$stream = strip_tags(trim($_GET['stream']));
-$s = strip_tags(strtolower(trim($_GET['s'])));
-$t = strip_tags(strtolower(trim($_GET['t'])));
-
-//what the fuck, go use destiny's website for this FeedNathan
-if(strtolower($stream) == "destiny")
-{
-	header('Location: http://destiny.gg/bigscreen');
-}
-
-//set the default stream time to twitch
-if($s == "")
-{
-	$s = "twitch";
-}
-
-//set the page default
-if($stream == "" && $s == "twitch" && $t == "")
-{
-	$stream = "kaceytron";
-}
-
-//if no time is set start from the beginning
-if($t == "")
-{
-	$t = "0";
-}
-?>
 <!-- 
-	GitHub can be found at https://github.com/ILiedAboutCake/OverRustle
-	This site is run by ILiedAboutCake in destiny.gg chat. Pls bitch at him with all your problems Kappa.
-	Copyright >2014 pls no copypasterino source code without credit
-
-
                                       WellRight                                         
                                   ToBearArmsLOL,hon                                     
                               estly,IthinkImighttalkto                                  
@@ -87,8 +53,7 @@ if($t == "")
 -->
 <html>
 	<head>
-		<title>Destiny.gg chat + <?php echo $stream; ?></title>
-		<link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="OverRustle.com" />
+		<title>Rustlemania</title>
 		<link rel="stylesheet" href="/lib/bootstrap.min.css">
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<script src="socket.io/socket.io.js"></script>
@@ -160,7 +125,7 @@ if($t == "")
     <script>
 	function twitchAPI() {
 		$.ajax({
-			url: "https://api.twitch.tv/kraken/streams/<?php echo $stream; ?>?callback=?",
+			url: "https://api.twitch.tv/kraken/streams/rustlemaniaesports?callback=?",
 			jsonp: "callback",
 			dataType: "jsonp",
 			data: {
@@ -179,8 +144,8 @@ if($t == "")
     socket.on('notification', function (returned) {
         var pushData = JSON.parse(returned);
 		
-		//var pushOutput = "Server Broadcast: " + pushData.info.text + " <a href=\"" + pushData.info.link + " \">See it now!</a>";
-        //document.getElementById("server-broadcast").innerHTML = pushOutput;
+		var pushOutput = "Server Broadcast: " + pushData.info.text + " <a href=\"" + pushData.info.link + " \">See it now!</a>";
+        document.getElementById("server-broadcast").innerHTML = pushOutput;
     });
     </script>
 	</head>
@@ -188,94 +153,15 @@ if($t == "")
 		<div class="container-full">
 			<div class="text-center header">
 				<div class="pull-left">
-				<?php
-				if ($s == "twitch")
-				{
-
-					echo '<div id="twitch-ajax">Waiting for Twitch API to respond...</a></div><script>twitchAPI(); window.setInterval(function(){twitchAPI()}, 60000);</script>';
-				}
-				else
-				{
-					echo 'Watch videos while chatting in <a href="http://destiny.gg/">destiny.gg</a>!';
-				}
-				?>
+					<div id="twitch-ajax">Waiting for Twitch API to respond...</a></div><script>twitchAPI(); window.setInterval(function(){twitchAPI()}, 60000);</script>
 				</div>
 				<div class="pull-right">
-					<form action="destinychat">
-					Player:
-					<select name="s">
-						<option value="twitch">Twitch</option>
-						<option value="twitch-hls">Twitch - HTML5</option>
-						<option value="twitch-vod">Twitch - VOD</option>
-						<option value="hitbox">Hitbox</option>
-						<option value="castamp">CastAmp</option>						
-						<option value="youtube">Youtube</option>
-						<option value="mlg">MLG (Beta*)</option>
-						<option value="ustream">Ustream (Beta*)</option>
-						<option value="dailymotion">Dailymotion</option>
-						<option value="advanced">Advanced</option>
-					</select>
-					
-					Stream/ID:
-					<input type="text" name="stream" /> 
-					</form>
+					FrankerZ
 				</div>
-				<div id="server-broadcast">
-					<?php if($s == "castamp") echo "Castamp Bug: Refresh page if you resize your window."; ?>
-				</div>
+				<div id="server-broadcast">OverRustle</div>
 			</div>			
 			<div class="text-center pull-left stream-box give-header">
-			<?php
-			switch($s) 
-			{
-				case "twitch":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/embed?channel=' . $stream . '" scrolling="no"></iframe>';
-					break;
-					
-				case "twitch-hls":
-					echo '<iframe id="player" type="text/html" width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/hls" scrolling="no"></iframe>';
-					break;					
-					
-				case "twitch-vod":
-					echo "
-						<object data='http://www.twitch.tv/widgets/archive_embed_player.swf' id='clip_embed_player_flash' type='application/x-shockwave-flash' width='100%' height='100%'>
-							<param name='movie' value='http://www.twitch.tv/widgets/archive_embed_player.swf' />
-							<param name='allowScriptAccess' value='always' />
-							<param name='allowNetworking' value='all' />
-							<param name='allowFullScreen' value='true' />
-							<param name='flashvars' value='initial_time=" . $t . "&start_volume=25&auto_play=true&archive_id=" . $stream . "' />
-						</object>";
-					break;
-
-				case "advanced":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="' . $stream . '" scrolling="yes"></iframe>';
-					break;
-
-				case "castamp":
-					echo '<script type="text/javascript"> channel="' . $stream . '";</script><script type="text/javascript" src="castamp.js"></script>';
-					break;
-
-				case "hitbox":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embed/' . $stream . '?autoplay=true" scrolling="no"></iframe>';
-					break; //stop fucking asking, I'm not going to add azubu TV. It's shit and so are you for thinking about it			
-					
-				case "youtube":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/' . $stream . '?autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
-					break;
-					
-				case "mlg":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
-					break;
-					
-				case "ustream":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.ustream.tv/embed/' . $stream . '?v=3&wmode=direct&autoplay=true" scrolling="no"></iframe>';
-					break;
-
-				case "dailymotion":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.dailymotion.com/embed/video/' . $stream . '" scrolling="no"></iframe>';
-					break;
-			}
-			?>
+				<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/embed?channel=rustlemaniaesports" scrolling="no"></iframe>
 			</div>
 			<div class="text-center pull-right give-header" style="width: 390px;">
 				<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no"></iframe>
