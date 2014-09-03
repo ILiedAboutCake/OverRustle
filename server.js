@@ -58,15 +58,21 @@ io.sockets.on('connection', function(socket) {
 	console.log(moment().toString() + ": Client Connected: " + socket.handshake.headers.referer + " Concurrent Users: " + count);	
 	
 	//code that handles manual updates
-	fs.watchFile(__dirname + '/data.xml', function(curr, prev) {
-		fs.readFile(__dirname + '/data.xml', function(err, data) {
-			if (err) console.log(moment().toString() + err);
-			var json = parser.toJson(data);
-			json.time = new Date();
-			socket.volatile.emit('notification', json);
-		});
+	//fs.watchFile(__dirname + '/data.xml', function(curr, prev) {
+	//	fs.readFile(__dirname + '/data.xml', function(err, data) {
+	//		if (err) console.log(moment().toString() + err);
+	//		var json = parser.toJson(data);
+	//		json.time = new Date();
+	//		socket.volatile.emit('notification', json);
+	//	});
+	//});
+
+	//room and viewer counting
+	socket.on ('message', function (dataRecieved) {
+		console.log(dataRecieved);
 	});
-	
+
+
 	//disconnect logging
 	socket.on('disconnect', function () {
 		count--;

@@ -3,6 +3,15 @@ $stream = strip_tags(trim($_GET['stream']));
 $s = strip_tags(strtolower(trim($_GET['s'])));
 $t = strip_tags(strtolower(trim($_GET['t'])));
 
+//Blacklisted strims
+$pos = strpos($stream, "scyx");
+if($pos !== false)
+{
+	echo "<h1>Stream has been blacklisted from OverRustle.com</h1><br />";
+	echo '<img src="http://overrustle.com/img/Matt.png" />';
+	exit;
+}
+
 //what the fuck, go use destiny's website for this FeedNathan
 if(strtolower($stream) == "destiny")
 {
@@ -176,6 +185,10 @@ if($t == "")
     </script>
 	<script>
     var socket = io.connect('http://overrustle.com:9998');
+	socket.on('connect', function () {
+		socket.emit ('message', {stream: '<?php echo $stream; ?>', service: '<?php echo $s; ?>'});
+	});
+
     socket.on('notification', function (returned) {
         var pushData = JSON.parse(returned);
 		
