@@ -8,8 +8,8 @@ A tool to make destiny.gg suck less
 ##Currently supports
  
 * Twitch (live)
-* Twitch HTML5 HLS Streams (only works on mobile)
 * Twitch VOD's
+* CastAmp
 * Hitbox
 * Youtube live / Videos
 * MLG.TV Streams** (In beta)
@@ -34,6 +34,12 @@ A tool to make destiny.gg suck less
 ## Ustream
 
 * *** Ustream embeds work, but you cannot get to them by name. This is how Ustream runs their platform. Grab the embed number here http://i.imgur.com/PsPpK7v.png and use that for Stream/ID
+
+## CastAmp
+
+* By popular request CastAmp has been implemented, but thanks to their limited controls of embeds the following bugs exist and will be fixed Soon™:
+1. Firefox does not size embed to the div width/height until this is fixed it sizes itself to 1280x720 (720p resolution)
+2. Resizing your browser window in chrome requires you to refresh the window.
 
 ## What about Azubu?
 
