@@ -205,7 +205,6 @@ if($t == "")
 					Player:
 					<select name="s">
 						<option value="twitch">Twitch</option>
-						<option value="twitch-hls">Twitch - HTML5</option>
 						<option value="twitch-vod">Twitch - VOD</option>
 						<option value="hitbox">Hitbox</option>
 						<option value="castamp">CastAmp</option>						
@@ -229,11 +228,7 @@ if($t == "")
 			switch($s) 
 			{
 				case "twitch":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/embed?channel=' . $stream . '" scrolling="no"></iframe>';
-					break;
-					
-				case "twitch-hls":
-					echo '<iframe id="player" type="text/html" width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/hls" scrolling="no"></iframe>';
+					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/embed" scrolling="no"></iframe>';
 					break;					
 					
 				case "twitch-vod":
