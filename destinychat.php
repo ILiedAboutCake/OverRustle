@@ -87,11 +87,10 @@ if($t == "")
 -->
 <html>
 	<head>
-		<title>Destiny.gg chat + <?php echo $stream; ?></title>
+		<title><?php echo $stream; ?> + Nazi Germany Chat</title>
 		<link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="OverRustle.com" />
 		<link rel="stylesheet" href="/lib/bootstrap.min.css">
-		<link rel="shortcut icon" href="/favicon.ico" />
-		<script src="socket.io/socket.io.js"></script>
+		<link rel="shortcut icon" href="/favicon.ico" /> 
 		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<style>
 		.container-full 
@@ -174,14 +173,37 @@ if($t == "")
 		});
 	} 
     </script>
-	<script>
-    var socket = io.connect('http://overrustle.com:9998');
-    socket.on('notification', function (returned) {
-        var pushData = JSON.parse(returned);
-		
-		//var pushOutput = "Server Broadcast: " + pushData.info.text + " <a href=\"" + pushData.info.link + " \">See it now!</a>";
-        //document.getElementById("server-broadcast").innerHTML = pushOutput;
-    });
+	 <script>
+		var ws = new WebSocket("ws://overrustle.com:9998/ws");
+
+		var sendObj = new Object();
+		sendObj.strim = "/destinychat?s=<?php echo $s ?>&stream=<?php echo $stream; ?>";
+
+		ws.onopen = function(){
+   			console.log('Connected to OverRustle.com Websocket Server :^)');
+			sendObj.action = "join";
+			ws.send(JSON.stringify(sendObj));	   			
+		};
+
+		ws.onmessage = function (evt) {
+			console.log(evt.data);
+		};
+
+		ws.onclose = function(evt) {
+			console.log(evt.data);
+		};
+
+		//On Disconnect 
+		$( window ).unload(function() {
+			sendObj.action = "unjoin";
+			ws.send(JSON.stringify(sendObj));
+		});
+
+		//On Disconnect 
+		$( window ).unload(function() {
+			sendObj.action = "unjoin";
+			ws.send(JSON.stringify(sendObj));
+		});
     </script>
 	</head>
 	<body>
