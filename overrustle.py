@@ -28,38 +28,42 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def check_origin(self, origin):
 		return True
 
-
 	def open(self):
-		global numClients
-		print 'New connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)
-
+		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)
 
 	def on_message(self, message):
 		global strims
 		global numClients
 		fromClient = json.loads(message)
 
-		#handle session counting
+		#handle session counting - This is a fucking mess :^(
 		if fromClient[u'action'] == "join":
 			strims.setdefault(fromClient[u'strim'], 0)
 			strims[fromClient[u'strim']] += 1
 			numClients += 1
-			data_string = json.dumps({"streams":strims[fromClient[u'strim']], "totalviewers":numClients}) 
-			self.write_message(json.dumps(data_string))	
+			data_string = json.dumps({"streams":strims[fromClient[u'strim']], "totalviewers":numClients})
+			self.write_message(str(strims[fromClient[u'strim']]) + " OverRustle.com Viewers")
 			print 'User Connected: Watching %s' % (fromClient[u'strim'])
-		else:
+		elif fromClient[u'action'] == "unjoin":
 			strims.setdefault(fromClient[u'strim'], 0)
 			strims[fromClient[u'strim']]  -= 1
 			numClients -= 1
 			print 'User Disconnected: Was Watching %s' % (fromClient[u'strim'])
+		elif fromClient[u'action'] == "viewerCount":
+			self.write_message(str(strims[fromClient[u'strim']]) + " OverRustle.com Viewers")
+		elif fromClient[u'action'] == "api":
+			self.write_message(json.dumps({"streams":strims, "totalviewers":numClients}))
+		else:
+			print 'WTF: Client sent unknown command >:( %s' % (fromClient[u'action'])
+
 
 		#remove the dict key if nobody is watching DaFeels
 		if strims[fromClient[u'strim']] <= 0:
-			print 'Removing Dict value: %s' % (fromClient[u'strim'])
+			#print 'Removing Dict value: %s' % (fromClient[u'strim'])
 			strims.pop(fromClient[u'strim'], None)
 
 	def on_close(self):
-		print "Websocket connection closed."
+		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)
 
 #print console updates
 printStatus()

@@ -179,25 +179,31 @@ if($t == "")
 		var sendObj = new Object();
 		sendObj.strim = "/destinychat?s=<?php echo $s ?>&stream=<?php echo $stream; ?>";
 
+		//if we get connected :^)
 		ws.onopen = function(){
    			console.log('Connected to OverRustle.com Websocket Server :^)');
 			sendObj.action = "join";
-			ws.send(JSON.stringify(sendObj));	   			
-		};
-
-		ws.onmessage = function (evt) {
-			console.log(evt.data);
-		};
-
-		ws.onclose = function(evt) {
-			console.log(evt.data);
-		};
-
-		//On Disconnect 
-		$( window ).unload(function() {
-			sendObj.action = "unjoin";
 			ws.send(JSON.stringify(sendObj));
-		});
+		};
+
+		//if we get disconnected >:(
+		ws.onclose = function(evt) {
+			console.log('Disconnected from OverRustle.com Websocket Server >:(');
+		};
+
+		//the only time we ever get a message back will be a server broadcast
+		ws.onmessage = function (evt) {
+			document.getElementById("server-broadcast").innerHTML = "(" + evt.data + ")";
+		};
+
+		//function code for grabbing current viewcount via websocket.
+		function overRustleAPI() {
+			sendObj.action = "viewerCount";
+			ws.send(JSON.stringify(sendObj));
+		}
+
+		//update the viewer count every 5 seconds
+		window.setInterval(function(){overRustleAPI()}, 5000);
 
 		//On Disconnect 
 		$( window ).unload(function() {
@@ -241,9 +247,7 @@ if($t == "")
 					<input type="text" name="stream" /> 
 					</form>
 				</div>
-				<div id="server-broadcast">
-					<?php if($s == "castamp") echo "Castamp Bug: Refresh page if you resize your window."; ?>
-				</div>
+				<div id="server-broadcast"></div>
 			</div>			
 			<div class="text-center pull-left stream-box give-header">
 			<?php

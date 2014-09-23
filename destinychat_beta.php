@@ -3,15 +3,6 @@ $stream = strip_tags(trim($_GET['stream']));
 $s = strip_tags(strtolower(trim($_GET['s'])));
 $t = strip_tags(strtolower(trim($_GET['t'])));
 
-//Blacklisted strims
-$pos = strpos($stream, "scyx");
-if($pos !== false)
-{
-	echo "<h1>Stream has been blacklisted from OverRustle.com</h1><br />";
-	echo '<img src="http://overrustle.com/img/Matt.png" />';
-	exit;
-}
-
 //what the fuck, go use destiny's website for this FeedNathan
 if(strtolower($stream) == "destiny")
 {
@@ -96,11 +87,10 @@ if($t == "")
 -->
 <html>
 	<head>
-		<title>Destiny.gg chat + <?php echo $stream; ?></title>
+		<title><?php echo $stream; ?> + Nazi Germany Chat</title>
 		<link rel="search" href="/opensearch.xml" type="application/opensearchdescription+xml" title="OverRustle.com" />
 		<link rel="stylesheet" href="/lib/bootstrap.min.css">
-		<link rel="shortcut icon" href="/favicon.ico" />
-		<script src="socket.io/socket.io.js"></script>
+		<link rel="shortcut icon" href="/favicon.ico" /> 
 		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<style>
 		.container-full 
@@ -183,18 +173,43 @@ if($t == "")
 		});
 	} 
     </script>
-	<script>
-    var socket = io.connect('http://overrustle.com:9998');
-	socket.on('connect', function () {
-		socket.emit ('message', {stream: '<?php echo $stream; ?>', service: '<?php echo $s; ?>'});
-	});
+	 <script>
+		var ws = new WebSocket("ws://overrustle.com:9998/ws");
 
-    socket.on('notification', function (returned) {
-        var pushData = JSON.parse(returned);
-		
-		//var pushOutput = "Server Broadcast: " + pushData.info.text + " <a href=\"" + pushData.info.link + " \">See it now!</a>";
-        //document.getElementById("server-broadcast").innerHTML = pushOutput;
-    });
+		var sendObj = new Object();
+		sendObj.strim = "/destinychat?s=<?php echo $s ?>&stream=<?php echo $stream; ?>";
+
+		//if we get connected :^)
+		ws.onopen = function(){
+   			console.log('Connected to OverRustle.com Websocket Server :^)');
+			sendObj.action = "join";
+			ws.send(JSON.stringify(sendObj));
+		};
+
+		//if we get disconnected >:(
+		ws.onclose = function(evt) {
+			console.log('Disconnected from OverRustle.com Websocket Server >:(');
+		};
+
+		//the only time we ever get a message back will be a server broadcast
+		ws.onmessage = function (evt) {
+			document.getElementById("server-broadcast").innerHTML = "(" + evt.data + ")";
+		};
+
+		//function code for grabbing current viewcount via websocket.
+		function overRustleAPI() {
+			sendObj.action = "viewerCount";
+			ws.send(JSON.stringify(sendObj));
+		}
+
+		//update the viewer count every 5 seconds
+		window.setInterval(function(){overRustleAPI()}, 5000);
+
+		//On Disconnect 
+		$( window ).unload(function() {
+			sendObj.action = "unjoin";
+			ws.send(JSON.stringify(sendObj));
+		});
     </script>
 	</head>
 	<body>
@@ -218,7 +233,6 @@ if($t == "")
 					Player:
 					<select name="s">
 						<option value="twitch">Twitch</option>
-						<option value="twitch-hls">Twitch - HTML5</option>
 						<option value="twitch-vod">Twitch - VOD</option>
 						<option value="hitbox">Hitbox</option>
 						<option value="castamp">CastAmp</option>						
@@ -233,20 +247,14 @@ if($t == "")
 					<input type="text" name="stream" /> 
 					</form>
 				</div>
-				<div id="server-broadcast">
-					<?php if($s == "castamp") echo "Castamp Bug: Refresh page if you resize your window."; ?>
-				</div>
+				<div id="server-broadcast"></div>
 			</div>			
 			<div class="text-center pull-left stream-box give-header">
 			<?php
 			switch($s) 
 			{
 				case "twitch":
-					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/embed?channel=' . $stream . '" scrolling="no"></iframe>';
-					break;
-					
-				case "twitch-hls":
-					echo '<iframe id="player" type="text/html" width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/hls" scrolling="no"></iframe>';
+					echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/embed" scrolling="no"></iframe>';
 					break;					
 					
 				case "twitch-vod":
