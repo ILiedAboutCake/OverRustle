@@ -3,6 +3,9 @@ $stream = strip_tags(trim($_GET['stream']));
 $s = strip_tags(strtolower(trim($_GET['s'])));
 $t = strip_tags(strtolower(trim($_GET['t'])));
 
+$jstream = addslashes($stream);
+$js = addslashes($s);
+
 //what the fuck, go use destiny's website for this FeedNathan
 if(strtolower($stream) == "destiny")
 {
@@ -159,7 +162,7 @@ if($t == "")
     <script>
 	function twitchAPI() {
 		$.ajax({
-			url: "https://api.twitch.tv/kraken/streams/<?php echo $stream; ?>?callback=?",
+			url: "https://api.twitch.tv/kraken/streams/<?php echo $jstream; ?>?callback=?",
 			jsonp: "callback",
 			dataType: "jsonp",
 			data: {
@@ -177,7 +180,7 @@ if($t == "")
 		var ws = new WebSocket("ws://overrustle.com:9998/ws");
 
 		var sendObj = new Object();
-		sendObj.strim = "/destinychat?s=<?php echo $s ?>&stream=<?php echo $stream; ?>";
+		sendObj.strim = "/destinychat?s=<?php echo $js ?>&stream=<?php echo $jstream; ?>";
 
 		//if we get connected :^)
 		ws.onopen = function(){
@@ -275,11 +278,11 @@ if($t == "")
 				case "castamp":
 					if (strlen(strstr($_SERVER['HTTP_USER_AGENT'], 'Firefox')) > 0) 
 					{
-						echo '<script type="text/javascript"> channel="' . $stream . '"; vwidth="1280"; vheight="720";</script><script type="text/javascript" src="http://castamp.com/embed.js"></script>';	
+						echo '<script type="text/javascript"> channel="' . $jstream . '"; vwidth="1280"; vheight="720";</script><script type="text/javascript" src="http://castamp.com/embed.js"></script>';	
 					}
 					else
 					{
-						echo '<script type="text/javascript"> channel="' . $stream . '";</script><script type="text/javascript" src="castamp.js"></script>';
+						echo '<script type="text/javascript"> channel="' . $jstream . '";</script><script type="text/javascript" src="castamp.js"></script>';
 					}
 					break;
 
