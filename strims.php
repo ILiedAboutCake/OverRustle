@@ -12,7 +12,7 @@ $data = json_decode($result, true);
 echo '<h1 align="center">Total Rustlers Connected: ~ ' . $data['totalviewers'] . '</h1>';
 if(curl_exec($ch) === false)
 {
-    echo '<h2 align="center">Websocket Server is currently Offline.' . curl_error($ch);
+    echo '<h2 align="center">Websocket Server is currently Offline: ' . curl_error($ch);
     echo '<img src="https://camo.githubusercontent.com/fd6f52686fe2d0afd6cdf7df0b4de259aa46c143/68747470733a2f2f7261772e6769746875622e636f6d2f64657374696e7967672f776562736974652f6d61737465722f736372697074732f656d6f7465732f656d6f7469636f6e732f4269626c655468756d702e706e67">';
     echo '</h2>';
 }
