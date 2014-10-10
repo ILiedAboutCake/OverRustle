@@ -1,4 +1,20 @@
 <META HTTP-EQUIV="refresh" CONTENT="60">
+<style>
+    body {
+        background-color: #121212;
+        color: #999;
+    }
+    a:link {
+        color: #999;
+        text-decoration: none;
+    }
+    
+    a:visited {
+        color: #999;
+        text-decoration: none;
+    }
+
+</style>
 <?
 
 //  Initiate curl
