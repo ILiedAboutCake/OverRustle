@@ -209,7 +209,7 @@ if($t == "")
 		window.setInterval(function(){overRustleAPI()}, 5000);
 
 		//On Disconnect 
-		$( window ).unload(function() {
+		$(window).on('beforeunload', function() {
 			sendObj.action = "unjoin";
 			ws.send(JSON.stringify(sendObj));
 		});
