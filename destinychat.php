@@ -223,10 +223,42 @@ if($t == "")
         </div>
 
         <div class="pull-right" id="map" style="width: 390px;">
-          <iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no"></iframe>
+
+      <!-- TODO: support other chat options than twitch -->
+      <div>
+        <ul class="nav nav-pills" role="tablist" style="
+            position: absolute;
+            width: 100%;
+            background: #222;
+        ">
+          <li class="active"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>
+          <li><a href="#otherchat" role="tab" data-toggle="tab"><?php $s; ?> Chat</a></li>
+        </ul>
+      </div>
+
+      <div class="tab-content" style="height: 100%;">
+        <div class="tab-pane fade active in" id="destinychat" style="height: 100%;">
+          <iframe width="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no" style="height: 100%;"></iframe>
         </div>
+        <div class="tab-pane fade" id="otherchat" style="height: 100%;">
+        <?php
+        if ($s == "twitch")
+        {
+          echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/chat?popout=" scrolling="no"></iframe>';
+        }
+        else
+        {
+          echo '<h2>' . $s . ' chat is unsupported</h2>';
+        }
+        ?>
+        </div>
+      </div>
     </div>
-    <script src="js/bootstrap.min.js"></script>
+  </div>
+  <script src="js/bootstrap.min.js"></script>
+  <!-- Nav tabs -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
+
     <script src="js/overrustle.js"></script>
   </body>
 </html>
