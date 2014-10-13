@@ -1,7 +1,7 @@
 OverRustle
 ==========
 
-A tool to make destiny.gg suck less
+Watch Streams while chatting in Destiny.gg!
 
 # Destinychat.php
 
@@ -15,7 +15,7 @@ A tool to make destiny.gg suck less
 * MLG.TV Streams** (In beta)
 * Ustream*** (In beta)
 * Dailymotion
-
+* Advanced****
 
 ## How to use the VOD / Youtube player
 
@@ -33,7 +33,10 @@ A tool to make destiny.gg suck less
 
 ## Ustream
 
-* *** Ustream embeds work, but you cannot get to them by name. This is how Ustream runs their platform. Grab the embed number here http://i.imgur.com/PsPpK7v.png and use that for Stream/ID
+* *** Ustream embeds work, but you cannot get to them by name. This is how Ustream runs their platform. Grab the embed number here http://i.imgur.com/PsPpK7v.png and use that for Stream/ID.
+
+## Advanced
+* **** You can embed any website that allows iframing.
 
 ## CastAmp
 

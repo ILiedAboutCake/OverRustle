@@ -12,7 +12,7 @@ strims = {}
 
 #takes care of updating console
 def printStatus():
-	threading.Timer(5.0, printStatus).start()
+	threading.Timer(120, printStatus).start()
 	print 'Currently connected clients: ' + str(numClients)
 	
 	for key, value in strims.items():
@@ -35,6 +35,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		global strims
 		global numClients
 		fromClient = json.loads(message)
+
+		if fromClient[u'strim'] == "/destinychat?s=strims&stream=":
+			fromClient[u'strim'] = "/destinychat"
 
 		#handle session counting - This is a fucking mess :^(
 		if fromClient[u'action'] == "join":

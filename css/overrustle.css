@@ -1,0 +1,58 @@
+html,body
+{
+	height: 100%;
+}
+
+body
+{
+	background-color: #000000; /* BasedGod */
+	border: 0;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
+.navbar
+{
+	margin-bottom: 0px;
+}
+
+.stream-box
+{
+	width: -moz-calc(100% - 390px);
+	width: -webkit-calc(100% - 390px);
+	width: -o-calc(100% - 390px);
+	width: calc(100% - 390px);
+}
+
+#map 
+{
+    height: calc(100% - 25px);
+    min-height: calc(100% - 25px);
+    background: black;
+    display: block;
+}
+
+.fill
+{ 
+    min-height: calc(100% - 25px);
+    height: calc(100% - 25px);
+    width: 100%;
+    margin: 0;
+}
+
+.container-full 
+{
+	margin-left: 0px;
+	margin-right: 0px;
+  	width: 100%;
+}
+
+.donate>a>span
+{
+	background-color: #b91010;
+	border-radius: 8px;
+	color: #fafafa;
+	text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
+	padding: 1px 4px;
+}
