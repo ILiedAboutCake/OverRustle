@@ -30,7 +30,7 @@ if($t == "")
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
-    <title>OverRustle - Beta</title>
+    <title>OverRustle - <?php echo $stream; ?></title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/overrustle.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -118,7 +118,7 @@ if($t == "")
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <a class="navbar-brand" href="/strims">OverRustle</a>
+      <a class="navbar-brand hidden-md hidden-sm" href="/strims">OverRustle</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -127,36 +127,35 @@ if($t == "")
         <li><a href="#"><div id="twitch-ajax"></div></a></li>
         <li><a target="_blank" href="/strims"><div id="server-broadcast"></div></a></li>
         <li class="donate"><a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG"><span>Donate</span></a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advanced<span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a target="_blank" href="https://github.com/ILiedAboutCake/OverRustle#">Github</a></li>
-            <li><a target="_blank" href="http://overrustle.com:9998/api">Streams API</a></li>
-            <li class="divider"></li>
-            <li><a target="_blank" href="http://destiny.gg">Destiny.gg</a></li>
-          </ul>
-        </li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-      <form action="destinychat" class="navbar-form navbar-left" role="search">
-        <div class="form-group">
-          <select name="s" class="form-control">
-            <option value="twitch">Twitch</option>
-            <option value="twitch-vod">Twitch - VOD</option>
-            <option value="hitbox">Hitbox</option>
-            <option value="castamp">CastAmp</option>            
-            <option value="youtube">Youtube</option>
-            <option value="mlg">MLG (Beta*)</option>
-            <option value="ustream">Ustream (Beta*)</option>
-            <option value="dailymotion">Dailymotion</option>
-            <option value="advanced">Advanced</option>
-          </select>
-          <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/> 
-          <button type="submit" class="btn btn-default">Go</button>
-        </div>
-      </form>
 
+      <ul class="nav navbar-nav navbar-right">
+        <?php
+        if ($s == "twitch" || $s == "hitbox" || $s == "ustream")
+        {
+          echo '<li class="active hidden-md hidden-sm"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>';
+          echo '<li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> ' . ucfirst($s)  . ' Chat</a></li>';
+        }
+        ?>
+        <form action="destinychat" class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <select name="s" class="form-control">
+              <option value="twitch">Twitch</option>
+              <option value="twitch-vod">Twitch - VOD</option>
+              <option value="hitbox">Hitbox</option>
+              <option value="castamp">CastAmp</option>            
+              <option value="youtube">Youtube</option>
+              <option value="mlg">MLG (Beta*)</option>
+              <option value="ustream">Ustream (Beta*)</option>
+              <option value="dailymotion">Dailymotion</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/> 
+            <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
+          </div>
+        </form>
       </ul>
+
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
@@ -222,43 +221,34 @@ if($t == "")
         ?>
         </div>
 
-        <div class="pull-right" id="map" style="width: 390px;">
+        <div class="pull-right" id="map" style="width: 390px;"> 
+          <div class="tab-content" style="height: 100%;">
+            <div class="tab-pane fade active in" id="destinychat" style="height: 100%;">
+              <iframe width="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no" style="height: 100%;"></iframe>
+            </div>
+            <div class="tab-pane fade" id="otherchat" style="height: 100%;">
+            <?php
+            switch($s)
+            {
+              case "twitch": 
+                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/chat?popout=" scrolling="no"></iframe>';
+                break;
 
-      <!-- TODO: support other chat options than twitch -->
-      <div>
-        <ul class="nav nav-pills" role="tablist" style="
-            position: absolute;
-            width: 100%;
-            background: #222;
-        ">
-          <li class="active"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>
-          <li><a href="#otherchat" role="tab" data-toggle="tab"><?php $s; ?> Chat</a></li>
-        </ul>
-      </div>
+              case "hitbox":
+                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embedchat/' . $stream . '" scrolling="no"></iframe>';
+                break;
 
-      <div class="tab-content" style="height: 100%;">
-        <div class="tab-pane fade active in" id="destinychat" style="height: 100%;">
-          <iframe width="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no" style="height: 100%;"></iframe>
+              case "ustream":
+                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.ustream.tv/socialstream/' . $stream . '" scrolling="no"></iframe>';
+                break;
+            }
+            ?>
+            </div>
+          </div>
         </div>
-        <div class="tab-pane fade" id="otherchat" style="height: 100%;">
-        <?php
-        if ($s == "twitch")
-        {
-          echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/chat?popout=" scrolling="no"></iframe>';
-        }
-        else
-        {
-          echo '<h2>' . $s . ' chat is unsupported</h2>';
-        }
-        ?>
-        </div>
-      </div>
-    </div>
   </div>
   <script src="js/bootstrap.min.js"></script>
-  <!-- Nav tabs -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
-
-    <script src="js/overrustle.js"></script>
+  <script src="js/overrustle.js"></script>
   </body>
 </html>
