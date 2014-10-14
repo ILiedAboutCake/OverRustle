@@ -131,7 +131,7 @@ if($t == "")
 
       <ul class="nav navbar-nav navbar-right">
         <?php
-        if ($s == "twitch" || $s == "hitbox" || $s == "ustream")
+        if ($s == "twitch" || $s == "hitbox" || $s == "ustream" || $s == "azubu")
         {
           echo '<li class="active hidden-md hidden-sm"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>';
           echo '<li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> ' . ucfirst($s)  . ' Chat</a></li>';
@@ -148,6 +148,7 @@ if($t == "")
               <option value="mlg">MLG (Beta*)</option>
               <option value="ustream">Ustream (Beta*)</option>
               <option value="dailymotion">Dailymotion</option>
+              <option value="azubu">Azubu</option>
               <option value="advanced">Advanced</option>
             </select>
             <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/> 
@@ -215,6 +216,10 @@ if($t == "")
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.dailymotion.com/embed/video/' . $stream . '" scrolling="no"></iframe>';
             break;
 
+          case "azubu":
+            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.azubu.tv/azubulink/embed=' . $stream . '" scrolling="no"></iframe>';
+            break;            
+
           case "strims":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="/strims"></iframe>';
         }
@@ -241,6 +246,11 @@ if($t == "")
               case "ustream":
                 echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.ustream.tv/socialstream/' . $stream . '" scrolling="no"></iframe>';
                 break;
+
+              case "azubu":
+                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.azubu.tv/' . $stream . '/chatpopup" scrolling="no"></iframe>';
+                break;
+
             }
             ?>
             </div>

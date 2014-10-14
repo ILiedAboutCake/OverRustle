@@ -5,6 +5,7 @@ import tornado.ioloop
 import tornado.web
 import json
 import socket
+import time
  
 #dem variables
 numClients = 0
@@ -12,11 +13,18 @@ strims = {}
 
 #takes care of updating console
 def printStatus():
-	threading.Timer(120, printStatus).start()
+	threading.Timer(240, printStatus).start()
 	print 'Currently connected clients: ' + str(numClients)
 	
 	for key, value in strims.items():
 		print key, value
+
+def resetStrims():
+	threading.Timer(21600, resetStrims).start()
+	print '##### RESETTING STRIMS LIST. RIP. #####'
+	
+	strims.clear()
+	numClients = None
 
 #ayy lmao
 #if self.is_enlightened_by(self.intelligence):
@@ -47,15 +55,20 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			data_string = json.dumps({"streams":strims[fromClient[u'strim']], "totalviewers":numClients})
 			self.write_message(str(strims[fromClient[u'strim']]) + " OverRustle.com Viewers")
 			print 'User Connected: Watching %s' % (fromClient[u'strim'])
+
 		elif fromClient[u'action'] == "unjoin":
 			strims.setdefault(fromClient[u'strim'], 0)
 			strims[fromClient[u'strim']]  -= 1
 			numClients -= 1
 			print 'User Disconnected: Was Watching %s' % (fromClient[u'strim'])
+
 		elif fromClient[u'action'] == "viewerCount":
+			strims.setdefault(fromClient[u'strim'], 0)
 			self.write_message(str(strims[fromClient[u'strim']]) + " OverRustle.com Viewers")
+
 		elif fromClient[u'action'] == "api":
 			self.write_message(json.dumps({"streams":strims, "totalviewers":numClients}))
+
 		else:
 			print 'WTF: Client sent unknown command >:( %s' % (fromClient[u'action'])
 
@@ -70,6 +83,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 #print console updates
 printStatus()
+resetStrims()
 
 #JSON api server
 class APIHandler(tornado.web.RequestHandler):

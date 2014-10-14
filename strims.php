@@ -47,11 +47,11 @@ foreach($data['streams'] as $name=>$viewers)
     $len = strlen($name);
     if($len > 128)
     {
-    	echo '<tr><td><a href=' . $name . '>Name Truncated (Spam/Advanced Stream)</a></td><td>' . $viewers . '</td></tr>';
+    	echo '<tr><td><a target="_blank" href=' . $name . '>Name Truncated (Spam/Advanced Stream)</a></td><td>' . $viewers . '</td></tr>';
     }
     else
     {
-    	echo '<tr><td><a href=' . $name . '>' . $name . '</a></td><td>~' . $viewers . '</td></tr>';
+    	echo '<tr><td><a target="_blank" href=' . $name . '>' . $name . '</a></td><td>~' . $viewers . '</td></tr>';
     }
 }
 echo "</table>";
