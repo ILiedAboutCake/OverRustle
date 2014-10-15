@@ -149,6 +149,7 @@ if($t == "")
               <option value="ustream">Ustream (Beta*)</option>
               <option value="dailymotion">Dailymotion</option>
               <option value="azubu">Azubu</option>
+              <option value="picarto">Picarto</option>
               <option value="advanced">Advanced</option>
             </select>
             <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/> 
@@ -218,7 +219,11 @@ if($t == "")
 
           case "azubu":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.azubu.tv/azubulink/embed=' . $stream . '" scrolling="no"></iframe>';
-            break;            
+            break;    
+
+          case "picarto":
+            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="https://www.picarto.tv/live/playerpopout.php?popit=' . $stream . '&off=1&token=undefined" scrolling="no"></iframe>';
+            break;    
 
           case "strims":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="/strims"></iframe>';

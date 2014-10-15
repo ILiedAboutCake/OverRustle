@@ -16,6 +16,7 @@ Watch Streams while chatting in Destiny.gg!
 * Ustream*** (In beta)
 * Dailymotion
 * Azubu
+* Picarto.tv
 * Advanced****
 
 ## How to use the VOD / Youtube player
