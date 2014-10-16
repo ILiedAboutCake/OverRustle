@@ -5,7 +5,7 @@ html,body
 
 body
 {
-	background-color: #000000; /* BasedGod */
+	background-color: #121212; /* BasedGod */
 	border: 0;
 	padding: 0;
 	margin: 0;
@@ -29,7 +29,7 @@ body
 {
     height: calc(100% - 25px);
     min-height: calc(100% - 25px);
-    background: black;
+    background: #121212;
     display: block;
 }
 
@@ -55,4 +55,9 @@ body
 	color: #fafafa;
 	text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
 	padding: 1px 4px;
+}
+
+.whitetext
+{
+	color: #FFFFFF;
 }

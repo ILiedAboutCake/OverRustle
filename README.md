@@ -15,6 +15,8 @@ Watch Streams while chatting in Destiny.gg!
 * MLG.TV Streams** (In beta)
 * Ustream*** (In beta)
 * Dailymotion
+* Azubu
+* Picarto.tv
 * Advanced****
 
 ## How to use the VOD / Youtube player
@@ -43,10 +45,6 @@ Watch Streams while chatting in Destiny.gg!
 * By popular request CastAmp has been implemented, but thanks to their limited controls of embeds the following bugs exist and will be fixed Soon™:
 1. Firefox does not size embed to the div width/height until this is fixed it sizes itself to 1280x720 (720p resolution)
 2. Resizing your browser window in chrome requires you to refresh the window.
-
-## What about Azubu?
-
-* Since Azubu does not run its own streaming servers embedding is 100x more tricky, as they use brightcove and the embed process is more than 1 variable. http://pastebin.com/f8vBNJvp
 
 ## Contact
 
