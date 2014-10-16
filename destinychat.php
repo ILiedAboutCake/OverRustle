@@ -226,7 +226,8 @@ if($t == "")
             break;    
 
           case "strims":
-            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="/strims"></iframe>';
+            include('strims_content.php');
+
         }
         ?>
         </div>
