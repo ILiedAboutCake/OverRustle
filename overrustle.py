@@ -106,8 +106,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 		elif fromClient[u'action'] == "unjoin":
 			strims.setdefault(fromClient[u'strim'], {})
-			strims[fromClient[u'strim']].pop(self.id, None)
-			clients[self.id].pop(fromClient[u'strim'], None)
+			if fromClient[u'strim'] in strims:
+				strims[fromClient[u'strim']].pop(self.id, None)
+			if ('strim' in clients[self.id]) and (fromClient[u'strim'] in strims):
+				clients[self.id].pop(fromClient[u'strim'], None)
 			print 'User Disconnected: Was Watching %s' % (fromClient[u'strim'])
 
 		elif fromClient[u'action'] == "viewerCount":
@@ -129,9 +131,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def on_close(self):
 		global clients
 		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)+ " id: "+self.id
-		if (clients[self.id]['strim'] == None) or (strims[clients[self.id]['strim']] == None):
-			return
-		strims[clients[self.id]['strim']].pop(self.id, None)
+		if ('strim' in clients[self.id]) and (clients[self.id]['strim'] in strims):
+			strims[clients[self.id]['strim']].pop(self.id, None)
 		clients.pop(self.id, None)
 		print len(clients)
 
