@@ -11,13 +11,15 @@ import random
 import uuid
  
 #dem variables
-numClients = 0
+def numClients():
+	return sum(strims.itervalues())
+
 strims = {}
 
 #takes care of updating console
 def printStatus():
 	threading.Timer(240, printStatus).start()
-	print 'Currently connected clients: ' + str(numClients)
+	print 'Currently connected clients: ' + str(numClients())
 	
 	for key, value in strims.items():
 		print key, value
@@ -27,7 +29,6 @@ def resetStrims():
 	print '##### RESETTING STRIMS LIST. RIP. #####'
 	
 	strims.clear()
-	numClients = None
 
 #ayy lmao
 #if self.is_enlightened_by(self.intelligence):
@@ -91,15 +92,13 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		if fromClient[u'action'] == "join":
 			strims.setdefault(fromClient[u'strim'], 0)
 			strims[fromClient[u'strim']] += 1
-			numClients += 1
-			data_string = json.dumps({"streams":strims[fromClient[u'strim']], "totalviewers":numClients})
+			data_string = json.dumps({"streams":strims[fromClient[u'strim']], "totalviewers":numClients()})
 			self.write_message(str(strims[fromClient[u'strim']]) + " OverRustle.com Viewers")
 			print 'User Connected: Watching %s' % (fromClient[u'strim'])
 
 		elif fromClient[u'action'] == "unjoin":
 			strims.setdefault(fromClient[u'strim'], 0)
 			strims[fromClient[u'strim']]  -= 1
-			numClients -= 1
 			print 'User Disconnected: Was Watching %s' % (fromClient[u'strim'])
 
 		elif fromClient[u'action'] == "viewerCount":
@@ -130,7 +129,7 @@ resetStrims()
 #JSON api server
 class APIHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write(json.dumps({"streams":strims, "totalviewers":numClients}))
+        self.write(json.dumps({"streams":strims, "totalviewers":numClients()}))
 
 #GET address handlers
 application = tornado.web.Application([
