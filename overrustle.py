@@ -6,6 +6,9 @@ import tornado.web
 import json
 import socket
 import time
+import datetime
+import random
+import uuid
  
 #dem variables
 numClients = 0
@@ -33,11 +36,48 @@ def resetStrims():
 #Stat tracking websocket server
 #Hiring PHP developers does not contribute to the quota of employees with disabilities.
 class WSHandler(tornado.websocket.WebSocketHandler):
+	clients = {}
+	ping_every = 30
+
+	def __init__(self, application, request, **kwargs):
+		tornado.websocket.WebSocketHandler.__init__(self, application, request, **kwargs)
+		self.io_loop = tornado.ioloop.IOLoop.instance()
+
 	def check_origin(self, origin):
 		return True
 
 	def open(self):
-		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)
+		self.id = uuid.uuid4()
+		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip + " id: ") + str(self.id)
+		self.clients[str(self.id)] = {'id': self.id}
+		print len(self.clients)
+		# Ping to make sure the agent is alive.
+		self.io_loop.add_timeout(datetime.timedelta(seconds=self.ping_every), self.send_ping)
+	
+	def on_connection_timeout(self):
+		print "-- Client timed out aftter 1 minute"
+		self.close()
+
+	def send_ping(self):
+		print("<- [PING] " + str(self.id))
+		try:
+			self.ping(str(self.id))
+			self.ping_timeout = self.io_loop.add_timeout(datetime.timedelta(seconds=self.ping_every), self.on_connection_timeout)
+		except Exception as ex:
+			print("-- Failed to send ping! to: "+ str(self.id) + " because of " + repr(ex))
+			self.clients.pop(str(self.id), None)
+		
+	def on_pong(self, data):
+		# We received a pong, remove the timeout so that we don't
+		# kill the connection.
+		print("-> [PONG] %s" % data)
+
+		if hasattr(self, "ping_timeout"):
+			self.io_loop.remove_timeout(self.ping_timeout)
+
+		# Wait 5 seconds before pinging again.
+		self.io_loop.add_timeout(datetime.timedelta(seconds=5), self.send_ping)
+
 
 	def on_message(self, message):
 		global strims
@@ -79,7 +119,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			strims.pop(fromClient[u'strim'], None)
 
 	def on_close(self):
-		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)
+		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)+ " id: "+str(self.id)
+		self.clients.pop(str(self.id), None)
+		print len(self.clients)
 
 #print console updates
 printStatus()
