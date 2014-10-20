@@ -12,7 +12,8 @@ import uuid
  
 #dem variables
 def numClients():
-	return sum(strims.itervalues())
+	lstrims = strimCounts()
+	return sum(lstrims.itervalues())
 
 strims = {}
 clients = {}
