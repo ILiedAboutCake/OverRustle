@@ -26,8 +26,8 @@ else
   <div class="col-md-4"></div>
 </div>
 
-<h1 align="center" style="color: #FFFFFF;">See what fellow rustlers are watching!</h1>
-<table class="table table-hover" style="color: #FFFFFF;">
+<h1 align="center" style="color: #FFFFFF;">See what <?php echo $data['totalviewers']; ?> rustlers are watching!</h1>
+<table class="table" style="color: #FFFFFF;">
   <thead>
     <tr>
       <th>Stream Link</th>

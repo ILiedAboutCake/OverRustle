@@ -32,12 +32,6 @@ def printStatus():
 	for key, value in strims.items():
 		print key, value
 
-def resetStrims():
-	threading.Timer(21600, resetStrims).start()
-	print '##### RESETTING STRIMS LIST. RIP. #####'
-	
-	strims.clear()
-
 #ayy lmao
 #if self.is_enlightened_by(self.intelligence):
 #	self.is_euphoric = True
@@ -139,7 +133,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 #print console updates
 printStatus()
-resetStrims()
 
 #JSON api server
 class APIHandler(tornado.web.RequestHandler):
