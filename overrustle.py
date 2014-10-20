@@ -38,7 +38,7 @@ def resetStrims():
 #Hiring PHP developers does not contribute to the quota of employees with disabilities.
 class WSHandler(tornado.websocket.WebSocketHandler):
 	clients = {}
-	ping_every = 30
+	ping_every = 15
 
 	def __init__(self, application, request, **kwargs):
 		tornado.websocket.WebSocketHandler.__init__(self, application, request, **kwargs)
@@ -53,7 +53,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		self.clients[str(self.id)] = {'id': self.id}
 		print len(self.clients)
 		# Ping to make sure the agent is alive.
-		self.io_loop.add_timeout(datetime.timedelta(seconds=self.ping_every), self.send_ping)
+		self.io_loop.add_timeout(datetime.timedelta(seconds=5), self.send_ping)
 	
 	def on_connection_timeout(self):
 		print "-- Client timed out aftter 1 minute"
@@ -77,7 +77,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			self.io_loop.remove_timeout(self.ping_timeout)
 
 		# Wait 5 seconds before pinging again.
-		self.io_loop.add_timeout(datetime.timedelta(seconds=5), self.send_ping)
+		self.io_loop.add_timeout(datetime.timedelta(seconds=self.ping_every), self.send_ping)
 
 
 	def on_message(self, message):
