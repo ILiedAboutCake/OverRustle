@@ -56,7 +56,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def open(self):
 		global clients
 		self.id = str(uuid.uuid4())
-		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip + " id: ") + self.id
+		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip) + " id: " + self.id
 		clients[self.id] = {'id': self.id}
 		print len(clients)
 		# Ping to make sure the agent is alive.
@@ -129,7 +129,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def on_close(self):
 		global clients
 		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)+ " id: "+self.id
-		strims.setdefault(clients[self.id]['strim'], {})
+		if (clients[self.id]['strim'] == None) or (strims[clients[self.id]['strim']] == None):
+			return
 		strims[clients[self.id]['strim']].pop(self.id, None)
 		clients.pop(self.id, None)
 		print len(clients)
