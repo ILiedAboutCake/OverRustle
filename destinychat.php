@@ -15,6 +15,12 @@ if($s == "" && $stream == "")
   $s = "strims";
 }
 
+//fuck people embeding the site right in the pussy 
+if(strpos($stream,'destiny.gg') !== false || (strpos($stream,'overrustle.com') !== false))
+{
+  header('Location: http://overrustle.com/destinychat');
+}
+
 //if no time is set start from the beginning
 if($t == "")
 {
@@ -66,7 +72,7 @@ if($t == "")
       } 
     </script>
    <script>
-    var ws = new WebSocket("ws://overrustle.com:9998/ws");
+    var ws = new WebSocket("ws://OverRustle.com:9998/ws");
 
     var sendObj = new Object();
     sendObj.strim = "/destinychat?s=<?php echo $s ?>&stream=<?php echo $stream; ?>";
