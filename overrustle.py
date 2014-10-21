@@ -68,8 +68,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			self.ping_timeout = self.io_loop.add_timeout(datetime.timedelta(seconds=self.ping_every), self.on_connection_timeout)
 		except Exception as ex:
 			print("-- Failed to send ping! to: "+ self.id + " because of " + repr(ex))
-			global clients
-			clients.pop(self.id, None)
+			self.remove_viewer()
 		
 	def on_pong(self, data):
 		# We received a pong, remove the timeout so that we don't
@@ -86,6 +85,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def on_message(self, message):
 		global strims
 		global numClients
+		global clients
 		fromClient = json.loads(message)
 
 		if fromClient[u'strim'] == "/destinychat?s=strims&stream=":
@@ -100,11 +100,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			print 'User Connected: Watching %s' % (fromClient[u'strim'])
 
 		elif fromClient[u'action'] == "unjoin":
-			strims.setdefault(fromClient[u'strim'], {})
-			if fromClient[u'strim'] in strims:
-				strims[fromClient[u'strim']].pop(self.id, None)
-			if ('strim' in clients[self.id]) and (fromClient[u'strim'] in strims):
-				clients[self.id].pop(fromClient[u'strim'], None)
+			self.remove_viewer()
 			print 'User Disconnected: Was Watching %s' % (fromClient[u'strim'])
 
 		elif fromClient[u'action'] == "viewerCount":
@@ -124,12 +120,18 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			strims.pop(fromClient[u'strim'], None)
 
 	def on_close(self):
-		global clients
 		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)+ " id: "+self.id
-		if ('strim' in clients[self.id]) and (clients[self.id]['strim'] in strims):
-			strims[clients[self.id]['strim']].pop(self.id, None)
-		clients.pop(self.id, None)
-		print len(clients)
+		self.remove_viewer()
+
+	def remove_viewer(self):
+		global clients
+		global strims
+		if (self.id in clients):
+			if ('strim' in clients[self.id]) and (clients[self.id]['strim'] in strims):
+				strims[clients[self.id]['strim']].pop(self.id, None)
+			clients.pop(self.id, None)
+		print str(len(clients)) + " remain connected"
+
 
 #print console updates
 printStatus()
