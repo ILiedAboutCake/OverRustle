@@ -98,7 +98,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			self.io_loop.remove_timeout(self.ping_timeout)
 
 		global clients
-		clients[self.id]["last_pong_time"] = time.clock()
+		if self.id in clients:
+			clients[self.id]["last_pong_time"] = time.clock()
+			
 		# Wait 5 seconds before pinging again.
 		global ping_every
 		self.io_loop.add_timeout(datetime.timedelta(seconds=ping_every), self.send_ping)
