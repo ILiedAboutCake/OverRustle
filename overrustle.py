@@ -38,7 +38,9 @@ def sweepClients():
 	to_remove = []
 	for client_id in clients:
 		client = clients[client_id]
-		to_remove.append(client_id)
+		t_now - time.time()
+		if(("last_pong_time" in client) and (client["last_pong_time"] < (t_now-(5*ping_every)))):
+			to_remove.append(client_id)
 	for client_id in to_remove:
 		remove_viewer(client_id)
 
@@ -99,8 +101,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 		global clients
 		if self.id in clients:
-			clients[self.id]["last_pong_time"] = time.clock()
-			
+			clients[self.id]["last_pong_time"] = time.time()
+
 		# Wait 5 seconds before pinging again.
 		global ping_every
 		self.io_loop.add_timeout(datetime.timedelta(seconds=ping_every), self.send_ping)
