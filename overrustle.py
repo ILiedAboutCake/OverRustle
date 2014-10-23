@@ -89,7 +89,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			self.ping_timeout = self.io_loop.add_timeout(datetime.timedelta(seconds=ping_every), self.on_connection_timeout)
 		except Exception as ex:
 			print("-- Failed to send ping! to: "+ self.id + " because of " + repr(ex))
-			self.close()
+			self.on_close()
 		
 	def on_pong(self, data):
 		# We received a pong, remove the timeout so that we don't
@@ -127,7 +127,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 		elif fromClient[u'action'] == "unjoin":
 			print 'User Disconnected: Was Watching %s' % (fromClient[u'strim'])
-			self.close()
+			self.on_close()
 
 		elif fromClient[u'action'] == "viewerCount":
 			strims.setdefault(fromClient[u'strim'], {})
