@@ -38,7 +38,7 @@ def sweepClients():
 	to_remove = []
 	for client_id in clients:
 		client = clients[client_id]
-		to_remove.add(client_id)
+		to_remove.append(client_id)
 	for client_id in to_remove:
 		remove_viewer(client_id)
 
