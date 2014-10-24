@@ -49,7 +49,8 @@ def sweepStreams():
 	global strims
 	to_remove = []
 	for strim in strims:
-		to_remove.append(strim)
+		if(len(strims(strim)) == 0):
+			to_remove.append(strim)
 	for strim in to_remove:
 		strims.pop(strim, None)
 
