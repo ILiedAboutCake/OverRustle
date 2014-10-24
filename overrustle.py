@@ -30,6 +30,7 @@ def printStatus():
 	threading.Timer(240, printStatus).start()
 	print 'Currently connected clients: ' + str(numClients())
 	sweepClients()
+	sweepStreams()
 	for key, value in strims.items():
 		print key, value
 
@@ -43,6 +44,14 @@ def sweepClients():
 			to_remove.append(client_id)
 	for client_id in to_remove:
 		remove_viewer(client_id)
+
+def sweepStreams():
+	global strims
+	to_remove = []
+	for strim in strims:
+		to_remove.append(strim)
+	for strim in to_remove:
+		strims.pop(strim, None)
 
 def remove_viewer(v_id):
 	global clients
