@@ -3,17 +3,23 @@ import tornado.httpserver
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+import tornadoredis
+import tornado.gen
 import json
 import socket
 import time
 import datetime
 import random
 import uuid
- 
+
 #dem variables
 def numClients():
 	lstrims = strimCounts()
 	return sum(lstrims.itervalues())
+
+# redis
+c = tornadoredis.Client()
+c.connect()
 
 strims = {}
 clients = {}
@@ -54,7 +60,10 @@ def sweepStreams():
 	for strim in to_remove:
 		strims.pop(strim, None)
 
+@tornado.gen.engine
 def remove_viewer(v_id):
+	global c
+	res = yield tornado.gen.Task(c.srem, 'clients', v_id)
 	global clients
 	global strims
 	if (v_id in clients):
@@ -74,16 +83,22 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def __init__(self, application, request, **kwargs):
 		tornado.websocket.WebSocketHandler.__init__(self, application, request, **kwargs)
 		self.io_loop = tornado.ioloop.IOLoop.instance()
+		self.client = tornadoredis.Client()
+		self.client.connect()
 
 	def check_origin(self, origin):
 		return True
 
+	@tornado.web.asynchronous
+	@tornado.gen.engine
 	def open(self):
 		global clients
 		self.id = str(uuid.uuid4())
 		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip) + " id: " + self.id
 		clients[self.id] = {'id': self.id}
-		print len(clients)
+		resss = yield tornado.gen.Task(self.client.sadd, 'clients', self.id)
+		len_client = yield tornado.gen.Task(self.client.scard, 'clients')
+		print len_clients
 		# Ping to make sure the agent is alive.
 		self.io_loop.add_timeout(datetime.timedelta(seconds=5), self.send_ping)
 	
@@ -165,13 +180,13 @@ printStatus()
 
 #JSON api server
 class APIHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write(json.dumps({"streams":strimCounts(), "totalviewers":numClients()}))
+		def get(self):
+				self.write(json.dumps({"streams":strimCounts(), "totalviewers":numClients()}))
 
 #GET address handlers
 application = tornado.web.Application([
-    (r'/ws', WSHandler),
-    (r'/api', APIHandler)
+		(r'/ws', WSHandler),
+		(r'/api', APIHandler)
 ])
  
 #starts the server on port 9998
