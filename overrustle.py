@@ -5,6 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornadoredis
 import tornado.gen
+import redis
 import json
 import socket
 import time
@@ -13,23 +14,25 @@ import random
 import uuid
 
 #dem variables
-def numClients():
-	lstrims = strimCounts()
-	return sum(lstrims.itervalues())
-
 # redis
 c = tornadoredis.Client()
 c.connect()
+
+r = redis.StrictRedis()
 
 strims = {}
 clients = {}
 ping_every = 15
 
 def strimCounts():
+	strims = r.hgetall('strims') or []
 	counts = {}
 	for strim in strims:
-		counts[strim] = len(strims[strim])
+		counts[strim] = strims[strim]
 	return counts
+
+def numClients():
+	return r.hlen('clients')
 
 #takes care of updating console
 def printStatus():
@@ -37,40 +40,52 @@ def printStatus():
 	print 'Currently connected clients: ' + str(numClients())
 	sweepClients()
 	sweepStreams()
-	for key, value in strims.items():
+	strim_counts = strimCounts()
+	for key, value in strim_counts.items():
 		print key, value
 
+@tornado.gen.engine
 def sweepClients():
-	global clients
+	global ping_every
+	clients = yield tornado.gen.Task(c.hkeys, 'clients')
 	to_remove = []
+	expire_time = (time.time()-(5*ping_every))
 	for client_id in clients:
-		client = clients[client_id]
-		t_now = time.time()
-		if(("last_pong_time" in client) and (client["last_pong_time"] < (t_now-(5*ping_every)))):
+		# client = clients[client_id]
+		lpt = yield tornado.gen.Task(c.hget, 'last_pong_time', client_id)
+		if (((lpt == '') or (lpt == None)) or (float(lpt) < expire_time)):
+			# if(("last_pong_time" in client) and (client["last_pong_time"] < (t_now-(5*ping_every)))):
 			to_remove.append(client_id)
 	for client_id in to_remove:
 		remove_viewer(client_id)
 
+@tornado.gen.engine
 def sweepStreams():
-	global strims
+	strims = yield tornado.gen.Task(c.hgetall, 'strims')
 	to_remove = []
 	for strim in strims:
-		if(len(strims(strim)) == 0):
+		if(strims(strim) <= 0):
 			to_remove.append(strim)
 	for strim in to_remove:
-		strims.pop(strim, None)
+		res = yield tornado.gen.Task(c.hdel, 'strims', strim)
 
 @tornado.gen.engine
 def remove_viewer(v_id):
 	global c
-	res = yield tornado.gen.Task(c.srem, 'clients', v_id)
-	global clients
-	global strims
-	if (v_id in clients):
-		if ('strim' in clients[v_id]) and (clients[v_id]['strim'] in strims):
-			strims[clients[v_id]['strim']].pop(v_id, None)
-		clients.pop(v_id, None)
-	print str(len(clients)) + " remain connected"
+	strim = yield tornado.gen.Task(c.hget, 'clients', v_id)
+	if strim != '':
+		res = yield tornado.gen.Task(c.hincrby, 'strims', strim, -1)
+	else:
+		print 'deleting strim-less vid:', v_id
+	res = yield tornado.gen.Task(c.hdel, 'clients', v_id)
+	res = yield tornado.gen.Task(c.hdel, 'last_pong_time', v_id)
+	# global clients
+	# global strims
+	# if (v_id in clients):
+	# 	if ('strim' in clients[v_id]) and (clients[v_id]['strim'] in strims):
+	# 		strims[clients[v_id]['strim']].pop(v_id, None)
+	# 	clients.pop(v_id, None)
+	print str(numClients()) + " remain connected"
 
 #ayy lmao
 #if self.is_enlightened_by(self.intelligence):
@@ -82,35 +97,36 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 	def __init__(self, application, request, **kwargs):
 		tornado.websocket.WebSocketHandler.__init__(self, application, request, **kwargs)
-		self.io_loop = tornado.ioloop.IOLoop.instance()
 		self.client = tornadoredis.Client()
 		self.client.connect()
+		self.io_loop = tornado.ioloop.IOLoop.instance()
 
 	def check_origin(self, origin):
 		return True
 
-	@tornado.web.asynchronous
 	@tornado.gen.engine
 	def open(self):
 		global clients
 		self.id = str(uuid.uuid4())
 		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip) + " id: " + self.id
 		clients[self.id] = {'id': self.id}
-		resss = yield tornado.gen.Task(self.client.sadd, 'clients', self.id)
-		len_client = yield tornado.gen.Task(self.client.scard, 'clients')
-		print len_clients
+		# res = yield tornado.gen.Task(self.client.hset, 'clients', self.id, '')
+		# len_clients = yield tornado.gen.Task(self.client.hlen, 'clients')
+		# print len_clients
+		# res = yield tornado.gen.Task(self.client.hset, 'last_pong_time', self.id, time.time())
 		# Ping to make sure the agent is alive.
-		self.io_loop.add_timeout(datetime.timedelta(seconds=5), self.send_ping)
+		self.io_loop.add_timeout(datetime.timedelta(seconds=(ping_every/3)), self.send_ping)
 	
 	def on_connection_timeout(self):
-		print "-- Client timed out aftter 1 minute"
+		print "-- Client timed out after 1 minute"
+		self.on_close()
 		self.close()
 
 	def send_ping(self):
 		print("<- [PING] " + self.id)
 		try:
 			self.ping(self.id)
-			global ping_every
+			# global ping_every
 			self.ping_timeout = self.io_loop.add_timeout(datetime.timedelta(seconds=ping_every), self.on_connection_timeout)
 		except Exception as ex:
 			print("-- Failed to send ping! to: "+ self.id + " because of " + repr(ex))
@@ -124,14 +140,13 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		if hasattr(self, "ping_timeout"):
 			self.io_loop.remove_timeout(self.ping_timeout)
 
-		global clients
-		if self.id in clients:
-			clients[self.id]["last_pong_time"] = time.time()
-
-		# Wait 5 seconds before pinging again.
-		global ping_every
-		self.io_loop.add_timeout(datetime.timedelta(seconds=ping_every), self.send_ping)
-
+		in_clients = yield tornado.gen.Task(c.hexists, 'clients', self.id)
+		if in_clients:
+			# clients[self.id]["last_pong_time"] = time.time()
+			res = yield tornado.gen.Task(c.hset, 'last_pong_time', self.id, time.time())
+			# Wait 5 seconds before pinging again.
+			global ping_every
+			self.io_loop.add_timeout(datetime.timedelta(seconds=ping_every), self.send_ping)
 
 	def on_message(self, message):
 		global strims
@@ -144,10 +159,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 		#handle session counting - This is a fucking mess :^(
 		if fromClient[u'action'] == "join":
-			strims.setdefault(fromClient[u'strim'], {})
-			strims[fromClient[u'strim']][self.id] = True
-			clients[self.id]['strim'] = fromClient[u'strim']
-			self.write_message(str(len(strims[fromClient[u'strim']])) + " OverRustle.com Viewers")
+			res = yield tornado.gen.Task(self.client.hset, 'clients', self.id, fromClient[u'strim'])
+			strim_count = yield tornado.gen.Task(self.client.hincrby, 'strims', fromClient[u'strim'], 1)
+			self.write_message(str(strim_count) + " OverRustle.com Viewers")
 			print 'User Connected: Watching %s' % (fromClient[u'strim'])
 
 		elif fromClient[u'action'] == "unjoin":
@@ -155,8 +169,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			self.on_close()
 
 		elif fromClient[u'action'] == "viewerCount":
-			strims.setdefault(fromClient[u'strim'], {})
-			self.write_message(str(len(strims[fromClient[u'strim']])) + " OverRustle.com Viewers")
+			strim_count = yield tornado.gen.Task(self.client.hget, 'strims', fromClient[u'strim'])
+			self.write_message(str(strim_count) + " OverRustle.com Viewers")
 
 		elif fromClient[u'action'] == "api":
 			self.write_message(json.dumps({"streams":strimCounts(), "totalviewers":numClients}))
@@ -166,9 +180,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 
 		#remove the dict key if nobody is watching DaFeels
-		if len(strims[fromClient[u'strim']]) <= 0:
-			#print 'Removing Dict value: %s' % (fromClient[u'strim'])
-			strims.pop(fromClient[u'strim'], None)
+		strim_count = yield tornado.gen.Task(self.client.hget, 'strims', fromClient[u'strim'])
+		if strim_count <= 0:
+			res = yield tornado.gen.Task(c.hdel, 'strims', fromClient[u'strim'])
 
 	def on_close(self):
 		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)+ " id: "+self.id
