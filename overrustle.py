@@ -110,19 +110,23 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		self.id = str(uuid.uuid4())
 		print 'Opened Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip) + " id: " + self.id
 		clients[self.id] = {'id': self.id}
-		# res = yield tornado.gen.Task(self.client.hset, 'clients', self.id, '')
-		# len_clients = yield tornado.gen.Task(self.client.hlen, 'clients')
-		# print len_clients
-		# res = yield tornado.gen.Task(self.client.hset, 'last_pong_time', self.id, time.time())
+		res = yield tornado.gen.Task(self.client.hset, 'clients', self.id, '')
+		len_clients = yield tornado.gen.Task(self.client.hlen, 'clients')
+		print len_clients
+		res = yield tornado.gen.Task(self.client.hset, 'last_pong_time', self.id, time.time())
 		# Ping to make sure the agent is alive.
 		self.io_loop.add_timeout(datetime.timedelta(seconds=(ping_every/3)), self.send_ping)
 	
+	@tornado.gen.engine
 	def on_connection_timeout(self):
 		print "-- Client timed out after 1 minute"
+		# this might be redundant and redundant
 		self.on_close()
 		self.close()
 
+	@tornado.gen.engine
 	def send_ping(self):
+
 		print("<- [PING] " + self.id)
 		try:
 			self.ping(self.id)
@@ -132,6 +136,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			print("-- Failed to send ping! to: "+ self.id + " because of " + repr(ex))
 			self.on_close()
 		
+	@tornado.gen.engine
 	def on_pong(self, data):
 		# We received a pong, remove the timeout so that we don't
 		# kill the connection.
@@ -142,12 +147,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 		in_clients = yield tornado.gen.Task(c.hexists, 'clients', self.id)
 		if in_clients:
-			# clients[self.id]["last_pong_time"] = time.time()
 			res = yield tornado.gen.Task(c.hset, 'last_pong_time', self.id, time.time())
-			# Wait 5 seconds before pinging again.
+			# Wait some seconds before pinging again.
 			global ping_every
 			self.io_loop.add_timeout(datetime.timedelta(seconds=ping_every), self.send_ping)
 
+	@tornado.gen.engine
 	def on_message(self, message):
 		global strims
 		global numClients
@@ -184,6 +189,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		if strim_count <= 0:
 			res = yield tornado.gen.Task(c.hdel, 'strims', fromClient[u'strim'])
 
+	@tornado.gen.engine
 	def on_close(self):
 		print 'Closed Websocket connection: (' + self.request.remote_ip + ') ' + socket.getfqdn(self.request.remote_ip)+ " id: "+self.id
 		global remove_viewer
