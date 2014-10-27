@@ -62,6 +62,9 @@ def sweepClients():
 @tornado.gen.engine
 def sweepStreams():
 	strims = yield tornado.gen.Task(c.hgetall, 'strims')
+	if isinstance(strims, int):
+		print 'got', strims, 'instead of actual strims'
+		return
 	to_remove = []
 	for strim in strims:
 		if(strims(strim) <= 0):
