@@ -21,11 +21,8 @@ if(strpos($stream,'destiny.gg') !== false || (strpos($stream,'overrustle.com') !
   header('Location: http://overrustle.com/destinychat');
 }
 
-//block scyx. KYS scyx17
-if (strpos($stream,'scy') !== false) {
-  echo "SCY? more like KYS.";
-  exit;
-}
+//load in the blacklist
+include ('blacklist.php');
 
 //if no time is set start from the beginning
 if($t == "")
