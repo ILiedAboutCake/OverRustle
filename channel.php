@@ -1,38 +1,47 @@
 <?php
 
+require_once 'vendor/autoload.php';
+require_once 'config.php';
+require_once 'helpers.php';
 require_once 'session.php';
 
-$stream = empty($_GET['stream']) ? '' : addslashes(strip_tags(trim($_GET['stream'])));
-$s = empty($_GET['s']) ? '' : addslashes(strip_tags(strtolower(trim($_GET['s']))));
-$t = empty($_GET['t']) ? '' : addslashes(strip_tags(strtolower(trim($_GET['t']))));
+$redis = new Predis\Client(array('database' => 1));
 
-//what the fuck, go use destiny's website for this FeedNathan
-if(strtolower($stream) == "destiny")
-{
-  header('Location: http://destiny.gg/bigscreen');
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (empty($_POST['service']) || empty($_POST['stream'])) {
+        header('HTTP/1.1 400 Bad Request');
+        die('Invalid input');
+    }
+
+    if (isset($_SESSION['user'])) {
+        $user = $_SESSION['user'];
+        $channel = array( 'service' => sanitize($_POST['service']), 'stream' => sanitize($_POST['stream']) );
+        $redis->hmset('channel:'.$user['name'], $channel);
+        header('Location: /channel?user='.$user['name']);
+        die();
+    } else {
+        header('HTTP/1.1 401 Unauthorized');
+        die('Unauthorized');
+    }
+} else {
+    if (empty($_GET['user'])) {
+        header('HTTP/1.1 400 Bad Request');
+        die('User must be specified');
+    }
+
+    $user = $redis->hgetall('user:'.$_GET['user']);
+    $channel = $redis->hgetall('channel:'.$_GET['user']);
+    if (empty($user) || empty($channel)) {
+        header('HTTP/1.1 404 Not Found');
+        die('Channel not found');
+    }
 }
 
-//set the default stream time to twitch
-if($s == "" && $stream == "")
-{
-  $s = "strims";
-}
+$s = $channel['service'];
+$stream = $channel['stream'];
 
-//fuck people embeding the site right in the pussy 
-if(strpos($stream,'destiny.gg') !== false || (strpos($stream,'overrustle.com') !== false))
-{
-  header('Location: http://overrustle.com/destinychat');
-}
-
-//load in the blacklist
-include ('blacklist.php');
-
-//if no time is set start from the beginning
-if(empty($t))
-{
-  $t = "0";
-}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -42,7 +51,7 @@ if(empty($t))
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
-    <title>OverRustle - <?php echo $stream; ?></title>
+    <title>OverRustle - <?php echo $user['name'] ?></title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/overrustle.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -59,29 +68,12 @@ if(empty($t))
 
       ga('create', 'UA-49711133-1', 'overrustle.com');
       ga('send', 'pageview');
-    </script>    
-    <script>
-      function twitchAPI() {
-        $.ajax({
-          url: "https://api.twitch.tv/kraken/streams/<?php echo $stream; ?>?callback=?",
-          jsonp: "callback",
-          dataType: "jsonp",
-          data: {
-            format: "json"
-          },
-         
-          success: function(apiData) {
-            var output = formatNumber(apiData.stream.viewers) + " Viewers";
-            document.getElementById("twitch-ajax").innerHTML = output;
-          }
-        });
-      } 
     </script>
    <script>
     var ws = new WebSocket("ws://OverRustle.com:9998/ws");
 
     var sendObj = new Object();
-    sendObj.strim = "/destinychat?s=<?php echo $s ?>&stream=<?php echo $stream; ?>";
+    sendObj.strim = "/channel?user=<?php echo $user['name'] ?>";
 
     //if we get connected :^)
     ws.onopen = function(){
@@ -109,81 +101,68 @@ if(empty($t))
     //update the viewer count every 5 seconds
     window.setInterval(function(){overRustleAPI()}, 5000);
 
-    //On Disconnect 
+    //On Disconnect
     $(window).on('beforeunload', function() {
       sendObj.action = "unjoin";
       ws.send(JSON.stringify(sendObj));
     });
     </script>
-    <?php
-    if ($s == "twitch")
-    {
-
-      echo '<script>twitchAPI(); window.setInterval(function(){twitchAPI()}, 60000);</script>';
-    }
-    ?>
   </head>
 
   <body>
 
-<nav class="navbar navbar-default navbar-inverse" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <a class="navbar-brand hidden-md hidden-sm" href="/strims">OverRustle</a>
-    </div>
+  <nav class="navbar navbar-default navbar-inverse" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <a class="navbar-brand hidden-md hidden-sm" href="/strims">OverRustle</a>
+      </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="#"><div id="twitch-ajax"></div></a></li>
-        <li><a target="_blank" href="/strims"><div id="server-broadcast"></div></a></li>
-        <li class="donate"><a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG"><span>Donate</span></a></li>
-      </ul>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="#"><div id="twitch-ajax"></div></a></li>
+          <li><a target="_blank" href="/strims"><div id="server-broadcast"></div></a></li>
+          <li class="donate"><a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG"><span>Donate</span></a></li>
+        </ul>
 
-      <ul class="nav navbar-nav navbar-right">
-        <?php
-        if ($s == "twitch" || $s == "hitbox" || $s == "ustream" || $s == "azubu")
-        {
-          echo '<li class="active hidden-md hidden-sm"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>';
-          echo '<li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> ' . ucfirst($s)  . ' Chat</a></li>';
-        }
-        ?>
-        <form action="destinychat" class="navbar-form navbar-left" role="search">
-          <div class="form-group">
-            <select name="s" class="form-control">
-              <option value="twitch">Twitch</option>
-              <option value="twitch-vod">Twitch - VOD</option>
-              <option value="hitbox">Hitbox</option>
-              <option value="castamp">CastAmp</option>            
-              <option value="youtube">Youtube</option>
-              <option value="mlg">MLG (Beta*)</option>
-              <option value="ustream">Ustream (Beta*)</option>
-              <option value="dailymotion">Dailymotion</option>
-              <option value="azubu">Azubu</option>
-              <option value="picarto">Picarto</option>
-              <option value="advanced">Advanced</option>
-            </select>
-            <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/> 
-            <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
-          </div>
-        </form>
-        <?php include 'user_buttons.php' ?>
-      </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <form action="destinychat" class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <select name="s" class="form-control">
+                <option value="twitch">Twitch</option>
+                <option value="twitch-vod">Twitch - VOD</option>
+                <option value="hitbox">Hitbox</option>
+                <option value="castamp">CastAmp</option>
+                <option value="youtube">Youtube</option>
+                <option value="mlg">MLG (Beta*)</option>
+                <option value="ustream">Ustream (Beta*)</option>
+                <option value="dailymotion">Dailymotion</option>
+                <option value="azubu">Azubu</option>
+                <option value="picarto">Picarto</option>
+                <option value="advanced">Advanced</option>
+              </select>
+              <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/>
+              <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
+            </div>
+          </form>
+          <?php include 'user_buttons.php' ?>
+        </ul>
 
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
 
     <div class="container-full fill">
         <div class="pull-left stream-box" id="map">
         <?php
-        switch($s) 
+        switch($s)
         {
           case "twitch":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/embed" scrolling="no"></iframe>';
-            break;          
-            
+            break;
+
           case "twitch-vod":
             echo "
               <object data='http://www.twitch.tv/widgets/archive_embed_player.swf' id='clip_embed_player_flash' type='application/x-shockwave-flash' width='100%' height='100%'>
@@ -200,9 +179,9 @@ if(empty($t))
             break;
 
           case "castamp":
-            if (strlen(strstr($_SERVER['HTTP_USER_AGENT'], 'Firefox')) > 0) 
+            if (strlen(strstr($_SERVER['HTTP_USER_AGENT'], 'Firefox')) > 0)
             {
-              echo '<script type="text/javascript"> channel="' . $stream . '"; vwidth="1280"; vheight="720";</script><script type="text/javascript" src="http://castamp.com/embed.js"></script>'; 
+              echo '<script type="text/javascript"> channel="' . $stream . '"; vwidth="1280"; vheight="720";</script><script type="text/javascript" src="http://castamp.com/embed.js"></script>';
             }
             else
             {
@@ -212,16 +191,16 @@ if(empty($t))
 
           case "hitbox":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embed/' . $stream . '?autoplay=true" scrolling="no"></iframe>';
-            break; //stop fucking asking, I'm not going to add azubu TV. It's shit and so are you for thinking about it     
-            
+            break; //stop fucking asking, I'm not going to add azubu TV. It's shit and so are you for thinking about it
+
           case "youtube":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/' . $stream . '?autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
             break;
-            
+
           case "mlg":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
             break;
-            
+
           case "ustream":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.ustream.tv/embed/' . $stream . '?v=3&wmode=direct&autoplay=true" scrolling="no"></iframe>';
             break;
@@ -232,11 +211,11 @@ if(empty($t))
 
           case "azubu":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.azubu.tv/azubulink/embed=' . $stream . '" scrolling="no"></iframe>';
-            break;    
+            break;
 
           case "picarto":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="https://www.picarto.tv/live/playerpopout.php?popit=' . $stream . '&off=1&token=undefined" scrolling="no"></iframe>';
-            break;    
+            break;
 
           case "strims":
             include('strims_content.php');
@@ -245,7 +224,7 @@ if(empty($t))
         ?>
         </div>
 
-        <div class="pull-right" id="map" style="width: 390px;"> 
+        <div class="pull-right" id="map" style="width: 390px;">
           <div class="tab-content" style="height: 100%;">
             <div class="tab-pane fade active in" id="destinychat" style="height: 100%;">
               <iframe width="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no" style="height: 100%;"></iframe>
@@ -254,7 +233,7 @@ if(empty($t))
             <?php
             switch($s)
             {
-              case "twitch": 
+              case "twitch":
                 echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/chat?popout=" scrolling="no"></iframe>';
                 break;
 

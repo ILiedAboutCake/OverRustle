@@ -67,11 +67,7 @@ def sweepStreams():
 		return
 	to_remove = []
 	for strim in strims:
-<<<<<<< HEAD
 		if(strims[strim] <= 0):
-=======
-		if(len(strims[strim]) == 0):
->>>>>>> bugfix
 			to_remove.append(strim)
 	for strim in to_remove:
 		res = yield tornado.gen.Task(c.hdel, 'strims', strim)
