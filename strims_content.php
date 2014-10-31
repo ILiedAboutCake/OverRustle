@@ -2,7 +2,7 @@
 <div class="container">
 <div class="row">
   <div class="col-md-4"></div>
-<?
+<?php
 //  Initiate curl
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -34,7 +34,7 @@ else
       <th>Viewer Count</th>
     </tr>
   </thead>
-<?
+<?php
 foreach($data['streams'] as $name=>$viewers)
 {
     $len = strlen($name);

@@ -219,3 +219,5 @@ pip-log.txt
 #############
 blacklist.php
 destinychat_beta.php
+config.php
+vendor/

@@ -1,3 +1,8 @@
+<?php
+
+require_once 'session.php';
+
+?>
 
 <META HTTP-EQUIV="refresh" CONTENT="60">
 <!DOCTYPE html>
@@ -58,6 +63,7 @@
             <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
           </div>
         </form>
+        <?php include 'user_buttons.php' ?>
       </ul>
 
     </div><!-- /.navbar-collapse -->
