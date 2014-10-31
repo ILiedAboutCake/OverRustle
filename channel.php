@@ -40,6 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $s = $channel['service'];
 $stream = $channel['stream'];
 
+//handle stream blacklists even in channels
+include('blacklist.php');
+
 ?>
 
 <!DOCTYPE html>
