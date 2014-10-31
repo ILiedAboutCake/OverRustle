@@ -155,7 +155,7 @@ if (isset($_SESSION['user'])) {
                     <button type="submit" class="btn btn-primary">Update</button>
                 </form>
         </div>
-        <div class="col-sm-3">/div>
+        <div class="col-sm-3"></div>
       </div>
     </div>
 
