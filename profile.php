@@ -126,19 +126,19 @@ if (isset($_SESSION['user'])) {
     </div><!-- /.container-fluid -->
   </nav>
 
-    <div class="container-fluid fill">
+    <div class="container-fluid">
       <div class="row">
-        <div class="stream-box col-sm-8" id="map">
-            <h2><?php echo $user['name'] ?></h2>
-            <div class="well well-sm">
-                <h3>Channel&nbsp;
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <h1 align="center" style="color: white;">Profile for: <?php echo $user['name'] ?></h1>
+                <h3 style="color: white;">Set Channel: &nbsp;
                     <a href="/channel?user=<?php echo $user['name'] ?>">
-                        <span class="label label-default">Go</span>
+                        <span class="label label-default">Visit Channel</span>
                     </a>
                 </h3>
                 <form action="channel" method="post" role="form">
                     <div class="form-group">
-                        <label for="channelService">Service</label>
+                        <label for="channelService" style="color: white;">Service</label>
                         <select id="channelService" name="service" class="form-control">
                         <?php
                             foreach ($SERVICE_OPTIONS as $key => $value) {
@@ -148,22 +148,14 @@ if (isset($_SESSION['user'])) {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="channelStream">Stream</label>
+                        <label for="channelStream" style="color: white;">Stream</label>
                         <input id="channelStream" type="text" name="stream" class="form-control" placeholder="Stream/Video ID"
                             value="<?php echo $channel['stream'] ?>" />
                     </div>
                     <button type="submit" class="btn btn-primary">Update</button>
                 </form>
-            </div>
         </div>
-
-        <div class="pull-right" id="map" style="width: 390px;">
-          <div class="tab-content" style="height: 100%;">
-            <div class="tab-pane fade active in" id="destinychat" style="height: 100%;">
-              <iframe width="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no" style="height: 100%;"></iframe>
-            </div>
-          </div>
-        </div>
+        <div class="col-sm-3"></div>
       </div>
     </div>
 
