@@ -5,7 +5,7 @@ require_once 'config.php';
 require_once 'helpers.php';
 require_once 'session.php';
 
-$redis = new Predis\Client(array('database' => 1));
+$redis = new Predis\Client($config['redis']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['service']) || empty($_POST['stream'])) {
@@ -191,27 +191,7 @@ require_once 'blacklist.php';
               <iframe width="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no" style="height: 100%;"></iframe>
             </div>
             <div class="tab-pane fade" id="otherchat" style="height: 100%;">
-            <?php
-            switch($s)
-            {
-              case "twitch":
-                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/chat?popout=" scrolling="no"></iframe>';
-                break;
-
-              case "hitbox":
-                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embedchat/' . $stream . '" scrolling="no"></iframe>';
-                break;
-
-              case "ustream":
-                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.ustream.tv/socialstream/' . $stream . '" scrolling="no"></iframe>';
-                break;
-
-              case "azubu":
-                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.azubu.tv/' . $stream . '/chatpopup" scrolling="no"></iframe>';
-                break;
-
-            }
-            ?>
+            <?php include 'chat.php' ?>
             </div>
           </div>
         </div>
