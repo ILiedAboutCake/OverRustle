@@ -5,7 +5,7 @@ require_once 'config.php';
 require_once 'helpers.php';
 require_once 'session.php';
 
-$redis = new Predis\Client(array('database' => 1));
+$redis = new Predis\Client($config['redis']);
 
 if (!empty($_GET['code'])) {
     $login_params = array(
@@ -26,6 +26,13 @@ if (!empty($_GET['code'])) {
             $user = array('id' => $user_result->_id, 'name' => $user_result->name);
             $redis->hmset('user:'.$user_result->name, $user);
             $_SESSION['user'] = $user;
+
+            # store sid in redis
+            $sid = session_id();
+            $session = array('id' => $sid, 'user_name' => $user['name'],
+                'user_id' => $user['id']);
+            $redis->hmset('session:'.$sid, $session);
+            $redis->expire('session:'.$sid, $SESSION_LIFETIME_SECS);
         }
     }
 
