@@ -6,6 +6,7 @@
     $config['twitch_client_id'] = 'client id goes here';
     $config['twitch_client_secret'] = 'client secret goes here';
     $config['twitch_redirect_uri'] = 'redirect uri goes here e.g. http://overrustle.com/profile';
+
     # Redis
     $config['redis'] = array(
         'host' => 'localhost',
@@ -15,4 +16,5 @@
     # Chat websocket config
     $config['chat_host'] = 'localhost'; # overrustle.com
     $config['chat_port'] = 9999; # python uses 9998
+    $config['chat_enable'] = false; # true to enable chat for channels
 ?>

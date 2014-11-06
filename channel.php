@@ -190,9 +190,11 @@ require_once 'blacklist.php';
             <div class="tab-pane fade active in" id="destinychat" style="height: 100%;">
               <iframe width="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://destiny.gg/embed/chat" scrolling="no" style="height: 100%;"></iframe>
             </div>
+            <?php if ($config['chat_enable']): ?>
             <div class="tab-pane fade" id="otherchat" style="height: 100%;">
             <?php include 'chat.php' ?>
             </div>
+            <?php endif ?>
           </div>
         </div>
   </div>
