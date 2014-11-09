@@ -41,7 +41,7 @@ $s = $channel['service'];
 $stream = $channel['stream'];
 
 //handle stream blacklists even in channels
-include('blacklist.php');
+require_once 'blacklist.php';
 
 ?>
 
@@ -113,49 +113,7 @@ include('blacklist.php');
   </head>
 
   <body>
-
-  <nav class="navbar navbar-default navbar-inverse" role="navigation">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <a class="navbar-brand hidden-md hidden-sm" href="/strims">OverRustle</a>
-      </div>
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li><a href="#"><div id="twitch-ajax"></div></a></li>
-          <li><a target="_blank" href="/strims"><div id="server-broadcast"></div></a></li>
-          <li class="donate"><a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG"><span>Donate</span></a></li>
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
-          <form action="destinychat" class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <select name="s" class="form-control">
-                <option value="twitch">Twitch</option>
-                <option value="twitch-vod">Twitch - VOD</option>
-                <option value="hitbox">Hitbox</option>
-                <option value="castamp">CastAmp</option>
-                <option value="youtube">Youtube</option>
-                <option value="mlg">MLG (Beta*)</option>
-                <option value="ustream">Ustream (Beta*)</option>
-                <option value="dailymotion">Dailymotion</option>
-                <option value="azubu">Azubu</option>
-                <option value="picarto">Picarto</option>
-                <option value="advanced">Advanced</option>
-              </select>
-              <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/>
-              <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
-            </div>
-          </form>
-          <?php include 'user_buttons.php' ?>
-        </ul>
-
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
-
+    <?php include 'navbar.php' ?>
 
     <div class="container-full fill">
         <div class="pull-left stream-box" id="map">

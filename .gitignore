@@ -220,4 +220,5 @@ pip-log.txt
 blacklist.php
 destinychat_beta.php
 config.php
+composer.lock
 vendor/

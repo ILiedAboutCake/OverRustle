@@ -40,11 +40,11 @@ foreach($data['streams'] as $name=>$viewers)
     $len = strlen($name);
     if($len > 128)
     {
-      echo '<tr><td><a target="_blank" href=' . $name . '>Name Truncated (Spam/Advanced Stream)</a></td><td>' . $viewers . '</td></tr>';
+      echo '<tr><td><a target="_blank" href=' . strip_tags($name) . '>Name Truncated (Spam/Advanced Stream)</a></td><td>' . strip_tags($viewers) . '</td></tr>';
     }
     else
     {
-      echo '<tr><td><a target="_blank" href=' . $name . '>' . $name . '</a></td><td>~' . $viewers . '</td></tr>';
+      echo '<tr><td><a target="_blank" href=' . strip_tags($name) . '>' . strip_tags($name) . '</a></td><td>~' . strip_tags($viewers) . '</td></tr>';
     }
 }
 curl_close($ch);
