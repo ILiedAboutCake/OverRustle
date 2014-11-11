@@ -24,9 +24,9 @@ if (ini_get("session.use_cookies")) {
 // Finally, destroy the session.
 session_destroy();
 
-// In redis too
-$redis = new Predis\Client($config['redis']);
-$redis->del('session:'.$sid);
+// Let redis session expire on its own for record keeping
+// $redis = new Predis\Client($config['redis']);
+// $redis->del('session:'.$sid);
 
 header('Location: /destinychat');
 

@@ -36,7 +36,7 @@ $SERVICE_OPTIONS = array(
             if ($config['chat_enable']) {
                 $otherchat = 'Channel';
             }
-        } elseif (in_array($s, array('twitch', 'hitbox', 'ustream', 'azubu'))) {
+        } elseif (!empty($s) && in_array($s, array('twitch', 'hitbox', 'ustream', 'azubu'))) {
           $otherchat = ucfirst($s);
         }
 

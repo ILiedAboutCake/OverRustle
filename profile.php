@@ -31,8 +31,9 @@ if (!empty($_GET['code'])) {
             $sid = session_id();
             $session = array('id' => $sid, 'user_name' => $user['name'],
                 'user_id' => $user['id']);
-            $redis->hmset('session:'.$sid, $session);
-            $redis->expire('session:'.$sid, $SESSION_LIFETIME_SECS);
+            $skey = 'session:'.$sid;
+            $redis->hmset($skey, $session);
+            $redis->expire($skey, $SESSION_LIFETIME_SECS);
         }
     }
 
