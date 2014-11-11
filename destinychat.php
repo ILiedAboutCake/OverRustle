@@ -32,6 +32,7 @@ if(empty($t))
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/overrustle.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/reconnecting-websocket.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -64,7 +65,7 @@ if(empty($t))
       } 
     </script>
    <script>
-    var ws = new WebSocket("ws://OverRustle.com:9998/ws");
+    var ws = new ReconnectingWebSocket("ws://OverRustle.com:9998/ws");
 
     var sendObj = new Object();
     sendObj.strim = "/destinychat?s=<?php echo $s ?>&stream=<?php echo $stream; ?>";
