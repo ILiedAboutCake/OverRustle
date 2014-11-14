@@ -59,6 +59,7 @@ require_once 'blacklist.php';
     <link href="css/overrustle.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="//OverRustle.com:9998/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="//OverRustle.com:9998/strims.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -72,15 +73,6 @@ require_once 'blacklist.php';
 
       ga('create', 'UA-49711133-1', 'overrustle.com');
       ga('send', 'pageview');
-    </script>
-    <script>   
-    var socket = io();
-
-    socket = io.connect('http://overrustle.com:9998');
-    socket.on('strims', function(strims){
-      var curloc = window.location.href.replace(window.location.origin, "")
-      $('#server-broadcast').html(strims[curloc]); // not using formatNumber
-    });
     </script>
   </head>
 
