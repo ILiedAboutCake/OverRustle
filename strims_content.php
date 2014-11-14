@@ -2,27 +2,39 @@
 <div class="container">
 <div class="row">
   <div class="col-md-4"></div>
-<?php
-//  Initiate curl
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_PORT, 9998);
-curl_setopt($ch, CURLOPT_URL,"http://localhost:9998/api");
-$result = curl_exec($ch);
-$dankmemes = curl_getinfo($ch);
-$data = json_decode($result, true);
-arsort($data['streams']);
+  <script type="text/javascript">
+  function getStrims(){
+    $.getJSON("http://OverRustle.com:6081/api")
+    .done(function( json ) {
+      $('#strims').html('')
+      new_html = ""
+      $.each(json['streams'], function(strim, viewers){
+        new_html = new_html + "<tr><td><a target='_blank' href='"+ strim +"'>"+ strim +"</a></td><td>~"+viewers+"</td></tr>"
+      });
+      $('#strims').html(new_html)
+      status = "<div class='label label-success col-md-4' role='alert'>Tracking server is currently online.</div>"
+      $('#status').html(status)
+    })
+    .fail(function( jqxhr, textStatus, error ) {
+      status = "<div class='label label-warning col-md-4' role='alert'>Tracking server is currently offline.</div>"
+      $('#status').html(status)
+    });
+  }
+  function ready(){
+    getStrims()
+    setTimeout(getStrims, 5000)
+  }
 
+  $(document).ready(ready);
+  $(document).on('page:load', ready);
 
-if(curl_exec($ch) === false)
-{
-  echo '<div class="label label-warning col-md-4" role="alert">Tracking server is currently offline.</div>';
-}
-else
-{
-  echo '<div class="label label-success col-md-4" role="alert">Tracking server is currently online. (' . round($dankmemes['total_time'], 3) . ' sec)</div>';
-}
-?>
+  window.setInterval(function(){getStrims()}, 10000);
+
+  </script>
+  
+<div id="status">
+</div>
+
   <div class="col-md-4"></div>
 </div>
 
@@ -34,21 +46,7 @@ else
       <th>Viewer Count</th>
     </tr>
   </thead>
-<?php
-foreach($data['streams'] as $name=>$viewers)
-{
-    $len = strlen($name);
-    if($len > 128)
-    {
-      echo '<tr><td><a target="_blank" href=' . strip_tags($name) . '>Name Truncated (Spam/Advanced Stream)</a></td><td>' . strip_tags($viewers) . '</td></tr>';
-    }
-    else
-    {
-      echo '<tr><td><a target="_blank" href=' . strip_tags($name) . '>' . strip_tags($name) . '</a></td><td>~' . strip_tags($viewers) . '</td></tr>';
-    }
-}
-curl_close($ch);
-?>
+  <tbody id="strims"></tbody>
 </table>
 <br />
 <div style="text-align: center; color: #FFFFFF;">
