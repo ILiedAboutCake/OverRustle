@@ -223,3 +223,4 @@ config.php
 composer.lock
 router.php
 vendor/
+api/
