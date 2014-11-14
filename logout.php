@@ -1,8 +1,12 @@
 <?php
 
+require_once 'vendor/autoload.php';
+require_once 'config.php';
+
 // Initialize the session.
 // If you are using session_name("something"), don't forget it now!
 session_start();
+$sid = session_id();
 
 // Unset all of the session variables.
 $_SESSION = array();
@@ -19,6 +23,10 @@ if (ini_get("session.use_cookies")) {
 
 // Finally, destroy the session.
 session_destroy();
+
+// Let redis session expire on its own for record keeping
+// $redis = new Predis\Client($config['redis']);
+// $redis->del('session:'.$sid);
 
 header('Location: /destinychat');
 

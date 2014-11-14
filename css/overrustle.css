@@ -12,6 +12,14 @@ body
 	overflow: hidden;
 }
 
+body.embed
+{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
 .navbar
 {
 	margin-bottom: 0px;

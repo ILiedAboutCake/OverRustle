@@ -32,10 +32,18 @@ $SERVICE_OPTIONS = array(
 
       <ul class="nav navbar-nav navbar-right">
         <?php
-        if ($s == "twitch" || $s == "hitbox" || $s == "ustream" || $s == "azubu")
+        if (basename($_SERVER['PHP_SELF'], '.php') == 'channel') {
+            if ($config['chat_enable']) {
+                $otherchat = 'Channel';
+            }
+        } elseif (!empty($s) && in_array($s, array('twitch', 'hitbox', 'ustream', 'azubu'))) {
+          $otherchat = ucfirst($s);
+        }
+
+        if (!empty($otherchat))
         {
           echo '<li class="active hidden-md hidden-sm"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>';
-          echo '<li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> ' . ucfirst($s)  . ' Chat</a></li>';
+          echo '<li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> ' . $otherchat  . ' Chat</a></li>';
         }
         ?>
         <form action="destinychat" class="navbar-form navbar-left" role="search">
