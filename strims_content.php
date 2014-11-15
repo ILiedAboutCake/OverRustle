@@ -1,35 +1,32 @@
 <br />
+<script type="text/javascript" src="//OverRustle.com:9998/socket.io/socket.io.js"></script>
+
 <div class="container">
 <div class="row">
   <div class="col-md-4"></div>
   <script type="text/javascript">
-  function getStrims(){
-    $.getJSON("http://OverRustle.com:6081/api")
-    .done(function( json ) {
-      $('#strims').html('')
-      new_html = ""
-      $.each(json['streams'], function(strim, viewers){
-        new_html = new_html + "<tr><td><a target='_blank' href='"+ strim +"'>"+ strim +"</a></td><td>~"+viewers+"</td></tr>"
-      });
-      $('#strims').html(new_html)
-      status = "<div class='label label-success col-md-4' role='alert'>Tracking server is currently online.</div>"
-      $('#status').html(status)
-    })
-    .fail(function( jqxhr, textStatus, error ) {
-      status = "<div class='label label-warning col-md-4' role='alert'>Tracking server is currently offline.</div>"
-      $('#status').html(status)
+  // client side code
+  var socket = io();
+
+  socket = io.connect('http://overrustle.com:9998');
+  socket.on('strims', function(api_data){
+    var viewercount = api_data["viewercount"]
+    $('#viewercount').html(viewercount)
+    var strims = api_data["streams"]
+    $('#strims').html('')
+    new_html = ""
+    $.each(strims, function(strim, viewers){
+      new_html = new_html + "<tr><td><a target='_blank' href='"+ strim +"'>"+ strim +"</a></td><td>~"+viewers+"</td></tr>"
     });
-  }
-  function ready(){
-    getStrims()
-    setTimeout(getStrims, 5000)
-  }
-
-  $(document).ready(ready);
-  $(document).on('page:load', ready);
-
-  window.setInterval(function(){getStrims()}, 10000);
-
+    $('#strims').html(new_html)
+    status = "<div class='label label-success col-md-4' role='alert'>Tracking server is currently online.</div>"
+    $('#status').html(status)
+  });
+  socket.on('error', function(error){
+    console.log(error)
+    status = "<div class='label label-warning col-md-4' role='alert'>Tracking server is currently offline.</div>"
+    $('#status').html(status)
+  })
   </script>
   
 <div id="status">
@@ -38,7 +35,7 @@
   <div class="col-md-4"></div>
 </div>
 
-<h1 align="center" style="color: #FFFFFF;">See what <?php echo $data['totalviewers']; ?> rustlers are watching!</h1>
+<h1 align="center" style="color: #FFFFFF;">See what <span id="viewercount"></span> rustlers are watching!</h1>
 <table class="table" style="color: #FFFFFF;">
   <thead>
     <tr>
