@@ -6,9 +6,8 @@
   <div class="col-md-4"></div>
   <script type="text/javascript">
   // client side code
-  var socket = io();
+  var socket = io('http://overrustle.com:9998');
 
-  socket = io.connect('http://overrustle.com:9998');
   socket.on('strims', function(api_data){
     var viewercount = api_data["viewercount"]
     $('#viewercount').html(viewercount)
