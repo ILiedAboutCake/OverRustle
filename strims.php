@@ -4,7 +4,6 @@ require_once 'session.php';
 
 ?>
 
-<META HTTP-EQUIV="refresh" CONTENT="60">
 <!DOCTYPE html>
 <html lang="en">
   <head>
