@@ -1,12 +1,12 @@
 <br />
-<script type="text/javascript" src="//OverRustle.com:9998/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="//api.OverRustle.com/socket.io/socket.io.js"></script>
 
 <div class="container">
 <div class="row">
   <div class="col-md-4"></div>
   <script type="text/javascript">
   // client side code
-  var socket = io('http://overrustle.com:9998');
+  var socket = io('http://api.overrustle.com');
 
   socket.on('strims', function(api_data){
     var viewercount = api_data["viewercount"]
@@ -46,7 +46,7 @@
 </table>
 <br />
 <div style="text-align: center; color: #FFFFFF;">
-  JSON API can be found at: <a href="http://overrustle.com:9998/api">http://overrustle.com:9998/api</a><br />
+  JSON API can be found at: <a href="http://api.overrustle.com/api">http://api.overrustle.com/api</a><br />
   Donate: 
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG">Paypal</a>, 
     <a href="bitcoin:14j82o37d8AShtVP5LydYCptVxwMhbu4Z1">Bitcoin</a>, 
