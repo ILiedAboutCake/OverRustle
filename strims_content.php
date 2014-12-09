@@ -34,23 +34,39 @@
     var strims = api_data["streams"]
     $('#strims').html('')
     new_html = ""
-    var counter = 0
     var source   = $("#card").html();
     Mustache.parse(source)
     var card_template = function (data) {
       return Mustache.render(source, data);
     }
     $("#strims").html("")
+    var strim_list = []
+    
     $.each(strims, function(strim, viewercount){
+      strim_list.push({
+        strim: strim,
+        viewercount: viewercount
+      })
+    });
+    strim_list.sort(function(a,b) {
+      if (a.viewercount < b.viewercount)
+         return 1;
+      if (a.viewercount > b.viewercount)
+        return -1;
+      return 0;
+    })
+    for (var i = 0; i < strim_list.length; i++) {
+      var strim = strim_list[i]['strim']
+      var viewercount = strim_list[i]['viewercount']
       var metadata = api_data.metadata[api_data.metaindex[strim]]
       metadata.strim = strim
       metadata.viewercount = viewercount
-      if(counter % 4 == 0){
+      if(i % 4 == 0){
         $('#strims').append("<div class='row'></div>")
       }
-      counter += 1; 
       $('#strims > .row').last().append(card_template(metadata))
-    });
+    }
+
     status = "<div class='label label-success col-md-4' role='alert'>Tracking server is currently online.</div>"
     $('#status').html(status)
   });
@@ -64,7 +80,9 @@
 <script id="card" type="x-tmpl-mustache">
   <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
-      <img src="{{image_url}}" alt="{{channel}} on {{platform}} ">
+      <a href="{{strim}}">
+        <img src="{{image_url}}" alt="{{channel}} on {{platform}} ">
+      </a>
       <div class="caption">
         <div>
           {{viewercount}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
