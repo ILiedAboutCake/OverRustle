@@ -69,3 +69,13 @@ body.embed
 {
 	color: #FFFFFF;
 }
+
+/*for the strims page*/
+.thumbnail > img, 
+.thumbnail a > img {
+    height: 120px;
+}
+.thumbnail {
+  background-color: #222;
+  border: 1px solid #5D5D5D;
+}

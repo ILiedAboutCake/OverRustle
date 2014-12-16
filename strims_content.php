@@ -85,7 +85,9 @@
       </a>
       <div class="caption">
         <div>
-          {{viewercount}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
+          <span class="badge">
+            {{viewercount}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
+          </span>
           <a href="{{strim}}">{{channel}} on {{platform}}</a>
         </div>
       </div>
