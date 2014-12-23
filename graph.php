@@ -24,15 +24,15 @@ $(function() {
 
 					// set up the updating of the chart each second
 					var series = this.series[0];
-                    var chart = this;
+					var chart = this;
 
 					var socket = io.connect('http://api.overrustle.com');
 					socket.on('strims', function (api_data) {
 						var connections = api_data["connections"]
 						var x = (new Date()).getTime();
 
-                        series.addPoint([x, connections]);
-                        chart.redraw();
+						series.addPoint([x, connections]);
+						chart.redraw();
 					});
 
 					socket.on('error', function(error){
@@ -69,7 +69,7 @@ $(function() {
 		
 		series : [{
 			name : 'Connections (Streams + Idlers)',
-            data: [null]
+			data: [null]
 		}]
 	});
 
