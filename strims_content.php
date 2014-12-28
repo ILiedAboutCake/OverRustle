@@ -67,7 +67,7 @@
       $('#strims > .row').last().append(card_template(metadata))
     }
 
-    status = "<div class='label label-success col-md-4' role='alert'>Tracking server is currently online.</div>"
+    status = "<div class='label label-success col-md-4' role='alert'>Tracking server is currently online with "+strim_list.length+" streams</div>"
     $('#status').html(status)
   });
   socket.on('error', function(error){
