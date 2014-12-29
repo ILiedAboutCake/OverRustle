@@ -61,7 +61,7 @@
       var metadata = api_data.metadata[api_data.metaindex[strim]]
       metadata.strim = strim
       metadata.viewercount = viewercount
-      metadata.live_class = metadata.live ? "label-success" : "label-warning"
+      metadata.live_class = metadata.live ? "label-success" : "label-danger"
       
       if(i % 4 == 0){
         $('#strims').append("<div class='row'></div>")
@@ -87,10 +87,10 @@
       </a>
       <div class="caption">
         <div>
-          <span class="label label-as-badge label-sucess {{live_class}}">
+          <a href="{{strim}}">{{channel}} on {{platform}}</a>
+          <span class="pull-right label label-as-badge {{live_class}}">
             {{viewercount}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
           </span>
-          <a href="{{strim}}">{{channel}} on {{platform}}</a>
         </div>
       </div>
     </div>
