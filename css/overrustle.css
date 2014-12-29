@@ -79,3 +79,7 @@ body.embed
   background-color: #222;
   border: 1px solid #5D5D5D;
 }
+
+.label-as-badge {
+  border-radius: 1em;
+}
