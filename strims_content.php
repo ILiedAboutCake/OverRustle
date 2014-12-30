@@ -40,7 +40,7 @@
     var card_template = function (data) {
       return Mustache.render(source, data);
     }
-    $("#strims").html("")
+    $("#strims").html("<div class='row'></div>")
     var strim_list = []
     
     $.each(strims, function(strim, viewercount){
@@ -59,6 +59,7 @@
         return -1;
       return 0;
     })
+
     for (var i = 0; i < strim_list.length; i++) {
       var strim = strim_list[i]['strim']
       var viewercount = strim_list[i]['viewercount']
@@ -67,9 +68,6 @@
       metadata.viewercount = viewercount
       metadata.live_class = metadata.live ? "label-success" : "label-danger"
       
-      // if(i % 3 == 0){
-      //   $('#strims').append("<div class='row'></div>")
-      // }
       $('#strims > .row').last().append(card_template(metadata))
     }
 
