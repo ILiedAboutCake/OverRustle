@@ -85,9 +85,11 @@
 <script id="card" type="x-tmpl-mustache">
   <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
+      {{#live}}
       <a href="{{strim}}">
         <img src="{{image_url}}" alt="{{channel}} on {{platform}} ">
       </a>
+      {{/live}}
       <div class="caption">
         <div>
           <a href="{{strim}}">{{channel}} on {{platform}}</a>
