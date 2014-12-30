@@ -1,6 +1,6 @@
-html,body
+html
 {
-	height: 100%;
+  height: calc(100% - 2px);
 }
 
 body
@@ -9,7 +9,7 @@ body
 	border: 0;
 	padding: 0;
 	margin: 0;
-	overflow: hidden;
+  height: inherit;
 }
 
 body.embed
@@ -23,6 +23,8 @@ body.embed
 .navbar
 {
 	margin-bottom: 0px;
+  position: absolute;
+  width: 100%;
 }
 
 .stream-box
@@ -35,16 +37,16 @@ body.embed
 
 #map 
 {
-    height: calc(100% - 25px);
-    min-height: calc(100% - 25px);
+    height: inherit;
+    min-height: inherit;
     background: #121212;
     display: block;
 }
 
 .fill
 { 
-    min-height: calc(100% - 25px);
-    height: calc(100% - 25px);
+    min-height: inherit;
+    height: inherit;
     width: 100%;
     margin: 0;
 }
@@ -53,7 +55,8 @@ body.embed
 {
 	margin-left: 0px;
 	margin-right: 0px;
-  	width: 100%;
+  width: 100%;
+  padding-top: 52px;
 }
 
 .donate>a>span
@@ -69,3 +72,19 @@ body.embed
 {
 	color: #FFFFFF;
 }
+
+/*for the strims page*/
+.thumbnail > img, 
+.thumbnail a > img {
+  max-height: 120px;
+}
+.thumbnail {
+  background-color: #222;
+  border: 1px solid #5D5D5D;
+}
+
+.label-as-badge {
+  border-radius: 1em;
+}
+
+/*arbitrary comment*/
