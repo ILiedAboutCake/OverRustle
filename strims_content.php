@@ -49,9 +49,12 @@
       })
     });
     strim_list.sort(function(a,b) {
-      if (a.viewercount < b.viewercount)
+      // give LIVE streams more weight in sorting higher
+      var amulti = api_data.metadata[api_data.metaindex[a.strim]].live ? 10 : 1;
+      var bmulti = api_data.metadata[api_data.metaindex[b.strim]].live ? 10 : 1;
+      if (amulti*a.viewercount < bmulti*b.viewercount)
          return 1;
-      if (a.viewercount > b.viewercount)
+      if (amulti*a.viewercount > bmulti*b.viewercount)
         return -1;
       return 0;
     })
