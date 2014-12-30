@@ -1,11 +1,9 @@
 <br />
     <script type="text/javascript" src="//api.OverRustle.com/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
-<div class="container">
-  <div class="row">
-    <div class="col-md-4"></div>  
+<div class="container" id="strims_content">
+  <div style="display: table; margin: 0 auto;">
     <div id="status"></div>
-    <div class="col-md-4"></div>
   </div>
 
   <h1 align="center" style="color: #FFFFFF;">See what <span id="viewercount"></span> rustlers are watching!</h1>
@@ -26,6 +24,12 @@
 
 
 <script type="text/javascript">
+  // a hack to make this page look nice on "/destinychat"
+  // TODO: refactor
+  if(document.location.pathname === "/destinychat"){
+    $('#strims_content').addClass("fill")
+  }
+
   // client side code
   var socket = io('http://api.overrustle.com');
 
@@ -71,7 +75,7 @@
       $('#strims > .row').last().append(card_template(metadata))
     }
 
-    status = "<div class='label label-success col-md-4' role='alert'>Tracking server is currently online with "+strim_list.length+" streams</div>"
+    status = "<div class='label label-success' role='alert'>Tracking server is currently online with "+strim_list.length+" streams</div>"
     $('#status').html(status)
   });
   socket.on('error', function(error){
