@@ -12,14 +12,13 @@
   </div>
   <br />
   <div style="text-align: center; color: #FFFFFF;">
-    JSON API can be found at: <a href="http://overrustle.com:9998/api">http://overrustle.com:9998/api</a><br />
-    Donate: 
-      <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG">Paypal</a>, 
-      <a href="bitcoin:14j82o37d8AShtVP5LydYCptVxwMhbu4Z1">Bitcoin</a>, 
-      <a href="dogecoin:DS6JdMnt96CVXEXZ2LNdjKq6kmcSD7mC88">Dogecoin</a>, 
-      <a href="https://www.linode.com/?r=57232eb9908d0f24a8907e61106c88f475248ac7">Linode.com Referral</a><Br />
-    <a href="https://github.com/ILiedAboutCake/OverRustle">Github</a> - ILiedAboutCake 2014
-  </div>
+    JSON API: <a href="http://api.overrustle.com/api">http://api.overrustle.com/api</a><br />
+      <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG">Paypal</a> - 
+      <a href="bitcoin:14j82o37d8AShtVP5LydYCptVxwMhbu4Z1">Bitcoin</a> - 
+      <a href="dogecoin:DS6JdMnt96CVXEXZ2LNdjKq6kmcSD7mC88">Dogecoin</a> - 
+      <a href="https://www.linode.com/?r=57232eb9908d0f24a8907e61106c88f475248ac7">Linode.com</a><Br />
+    <a href="mailto:iliedaboutthecake@gmail.com">Contact</a> ILiedAboutCake - <?php echo date("Y"); ?><Br />
+    <a href="https://github.com/ILiedAboutCake/OverRustle">Site</a> - <a href="https://github.com/ILiedAboutCake/OverRustle-API">API</a>  
 </div><!-- /.container -->
 
 

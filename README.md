@@ -1,23 +1,24 @@
-OverRustle
+OverRustle.com
 ==========
 
-Watch Streams while chatting in Destiny.gg!
+Watch streams while chatting in Destiny.gg!
 
-# Destinychat.php
+API server moved to: https://github.com/ILiedAboutCake/OverRustle-API/
 
-##Currently supports
+# FAQ/Help
  
-* Twitch (live)
+## Supported platforms
+* Twitch
 * Twitch VOD's
 * CastAmp
 * Hitbox
 * Youtube live / Videos
-* MLG.TV Streams** (In beta)
-* Ustream*** (In beta)
+* MLG.TV Streams
+* Ustream
 * Dailymotion
 * Azubu
 * Picarto.tv
-* Advanced****
+* Advanced
 
 ## How to use the VOD / Youtube player
 
@@ -31,32 +32,69 @@ Watch Streams while chatting in Destiny.gg!
 
 ## Help MLG does not work
 
-* **Because apparently I am killing e-sports, MLG disabled embedding their stream. Except they still allow TeamLiquid embed, so I embed that embed. To get this to work you need to know the TL embed name. Use the name in-between /embed/ and /popout.
+* MLG disabled embedding of their stream. Except they still allow TeamLiquid embed, so I embed that embed. To get this to work you need to know the TL embed name. Use the name in-between /embed/ and /popout.
 
 ## Ustream
 
-* *** Ustream embeds work, but you cannot get to them by name. This is how Ustream runs their platform. Grab the embed number here http://i.imgur.com/PsPpK7v.png and use that for Stream/ID.
+* Ustream embeds work, but you cannot get to them by name. This is how Ustream runs their platform. Grab the embed number here http://i.imgur.com/PsPpK7v.png and use that for Stream/ID.
 
 ## Advanced
-* **** You can embed any website that allows iframing.
+* You can embed any website that allows iframes, or does not throw a fit over CORS. 
 
 ## CastAmp
 
-* By popular request CastAmp has been implemented, but thanks to their limited controls of embeds the following bugs exist and will be fixed Soon™:
-1. Firefox does not size embed to the div width/height until this is fixed it sizes itself to 1280x720 (720p resolution)
-2. Resizing your browser window in chrome requires you to refresh the window.
+* usage of castamp is highly discouraged, best results in Chrome.
 
 ## Contact
 
+* Message/PM ILiedAboutCake in destiny.gg
 * send /u/ILiedAboutTheCake a message on reddit
 * email iliedaboutthecake@gmail.com
 
-# Feed Me?
+
+# Install / Configure
+
+## Requirements
+
+OverRustle is known to work with the following:
+
+* PHP5 (FPM) >= 5.4.35
+* Composer >= 1.0-dev
+* Nginx >= 1.6.2
+* Redis >= 2.8.17
+
+## PHP-FPM pool example
+```
+[rustle]
+
+user = www-data
+group = www-data
+
+listen = 127.0.0.1:9001
+listen.allowed_clients = 127.0.0.1
+
+pm = ondemand
+pm.max_children = 20
+pm.start_servers = 3
+pm.process_idle_timeout = 10s;
+pm.max_requests = 2000
+
+
+request_terminate_timeout = 120s
+php_admin_value[memory_limit] = 128M
+php_admin_value[max_execution_time] = 60
+request_slowlog_timeout = 60s
+slowlog = /var/log/php5-fpm.slow.log
+
+chdir = /
+```
+
+# Donations
 
 OverRustle.com runs free of charge, and donations are appreciated
 
 * Paypal: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG
 * Bitcoin: 14j82o37d8AShtVP5LydYCptVxwMhbu4Z1
 * Dogecoin: DS6JdMnt96CVXEXZ2LNdjKq6kmcSD7mC88
-* Linode Referral: Help pay the server bill https://www.linode.com/?r=57232eb9908d0f24a8907e61106c88f475248ac7
-* Add to the code: Pull requests & commits are always welcome 
+* Linode: If you signup for a VPS on linode, we get a $20 hosting credit. https://www.linode.com/?r=57232eb9908d0f24a8907e61106c88f475248ac7
+* DigitalOcean: You get $10 in hosting credit, we get $25 in hosting credit. https://www.digitalocean.com/?refcode=bca8aaedb677

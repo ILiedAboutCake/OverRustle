@@ -8,6 +8,8 @@ $SESSION_LIFETIME_SECS = 30 * 24 * 60 * 60; #30 days
 session_set_cookie_params($SESSION_LIFETIME_SECS);
 session_start();
 
+/*
+
 $redis = new Predis\Client($config['redis']);
 
 # store sid and recent ip in redis for all users
@@ -21,4 +23,5 @@ if ($redis->ttl($skey) < 0) {
     $redis->expire($skey, $SESSION_LIFETIME_SECS);
 }
 
+*/
 ?>
