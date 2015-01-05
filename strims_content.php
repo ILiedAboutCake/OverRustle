@@ -69,6 +69,10 @@
       var metadata = api_data.metadata[api_data.metaindex[strim]]
       metadata.strim = strim
       metadata.viewercount = viewercount
+      metadata.label = metadata.channel+" on "+metadata.platform
+      if(metadata.hasOwnProperty('name') && metadata.name.length > 0){
+        metadata.label = metadata.name+"\'s Channel"
+      }
       metadata.live_class = metadata.live ? "label-success" : "label-danger"
       
       $('#strims > .row').last().append(card_template(metadata))
@@ -89,12 +93,12 @@
     <div class="thumbnail">
       {{#live}}
       <a href="{{strim}}">
-        <img class="stream-thumbnail" src="{{image_url}}" alt="{{channel}} on {{platform}} ">
+        <img class="stream-thumbnail" src="{{image_url}}" alt="{{label}} ">
       </a>
       {{/live}}
       <div class="caption">
         <div>
-          <a href="{{strim}}">{{channel}} on {{platform}}</a>
+          <a href="{{strim}}">{{label}}</a>
           <span class="pull-right label label-as-badge {{live_class}}">
             {{viewercount}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 
           </span>
