@@ -25,14 +25,16 @@ if(empty($t))
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Watch streams and videos with destiny.gg!">
+    <meta name="description" content="">
+    <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
     <title>OverRustle - <?php echo $stream; ?></title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/overrustle.css" rel="stylesheet">
-    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="//api.OverRustle.com/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="//api.OverRustle.com/strims.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -118,6 +120,10 @@ if(empty($t))
           case "youtube":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/' . $stream . '?autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
             break;
+
+          case "youtube-playlist":
+            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/videoseries?list=' . $stream . '&autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
+            break;
             
           case "mlg":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
@@ -137,7 +143,7 @@ if(empty($t))
 
           case "picarto":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="https://www.picarto.tv/live/playerpopout.php?popit=' . $stream . '&off=1&token=undefined" scrolling="no"></iframe>';
-            break;    
+            break;
 
           case "strims":
             include('strims_content.php');
@@ -160,7 +166,7 @@ if(empty($t))
                 break;
 
               case "hitbox":
-                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embedchat/' . $stream . '?autoconnect=true" scrolling="no"></iframe>';
+                echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embedchat/' . $stream . '" scrolling="no"></iframe>';
                 break;
 
               case "ustream":
@@ -178,6 +184,7 @@ if(empty($t))
         </div>
   </div>
   <script src="js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
   <script src="js/overrustle.js"></script>
   </body>
 </html>

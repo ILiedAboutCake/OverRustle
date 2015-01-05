@@ -6,6 +6,7 @@ $SERVICE_OPTIONS = array(
     "hitbox" => "Hitbox",
     "castamp" => "CastAmp",
     "youtube" => "Youtube",
+    "youtube-playlist" => "Youtube (Playlist)",
     "mlg" => "MLG (Beta*)",
     "ustream" => "Ustream (Beta*)",
     "dailymotion" => "Dailymotion",

@@ -121,6 +121,10 @@ require_once 'blacklist.php';
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/' . $stream . '?autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
             break;
 
+          case "youtube-playlist":
+            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/videoseries?list=' . $stream . '&autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
+            break;
+
           case "mlg":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
             break;
