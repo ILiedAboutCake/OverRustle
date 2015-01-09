@@ -30,7 +30,7 @@
   }
 
   // client side code
-  var socket = io('http://api.overrustle.com');
+  var socket = io('http://api.overrustle.com/streams');
 
   socket.on('strims', function(api_data){
     var viewercount = api_data["viewercount"]
