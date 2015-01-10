@@ -88,3 +88,33 @@ body.embed
 }
 
 /*arbitrary comment*/
+
+
+/* add a little bottom space under the images */
+
+/*
+TODO: handle md, sm, and xs differently
+right now this only handles lg, sm, and xs
+*/
+
+@media (max-width: 767px) {
+  .stream-list>.clear:nth-child(6n)::before {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .stream-list>.clear:nth-child(8n)::before {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+@media (min-width: 1200px) {
+  .stream-list>.clear:nth-child(12n)::before {  
+    content: '';
+    display: table;
+    clear: both;
+  }
+}

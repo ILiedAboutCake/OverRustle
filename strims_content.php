@@ -8,7 +8,7 @@
 
   <h1 align="center" style="color: #FFFFFF;">See what <span id="viewercount"></span> rustlers are watching!</h1>
   <div id="strims">
-    <div class="row"></div>
+    <div class="row stream-list"></div>
   </div>
   <br />
   <div style="text-align: center; color: #FFFFFF;">
@@ -30,7 +30,7 @@
   }
 
   // client side code
-  var socket = io('http://api.overrustle.com');
+  var socket = io('http://api.overrustle.com/streams');
 
   socket.on('strims', function(api_data){
     var viewercount = api_data["viewercount"]
@@ -54,8 +54,8 @@
     });
     strim_list.sort(function(a,b) {
       // give LIVE streams more weight in sorting higher
-      var amulti = api_data.metadata[api_data.metaindex[a.strim]].live ? 10 : 1;
-      var bmulti = api_data.metadata[api_data.metaindex[b.strim]].live ? 10 : 1;
+      var amulti = api_data.metadata[api_data.metaindex[a.strim]]['live'] ? 10 : 1;
+      var bmulti = api_data.metadata[api_data.metaindex[b.strim]]['live'] ? 10 : 1;
       if (amulti*a.viewercount < bmulti*b.viewercount)
          return 1;
       if (amulti*a.viewercount > bmulti*b.viewercount)
@@ -69,11 +69,12 @@
       var metadata = api_data.metadata[api_data.metaindex[strim]]
       metadata.strim = strim
       metadata.viewercount = viewercount
+
       metadata.label = metadata.channel+" on "+metadata.platform
       if(metadata.hasOwnProperty('name') && metadata.name.length > 0){
         metadata.label = metadata.name+"\'s Channel"
       }
-      metadata.live_class = metadata.live ? "label-success" : "label-danger"
+      metadata.live_class = metadata['live'] ? "label-success" : "label-danger"
       
       $('#strims > .row').last().append(card_template(metadata))
     }
@@ -89,7 +90,7 @@
 </script>
 
 <script id="card" type="x-tmpl-mustache">
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
     <div class="thumbnail">
       {{#live}}
       <a href="{{strim}}">
@@ -105,5 +106,6 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
+  <div class="clear"></div>
 </script>
