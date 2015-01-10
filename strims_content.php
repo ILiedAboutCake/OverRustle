@@ -43,7 +43,7 @@
     var card_template = function (data) {
       return Mustache.render(source, data);
     }
-    $("#strims").html("<div class='row'></div>")
+    $("#strims").html("<div class='row stream-list'></div>")
     var strim_list = []
     
     $.each(strims, function(strim, viewercount){

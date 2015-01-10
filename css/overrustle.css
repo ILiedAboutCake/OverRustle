@@ -98,21 +98,21 @@ right now this only handles lg, sm, and xs
 */
 
 @media (min-width: 768px) and (max-width: 991px) {
-  .stream-list>.clear:nth-child(3n+3)::before {
+  .stream-list>.clear:nth-child(6n)::before {
     content: '';
     display: table;
     clear: both;
   }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
-  .stream-list>.clear:nth-child(4n+4)::before {
+  .stream-list>.clear:nth-child(8n)::before {
     content: '';
     display: table;
     clear: both;
   }
 }
 @media (min-width: 1200px) {
-  .stream-list>.clear:nth-child(6n+6)::before {  
+  .stream-list>.clear:nth-child(12n)::before {  
     content: '';
     display: table;
     clear: both;
