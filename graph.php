@@ -46,7 +46,7 @@ $(function() {
 			events : {
 				load : function() {
 					var chart = this;
-					var socket = io.connect('http://api.overrustle.com');
+					var socket = io.connect('http://api.overrustle.com/streams');
 					socket.on('strims', function (api_data) {
 						var connections = api_data["connections"]
 						var idle = api_data["idlecount"]
