@@ -8,7 +8,7 @@
 
   <h1 align="center" style="color: #FFFFFF;">See what <span id="viewercount"></span> rustlers are watching!</h1>
   <div id="strims">
-    <div class="row"></div>
+    <div class="row stream-list"></div>
   </div>
   <br />
   <div style="text-align: center; color: #FFFFFF;">
@@ -90,7 +90,7 @@
 </script>
 
 <script id="card" type="x-tmpl-mustache">
-  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-2">
+  <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
     <div class="thumbnail">
       {{#live}}
       <a href="{{strim}}">
@@ -106,5 +106,6 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
+  <div class="clear"></div>
 </script>
