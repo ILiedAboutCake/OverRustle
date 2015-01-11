@@ -151,6 +151,7 @@ if(empty($t))
         }
         ?>
         </div>
+        </div>
 
         <div class="pull-right" id="map" style="width: 390px;"> 
           <div class="tab-content" style="height: 100%;">
@@ -181,7 +182,6 @@ if(empty($t))
             ?>
             </div>
           </div>
-        </div>
   </div>
   <script src="js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
