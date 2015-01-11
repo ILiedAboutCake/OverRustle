@@ -19,6 +19,7 @@
       <a href="https://www.linode.com/?r=57232eb9908d0f24a8907e61106c88f475248ac7">Linode.com</a><Br />
     <a href="mailto:iliedaboutthecake@gmail.com">Contact</a> ILiedAboutCake - <?php echo date("Y"); ?><Br />
     <a href="https://github.com/ILiedAboutCake/OverRustle">Site</a> - <a href="https://github.com/ILiedAboutCake/OverRustle-API">API</a>  
+  </div>
 </div><!-- /.container -->
 
 
