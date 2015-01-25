@@ -115,7 +115,7 @@ require_once 'blacklist.php';
 
           case "hitbox":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.hitbox.tv/embed/' . $stream . '?autoplay=true" scrolling="no"></iframe>';
-            break; //stop fucking asking, I'm not going to add azubu TV. It's shit and so are you for thinking about it
+            break;
 
           case "youtube":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.youtube.com/embed/' . $stream . '?autoplay=1&start=' . $t . '" scrolling="no"></iframe>';
@@ -126,7 +126,7 @@ require_once 'blacklist.php';
             break;
 
           case "mlg":
-            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
+            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.majorleaguegaming.com/player/embed/' . $stream . '" scrolling="no"></iframe>';
             break;
 
           case "ustream":

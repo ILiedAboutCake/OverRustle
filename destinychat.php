@@ -126,7 +126,7 @@ if(empty($t))
           break;
           
         case "mlg":
-          echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.teamliquid.net/video/streams/' . $stream . '/popout" scrolling="no"></iframe>';
+          echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.majorleaguegaming.com/player/embed/' . $stream . '" scrolling="no"></iframe>';
           break;
           
         case "ustream":

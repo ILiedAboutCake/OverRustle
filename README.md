@@ -32,7 +32,7 @@ API server moved to: https://github.com/ILiedAboutCake/OverRustle-API/
 
 ## Help MLG does not work
 
-* MLG disabled embedding of their stream. Except they still allow TeamLiquid embed, so I embed that embed. To get this to work you need to know the TL embed name. Use the name in-between /embed/ and /popout.
+* MLGtv now allows embeds, just use the channel name.
 
 ## Ustream
 
