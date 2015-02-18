@@ -81,7 +81,7 @@ require_once 'blacklist.php';
     <div class="container-full fill">
         <div class="pull-left stream-box" id="map">
         <?php
-        switch($s)
+        switch(strtolower($s))
         {
           case "twitch":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/embed" scrolling="no"></iframe>';
@@ -96,6 +96,10 @@ require_once 'blacklist.php';
                 <param name='allowFullScreen' value='true' />
                 <param name='flashvars' value='initial_time=" . $t . "&start_volume=25&auto_play=true&archive_id=" . $stream . "' />
               </object>";
+            break;
+
+          case "nsfw-chaturbate":
+            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="https://chaturbate.com/embed/' . $stream . '?bgcolor=black" scrolling="no"></iframe>';
             break;
 
           case "advanced":
