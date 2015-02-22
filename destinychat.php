@@ -31,9 +31,7 @@ if(empty($t))
     <title>OverRustle - <?php echo $stream; ?></title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/overrustle.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script type="text/javascript" src="//api.OverRustle.com/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="//api.OverRustle.com/strims.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -188,7 +186,9 @@ if(empty($t))
     </div>
   </div>
   <script src="js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
   <script src="js/overrustle.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
+  <script src="//api.OverRustle.com/socket.io/socket.io.js" async></script>
+  <script src="//api.OverRustle.com/strims.js" async></script>
   </body>
 </html>
