@@ -188,7 +188,7 @@ if(empty($t))
   <script src="js/bootstrap.min.js"></script>
   <script src="js/overrustle.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
-  <script src="//api.OverRustle.com/socket.io/socket.io.js" async></script>
-  <script src="//api.OverRustle.com/strims.js" async></script>
+  <script src="//api.OverRustle.com/socket.io/socket.io.js"></script>
+  <script src="//api.OverRustle.com/strims.js"></script>
   </body>
 </html>
