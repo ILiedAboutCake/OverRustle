@@ -5,6 +5,7 @@ $SERVICE_OPTIONS = array(
     "twitch-vod" => "Twitch - VOD",
     "hitbox" => "Hitbox",
     "castamp" => "CastAmp",
+    "nsfw-chaturbate" => "Chaturbate (NSFW)",
     "youtube" => "Youtube",
     "youtube-playlist" => "Youtube (Playlist)",
     "mlg" => "MLG (Beta*)",

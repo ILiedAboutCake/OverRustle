@@ -56,9 +56,6 @@ require_once 'blacklist.php';
     <title>OverRustle - <?php echo $user['name'] ?></title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/overrustle.css" rel="stylesheet">
-    <script src="js/jquery-1.11.2.min.js"></script>
-    <script type="text/javascript" src="//api.OverRustle.com/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="//api.OverRustle.com/strims.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -81,7 +78,7 @@ require_once 'blacklist.php';
     <div class="container-full fill">
         <div class="pull-left stream-box" id="map">
         <?php
-        switch($s)
+        switch(strtolower($s))
         {
           case "twitch":
             echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/embed" scrolling="no"></iframe>';
@@ -96,6 +93,10 @@ require_once 'blacklist.php';
                 <param name='allowFullScreen' value='true' />
                 <param name='flashvars' value='initial_time=" . $t . "&start_volume=25&auto_play=true&archive_id=" . $stream . "' />
               </object>";
+            break;
+
+          case "nsfw-chaturbate":
+            echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="https://chaturbate.com/embed/' . $stream . '?bgcolor=black" scrolling="no"></iframe>';
             break;
 
           case "advanced":
@@ -167,5 +168,8 @@ require_once 'blacklist.php';
   </div>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/overrustle.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="//api.OverRustle.com/socket.io/socket.io.js"></script>
+  <script src="//api.OverRustle.com/strims.js"></script>
   </body>
 </html>
