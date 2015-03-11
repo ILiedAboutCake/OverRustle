@@ -1,0 +1,20 @@
+<script>
+function twitchAPI() {
+  $.ajax({
+    url: "https://api.twitch.tv/kraken/streams/<%= stream %>?callback=?",
+    jsonp: "callback",
+    dataType: "jsonp",
+    data: {
+      format: "json"
+    },
+   
+    success: function(apiData) {
+      var output = formatNumber(apiData.stream.viewers) + " Viewers";
+      document.getElementById("service-viewers").innerHTML = output;
+    }
+  });
+} 
+</script>
+<script>twitchAPI(); window.setInterval(function(){twitchAPI()}, 60000);</script> 
+
+<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/<%= stream %>/embed" scrolling="no"></iframe>

@@ -11,6 +11,7 @@
   "dependencies": {
     "ejs": "^2.3.1",
     "express": "^4.12.2",
-    "redis": "^0.12.1"
+    "redis": "^0.12.1",
+    "ejs-mate": "^2.1.0"
   }
 }
