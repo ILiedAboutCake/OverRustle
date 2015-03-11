@@ -217,11 +217,5 @@ pip-log.txt
 #############
 ## Custom
 #############
-blacklist.php
-destinychat_beta.php
-config.php
-composer.lock
-router.php
-vendor/
+node_modules/
 api/
-js/
