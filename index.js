@@ -9,19 +9,19 @@ redis_client.select(0);
 
 //tests redis connection
 redis_client.on('connect', function() {
-	console.log('Connected to redis!');
+  console.log('Connected to redis!');
 });
 
 // test layout of how we should probably format redis users
 redis_client.hmset(
-	'user:iliedaboutcake', //changable user name
-	'stream', '19949118', //stream set from their profile
-	'service', 'ustream', //service set from their profile
-	'id','30384275', //twitch user ID from OAuth
-	'twitchuser', 'iliedaboutcake', //twitch username
-	'allowchange', 0, //allows the user to change username if set to 1
-	'lastseen',	new Date().toISOString(), //keep track of last seen
-	'lastip','127.0.0.1'); //IP address for banning and auditing
+  'user:iliedaboutcake', //changable user name
+  'stream', '19949118', //stream set from their profile
+  'service', 'ustream', //service set from their profile
+  'id','30384275', //twitch user ID from OAuth
+  'twitchuser', 'iliedaboutcake', //twitch username
+  'allowchange', 0, //allows the user to change username if set to 1
+  'lastseen', new Date().toISOString(), //keep track of last seen
+  'lastip','127.0.0.1'); //IP address for banning and auditing
 
 app.listen(9001);
 
@@ -35,41 +35,97 @@ app.use("/img", express.static(__dirname + '/img'));
 app.use("/html", express.static(__dirname + '/html'));
 app.use("/fonts", express.static(__dirname + '/fonts'));
 
+var SERVICES = {
+  "twitch":{
+    display_name: "Twitch",
+    chat: true
+  },
+  "twitch-vod":{
+    display_name: "Twitch VOD",
+    chat: true
+  },
+  "ustream":{
+    display_name: "Ustream",
+    chat: true
+  },
+  "hitbox":{
+    display_name: "hitbox",
+    chat: true
+  },
+  "azubu":{
+    display_name: "Azubu",
+    chat: true
+  },
+  "picarto":{
+    display_name: "Picarto",
+    chat: true
+  },
+  "castamp":{
+    display_name: "CastAMP",
+    chat: false
+  },
+  "nsfw-chaturbate":{
+    display_name: "Chaturbate (NSFW)",
+    chat: false
+  },
+  "youtube":{
+    display_name: "YouTube",
+    chat: false
+  },
+  "youtube-playlist":{
+    display_name: "YouTube (Playlist)",
+    chat: false
+  },
+  "mlg":{
+    display_name: "MLG",
+    chat: false
+  },
+  "dailymotion":{
+    display_name: "Dailymotion",
+    chat: false
+  }
+}
+
+global.SERVICES = SERVICES
+global.SERVICE_NAMES = Object.keys(SERVICES);
+// TODO: figure out global variables
+
 app.get (['/', '/strims'], function(req, res, next) {
-	console.log("/, /strims")
-	//handle the streams listing here
-	res.render("layout", {page: "index"})
+  console.log("/, /strims")
+  //handle the streams listing here
+  res.render("layout", {page: "index"})
 
 });
 
 app.get ('/:channel', function(request, response, next) {
-	console.log("/channel")
-	//handle the channel code here, look up the channel in redis
-	redis_client.hgetall('user:' + request.params.channel.toLowerCase(), function(err, returned) {
-		if (returned) {
-			res.render("layout", {page: "index", stream: "Live Streams", what: 'best', who: 'me'})
+  console.log("/channel")
+  //handle the channel code here, look up the channel in redis
+  redis_client.hgetall('user:' + request.params.channel.toLowerCase(), function(err, returned) {
+    if (returned) {
+      res.render("layout", {page: "index", stream: "Live Streams", what: 'best', who: 'me'})
 
-			response.render(returned.service, {stream: returned.stream, service: returned.service})
-			//response.send(returned.stream + ' - ' + returned.service);
-		} else {
+      response.render(returned.service, {stream: returned.stream, service: returned.service})
+      //response.send(returned.stream + ' - ' + returned.service);
+    } else {
       next();
-		}
-	});
+    }
+  });
 });
 
 // backwards compatibility:
 app.get ('/destinychat', function(req, res, next){
+  // TODO: redirect to new-style URLS once the API is upgraded
   console.log("/destinychat?s=service&stream=stream")
   res.render("layout", {page: "service", stream: req.query.stream, service: req.query.s})
 });
 
 app.get ('/:service/:stream', function(req, res) {
-	//handle normal streaming services here
-	console.log("/service/channel")
-	res.render("layout", {page: "service", stream: req.params.stream, service: req.params.service})
-	// res.render('service', {stream: req.params.stream, service: req.params.service});
+  //handle normal streaming services here
+  console.log("/service/channel")
+  res.render("layout", {page: "service", stream: req.params.stream, service: req.params.service})
+  // res.render('service', {stream: req.params.stream, service: req.params.service});
 });
 
 app.get ('/profile', function(request, response) {
-	//handle profile stuff
+  //handle profile stuff
 });
