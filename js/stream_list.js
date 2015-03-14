@@ -7,18 +7,6 @@ socket.on('error', function(error){
   $('#status').html(status)
 })
 
-var shownsfw = localStorage.getItem('show-nsfw')
-console.log("localStorage show-nsfw?", shownsfw)
-
-$("#show-nsfw").prop("checked", shownsfw)
-console.log("#show-nsfw?", $("#show-nsfw").prop("checked"))
-
-$('#show-nsfw').on('change', function() {
-  shownsfw = $(this).prop("checked");
-  localStorage.setItem("show-nsfw", shownsfw);
-  console.log("changed!", shownsfw)
-})
-
 socket.on('strims', function(api_data){
   var viewercount = api_data["viewercount"]
   var strims = api_data["streams"]

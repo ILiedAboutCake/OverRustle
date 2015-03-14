@@ -1,23 +1,16 @@
 var express = require('express');
+var favicon = require('serve-favicon');
 var redis = require('redis');
 var request = require('request');
 var app = express();
+var constants = require("./jsx/constants.js")
 
 // server side react js
 var browserify = require('browserify'),
     literalify = require('literalify'),
-    React = require('react'),
-    DOM = React.DOM, body = DOM.body, div = DOM.div, script = DOM.script;
+    React = require('react');
+
 require('react/addons');
-    // This is our React component, shared by server and browser thanks to browserify
-var App = React.createFactory(require('./js/App'))
-
-var browserified_bundle = browserify()
-      .require('./js/App')
-      .transform({global: true}, literalify.configure({react: 'window.React'}))
-      .bundle()
-
-// end server side react js
 
 var REDIS_ADDRESS = process.env["REDIS_ADDRESS"] || '172.16.5.254'
 
@@ -51,67 +44,29 @@ app.use("/js", express.static(__dirname + '/js'));
 app.use("/img", express.static(__dirname + '/img'));
 app.use("/html", express.static(__dirname + '/html'));
 app.use("/fonts", express.static(__dirname + '/fonts'));
+app.use(favicon(__dirname + '/public/favicon.ico'));
 
-var SERVICES = {
-  "twitch":{
-    display_name: "Twitch",
-    chat: true
-  },
-  "twitch-vod":{
-    display_name: "Twitch VOD",
-    chat: true
-  },
-  "ustream":{
-    display_name: "Ustream",
-    chat: true
-  },
-  "hitbox":{
-    display_name: "hitbox",
-    chat: true
-  },
-  "azubu":{
-    display_name: "Azubu",
-    chat: true
-  },
-  "picarto":{
-    display_name: "Picarto",
-    chat: true
-  },
-  "castamp":{
-    display_name: "CastAMP",
-    chat: false
-  },
-  "nsfw-chaturbate":{
-    display_name: "Chaturbate (NSFW)",
-    chat: false
-  },
-  "youtube":{
-    display_name: "YouTube",
-    chat: false
-  },
-  "youtube-playlist":{
-    display_name: "YouTube (Playlist)",
-    chat: false
-  },
-  "mlg":{
-    display_name: "MLG",
-    chat: false
-  },
-  "dailymotion":{
-    display_name: "Dailymotion",
-    chat: false
-  }
+
+global.SERVICES = constants.SERVICES
+global.SERVICE_NAMES = Object.keys(constants.SERVICES);
+
+// This is our React component, shared by server and browser thanks to browserify
+var App = React.createFactory(require('./js/App'))
+
+var browserified_bundle = browserify()
+    .require('./js/App')
+    .transform({global: true}, literalify.configure({react: 'window.React'}))
+function pipeBundleJS(res){
+  browserified_bundle.bundle().pipe(res)
 }
 
-global.SERVICES = SERVICES
-global.SERVICE_NAMES = Object.keys(SERVICES);
-// TODO: figure out global variables
-
+// end server side react js
 app.get('/bundle.js', function (req, res) {
   console.log('getting js bundle')
   res.setHeader('Content-Type', 'text/javascript')
-  browserified_bundle.pipe(res)
+  pipeBundleJS(res)
 })
+/////////////////
 
 var json_streams = {}
 
@@ -163,7 +118,7 @@ app.get (['/', '/strims'], function(req, res, next) {
 });
 
 app.get ('/:channel', function(request, response, next) {
-  console.log("/channel")
+  console.log("/channel", request.originalUrl)
   //handle the channel code here, look up the channel in redis
   redis_client.hgetall('user:' + request.params.channel.toLowerCase(), function(err, returned) {
     if (returned) {
