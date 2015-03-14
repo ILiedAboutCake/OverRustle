@@ -9,9 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "browserify": "^9.0.3",
     "ejs": "^2.3.1",
+    "ejs-mate": "^2.1.0",
     "express": "^4.12.2",
+    "literalify": "^0.4.0",
+    "react": "^0.13.0",
+    "react-tools": "^0.13.0",
     "redis": "^0.12.1",
-    "ejs-mate": "^2.1.0"
+    "request": "^2.53.0"
   }
 }
