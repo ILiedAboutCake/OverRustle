@@ -14,33 +14,27 @@
         <li class="donate"><a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG"><span>Donate</span></a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <% if(locals.service){ %>
+        <% if(locals.service && SERVICES.hasOwnProperty(service) && SERVICES[service].chat){ %>
           <li class="active hidden-md hidden-sm"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>
-          <li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> <%= service %> Chat</a></li>
+          <li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> <%= SERVICES[locals.service].display_name %> Chat</a></li>
         <% } %> 
-
         <li>
           <form action="destinychat" class="navbar-form navbar-left" role="search">
             <div class="form-group">
               <select name="s" class="form-control">
-                <option value="twitch">Twitch</option>
-                <option value="twitch-vod">Twitch - VOD</option>
-                <option value="hitbox">Hitbox</option>
-                <option value="castamp">CastAmp</option>
-                <option value="nsfw-chaturbate">Chaturbate (NSFW)</option>
-                <option value="youtube">Youtube</option>
-                <option value="youtube-playlist">Youtube (Playlist)</option>
-                <option value="mlg">MLG</option>
-                <option value="ustream">Ustream</option>
-                <option value="dailymotion">Dailymotion</option>
-                <option value="azubu">Azubu</option>
-                <option value="picarto">Picarto</option>
+                <% for(var i=0; i<SERVICE_NAMES.length; i++) { %>
+                  <option value="<%= SERVICE_NAMES[i] %>"><%= SERVICES[SERVICE_NAMES[i]].display_name %></option>
+                <% } %>
                 <option value="advanced">Advanced</option>
               </select>
               <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/>
               <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
             </div>
           </form>
+          <!-- 
+          TODO: submit this form with javascript so that it takes you to /:service/:stream instead of the querystring garbage
+           -->
+
         </li>
         <li>
           <div class="btn-group">
