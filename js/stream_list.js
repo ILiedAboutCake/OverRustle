@@ -7,12 +7,24 @@ if(document.location.pathname === "/destinychat"){
 // client side code
 var socket = io('http://api.overrustle.com/streams');
 
-var source   = $("#card").html();
+var source   = "";
 
 $.get('/html/stream.html', function(template) {
   source = template
   Mustache.parse(source)
 });
+
+var shownsfw = localStorage.getItem('show-nsfw')
+console.log("localStorage show-nsfw?", shownsfw)
+
+$("#show-nsfw").prop("checked", shownsfw)
+console.log("#show-nsfw?", $("#show-nsfw").prop("checked"))
+
+$('#show-nsfw').on('change', function() {
+  shownsfw = $(this).prop("checked");
+  localStorage.setItem("show-nsfw", shownsfw);
+  console.log("changed!", shownsfw)
+})
 
 socket.on('strims', function(api_data){
   var viewercount = api_data["viewercount"]
