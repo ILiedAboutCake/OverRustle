@@ -219,3 +219,5 @@ pip-log.txt
 #############
 node_modules/
 api/
+js/.module-cache/
+js/.module-cache

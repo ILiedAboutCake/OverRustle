@@ -1,6 +1,23 @@
 var express = require('express');
 var redis = require('redis');
+var request = require('request');
 var app = express();
+
+// server side react js
+var browserify = require('browserify'),
+    literalify = require('literalify'),
+    React = require('react'),
+    DOM = React.DOM, body = DOM.body, div = DOM.div, script = DOM.script;
+require('react/addons');
+    // This is our React component, shared by server and browser thanks to browserify
+var App = React.createFactory(require('./js/App'))
+
+var browserified_bundle = browserify()
+      .require('./js/App')
+      .transform({global: true}, literalify.configure({react: 'window.React'}))
+      .bundle()
+
+// end server side react js
 
 var REDIS_ADDRESS = process.env["REDIS_ADDRESS"] || '172.16.5.254'
 
@@ -23,7 +40,7 @@ redis_client.hmset(
   'lastseen', new Date().toISOString(), //keep track of last seen
   'lastip','127.0.0.1'); //IP address for banning and auditing
 
-app.listen(9001);
+app.listen(8001);
 
 app.set('views',__dirname + '/views');
 app.set('view engine', 'ejs');
@@ -90,11 +107,59 @@ global.SERVICES = SERVICES
 global.SERVICE_NAMES = Object.keys(SERVICES);
 // TODO: figure out global variables
 
+app.get('/bundle.js', function (req, res) {
+  console.log('getting js bundle')
+  res.setHeader('Content-Type', 'text/javascript')
+  browserified_bundle.pipe(res)
+})
+
+var json_streams = {}
+
+function process_api (api_data) {
+  var viewercount = api_data["viewercount"]
+  var strims = api_data["streams"]
+
+  var strim_list = []
+
+  for ( var strim in strims ) {
+    if ( Object.prototype.hasOwnProperty.call(strims, strim) ) {
+      strim_list.push({
+        strim: strim,
+        viewercount: strims[strim],
+        metadata: api_data.metadata[api_data.metaindex[strim]]
+      })
+    }
+  }
+
+  strim_list.sort(function(a,b) {
+    // give LIVE streams more weight in sorting higher
+    var amulti = 1;
+    var bmulti = 1;
+    if (amulti*a.viewercount < bmulti*b.viewercount)
+       return 1;
+    if (amulti*a.viewercount > bmulti*b.viewercount)
+      return -1;
+    return 0;
+  })
+  return strim_list
+}
+
+request.get({json:true, uri:"http://api.overrustle.com/api"}, function (e, r, resp) {
+  if(e)
+    return error_callback(e)
+  var json = resp
+  // api_data.live = r.statusCode < 400 && json.hasOwnProperty('status') && json['status'] !== 404
+  //handle the streams listing here
+  json_streams = process_api(resp)
+})
+
+
 app.get (['/', '/strims'], function(req, res, next) {
   console.log("/, /strims")
-  //handle the streams listing here
-  res.render("layout", {page: "index"})
-
+  var props = {
+    strim_list: json_streams
+  }
+  res.render("layout", {page: "streams", streams: json_streams, rendered_streams: React.renderToString(App(props))})
 });
 
 app.get ('/:channel', function(request, response, next) {

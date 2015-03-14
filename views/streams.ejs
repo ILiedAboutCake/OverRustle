@@ -1,0 +1,30 @@
+<div class="container" id="strims_content">
+  <div style="display: table; margin: 0 auto;">
+    <div id="status"></div>
+  </div>
+  <div class="row">
+    <div class="well well-sm col-md-4 col-md-offset-4">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="show-nsfw"> Show NSFW
+        </label>
+      </div>
+    </div>
+  </div>
+  <h1 align="center" style="color: #FFFFFF;">
+    See what <span id="viewercount"></span> rustlers are watching!
+  </h1>
+  <div id="strims">
+    <%- rendered_streams %>
+  </div>
+</div>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react-with-addons.js"></script>
+<script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+<script src="/bundle.js"></script>
+<script type="text/javascript">
+console.log('createing react app client side')
+  var App = React.createFactory(require("./js/App"));
+React.render(App((<%- JSON.stringify(streams) %>)), document.getElementById("strims"))
+</script>
+<script type="text/javascript" src="/js/stream_list.js"></script>
