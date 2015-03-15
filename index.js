@@ -33,7 +33,7 @@ redis_client.hmset(
   'lastseen', new Date().toISOString(), //keep track of last seen
   'lastip','127.0.0.1'); //IP address for banning and auditing
 
-app.listen(8001);
+app.listen(process.env.PORT || 8001);
 
 app.set('views',__dirname + '/views');
 app.set('view engine', 'ejs');
