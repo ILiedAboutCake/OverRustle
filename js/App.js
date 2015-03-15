@@ -42,7 +42,7 @@ var StreamList = React.createClass({displayName: "StreamList",
   render: function() {
     var list = this.props.strim_list || [];
     console.log('rendering stream list', list.length, "long list")
-    console.log(list)
+    // console.log(list)
     var streamNodes = list.map(function (stream) {
       // config the name/title/label
       if(!stream.metadata){
@@ -72,7 +72,7 @@ var StreamList = React.createClass({displayName: "StreamList",
       allNodes.push(s)
       allNodes.push(React.createElement("div", {className: "clear"}))
     })
-    console.log(allNodes)
+    // console.log(allNodes)
     return (
       React.createElement("div", {className: "streamList row stream-list"}, 
         allNodes
