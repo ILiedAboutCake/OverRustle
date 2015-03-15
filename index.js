@@ -13,14 +13,26 @@ var browserify = require('browserify'),
 require('react/addons');
 
 var REDIS_ADDRESS = process.env["REDIS_ADDRESS"] || '172.16.5.254'
+try{
+if(process.env.REDISTOGO_URL){
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  var redis_client = redis.createClient(rtg.port, rtg.hostname);
 
-var redis_client = redis.createClient('6379',REDIS_ADDRESS); //I was using the production redis server ripperino
+  redis_client.auth(rtg.auth.split(":")[1]);
+}else{
+  var redis_client = redis.createClient('6379',REDIS_ADDRESS); //I was using the production redis server ripperino
+}
+
 redis_client.select(0); 
 
 //tests redis connection
 redis_client.on('connect', function() {
   console.log('Connected to redis!');
 });
+}catch (e){
+  // in case redis doesn't exist
+  console.log(e)
+}
 
 // test layout of how we should probably format redis users
 redis_client.hmset(
