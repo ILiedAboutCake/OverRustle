@@ -27,11 +27,9 @@ var StreamBox = React.createClass({displayName: "StreamBox",
     // });
   },
   render: function() {
-    var rnkey = Math.random().toString();
-
     return (
       React.createElement("div", {className: "streamBox"}, 
-        React.createElement(StreamList, {key: rnkey, strim_list: this.state.strim_list})
+        React.createElement(StreamList, {strim_list: this.state.strim_list})
       )
     );
   }
@@ -54,6 +52,7 @@ var StreamList = React.createClass({displayName: "StreamList",
       if(stream.metadata.hasOwnProperty('name') && stream.metadata.name.length > 0){
         stream.metadata.label = stream.metadata.name+"\'s channel"
       }
+      stream.metadata.rustlers = stream.viewercount;
 
       // config the badge/view counter
       var classes = classNames({
