@@ -12,7 +12,7 @@ var StreamBox = React.createClass({displayName: "StreamBox",
     // this.setState({disabled: false})
     // it's fine to use jquery here
     $(document).on('strim_list', function (e, strim_list) {
-      this.setProps({strim_list: strim_list})
+      this.setState({strim_list: strim_list})
     }.bind(this));
     // todo: hook into state change
     // $.ajax({
@@ -31,7 +31,7 @@ var StreamBox = React.createClass({displayName: "StreamBox",
 
     return (
       React.createElement("div", {className: "streamBox"}, 
-        React.createElement(StreamList, {key: rnkey, strim_list: this.props.strim_list})
+        React.createElement(StreamList, {key: rnkey, strim_list: this.state.strim_list})
       )
     );
   }
