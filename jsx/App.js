@@ -63,16 +63,15 @@ var StreamList = React.createClass({
       });
 
       var visibility = stream.metadata['live'] ? 'visible' : 'hidden' 
-      var rkey = Math.random().toString();
+
       return (
-        <Stream key={rkey} metadata={stream.metadata} live_class={classes} visibility={visibility} />
+        <Stream key={stream.strim} metadata={stream.metadata} live_class={classes} visibility={visibility} />
       );
     });
     var allNodes = []
     streamNodes.forEach(function(s){
       allNodes.push(s)
-      var drkey = Math.random().toString();
-      allNodes.push(<div key={drkey} className="clear"></div>)
+      allNodes.push(<div className="clear"></div>)
     })
     console.log(allNodes)
     return (
