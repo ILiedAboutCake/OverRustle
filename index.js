@@ -1,8 +1,14 @@
+// load config
+var jf = require("jsonfile");
+var fs = require("fs");
+var CONFIG = fs.existsSync('./config.json') ? jf.readFileSync('config.json') : {};
+
 var express = require('express');
 var favicon = require('serve-favicon');
 var redis = require('redis');
 var request = require('request');
 var app = express();
+
 var constants = require("./jsx/constants.js");
 
 // server side react js
@@ -33,6 +39,23 @@ try{
   // in case redis doesn't exist
   console.log(e)
 }
+
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+
+// TODO: change settings if we want to handle secure cookies explicitly
+// https://github.com/expressjs/session#cookie-options
+// if (app.get('env') === 'production') {
+//   app.set('trust proxy', 1) // trust first proxy
+//   sess.cookie.secure = true // serve secure cookies
+// }
+app.use(session({
+  store: new RedisStore({
+    "client": redis_client
+  }),
+  // cookie: { maxAge: 60000*60*24*30 }
+  secret: 'keyboard cat'
+}));
 
 // test layout of how we should probably format redis users
 redis_client.hmset(
@@ -192,6 +215,9 @@ app.get ('/:channel', function(request, response, next) {
     }
   });
 });
+app.post("/channel", function(req, res, next){
+
+})
 
 app.get ('/profile', function(request, response) {
   //handle profile stuff
