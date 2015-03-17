@@ -1,6 +1,13 @@
 // client side code
 var socket = io('http://api.overrustle.com/streams');
 
+// socket.on('connect', function(){
+//   console.log("Connected SOCKET")
+//   // we cannot infer this from the referrer because
+//   // there is no way to set a referrer with this client
+//   socket.emit("idle", {"/strims"})
+//})
+
 socket.on('error', function(error){
   console.log(error)
   status = "<div class='label label-warning col-md-4' role='alert'>Tracking server is currently offline.</div>"

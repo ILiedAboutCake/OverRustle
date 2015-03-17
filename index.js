@@ -3,7 +3,7 @@ var favicon = require('serve-favicon');
 var redis = require('redis');
 var request = require('request');
 var app = express();
-var constants = require("./jsx/constants.js")
+var constants = require("./jsx/constants.js");
 
 // server side react js
 var browserify = require('browserify'),
@@ -14,21 +14,21 @@ require('react/addons');
 
 var REDIS_ADDRESS = process.env["REDIS_ADDRESS"] || '172.16.5.254'
 try{
-if(process.env.REDISTOGO_URL){
-  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-  var redis_client = redis.createClient(rtg.port, rtg.hostname);
+  if(process.env.REDISTOGO_URL){
+    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+    var redis_client = redis.createClient(rtg.port, rtg.hostname);
 
-  redis_client.auth(rtg.auth.split(":")[1]);
-}else{
-  var redis_client = redis.createClient('6379',REDIS_ADDRESS); //I was using the production redis server ripperino
-}
+    redis_client.auth(rtg.auth.split(":")[1]);
+  }else{
+    var redis_client = redis.createClient('6379',REDIS_ADDRESS); //I was using the production redis server ripperino
+  }
 
-redis_client.select(0); 
+  redis_client.select(0); 
 
-//tests redis connection
-redis_client.on('connect', function() {
-  console.log('Connected to redis!');
-});
+  //tests redis connection
+  redis_client.on('connect', function() {
+    console.log('Connected to redis!');
+  });
 }catch (e){
   // in case redis doesn't exist
   console.log(e)
@@ -63,6 +63,7 @@ global.SERVICES = constants.SERVICES
 global.SERVICE_NAMES = Object.keys(constants.SERVICES);
 
 // This is our React component, shared by server and browser thanks to browserify
+//////////////////
 var App = React.createFactory(require('./js/App'))
 
 var browserified_bundle = browserify()
@@ -78,6 +79,11 @@ app.get('/bundle.js', function (req, res) {
   res.setHeader('Content-Type', 'text/javascript')
   pipeBundleJS(res)
 })
+/////////////////
+
+
+// cache the stream list from the API
+// so that the HTML we serve on first load is fresh
 /////////////////
 
 var json_streams = {}
@@ -111,37 +117,47 @@ function process_api (api_data) {
   return strim_list
 }
 
-request.get({json:true, uri:"http://api.overrustle.com/api"}, function (e, r, resp) {
-  if(e)
-    return error_callback(e)
-  var json = resp
-  // api_data.live = r.statusCode < 400 && json.hasOwnProperty('status') && json['status'] !== 404
-  //handle the streams listing here
-  json_streams = process_api(resp)
-})
+function getApiData(){
+  console.log('getting new data...')
+  request.get({json:true, uri:"http://api.overrustle.com/api"}, function (e, r, resp) {
+    if(e)
+      return error_callback(e)
+    var json = resp
+    // api_data.live = r.statusCode < 400 && json.hasOwnProperty('status') && json['status'] !== 404
+    //handle the streams listing here
+    json_streams = process_api(resp)
+    console.log("got new data", json_streams.length,  "streams")
+  })
+}
+
+getApiData()
+var apiRefresher = setInterval(getApiData, 2000)
 
 
-app.get (['/', '/strims'], function(req, res, next) {
+// For the Future:
+// This will require a rewrite on the server side to implement correctly
+// var socket = require('socket.io-client')('http://api.overrustle.com/streams');
+// socket.on('connect', function(){
+//   console.log("Connected SOCKET")
+//   // we cannot infer this from the referrer because <------------ IMPORTANT
+//   // there is no way to set a referrer with this client <-------- IMPORTANT
+//   socket.emit("idle", {"/strims"})
+// });
+// socket.on('strims', function(api_data){
+//   console.log(api_data)
+// });
+// socket.on('disconnect', function(){
+//   console.log("DISCONNECTED SOCKET")
+// });
+
+////////////////////
+
+app.get (['/', '/strims', '/streams'], function(req, res, next) {
   console.log("/, /strims")
   var props = {
     strim_list: json_streams
   }
   res.render("layout", {page: "streams", streams: json_streams, rendered_streams: React.renderToString(App(props))})
-});
-
-app.get ('/:channel', function(request, response, next) {
-  console.log("/channel", request.originalUrl)
-  //handle the channel code here, look up the channel in redis
-  redis_client.hgetall('user:' + request.params.channel.toLowerCase(), function(err, returned) {
-    if (returned) {
-      res.render("layout", {page: "index", stream: "Live Streams", what: 'best', who: 'me'})
-
-      response.render(returned.service, {stream: returned.stream, service: returned.service})
-      //response.send(returned.stream + ' - ' + returned.service);
-    } else {
-      next();
-    }
-  });
 });
 
 // backwards compatibility:
@@ -151,11 +167,30 @@ app.get ('/destinychat', function(req, res, next){
   res.render("layout", {page: "service", stream: req.query.stream, service: req.query.s})
 });
 
-app.get ('/:service/:stream', function(req, res) {
+// WARNING: if you get an ADVANCED stream with hashbangs in the URL they won't get past the form
+app.get ('/:service/:stream', function(req, res, next) {
   //handle normal streaming services here
   console.log("/service/channel")
-  res.render("layout", {page: "service", stream: req.params.stream, service: req.params.service})
-  // res.render('service', {stream: req.params.stream, service: req.params.service});
+  if (global.SERVICE_NAMES[req.params.service]) {
+    res.render("layout", {page: "service", stream: req.params.stream, service: req.params.service})
+  }else{
+    next();
+  }
+});
+
+app.get ('/:channel', function(request, response, next) {
+  console.log("/channel", request.originalUrl)
+  //handle the channel code here, look up the channel in redis
+  redis_client.hgetall('user:' + request.params.channel.toLowerCase(), function(err, returned) {
+    if (returned) {
+      res.render("layout", {page: "index", stream: "Live Streams"})
+
+      response.render("layout", {page: "service", stream: returned.stream, service: returned.service})
+      //response.send(returned.stream + ' - ' + returned.service);
+    } else {
+      next();
+    }
+  });
 });
 
 app.get ('/profile', function(request, response) {
