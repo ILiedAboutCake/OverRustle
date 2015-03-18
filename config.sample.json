@@ -1,6 +1,8 @@
 {
+	"port": "9001",
 	"twitch_client_id": "client id",
 	"twitch_client_secret": "client secret",
 	"twitch_redirect_uri": "redirect uri goes here e.g. http://overrustle.com/profile",
-	"redis_address": "127.0.0.1 in development, something else in prod",
+	"redis_address": "127.0.0.1 in development, 172.16.5.254 or something else in prod",
+	"session_secret": "use a randomly generated string here"
 }

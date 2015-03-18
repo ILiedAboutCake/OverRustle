@@ -49,5 +49,6 @@ var SERVICES = {
   }
 }
 module.exports = {
-  "SERVICES": SERVICES
+  "SERVICES": SERVICES,
+  "TWITCH_TOKEN_URL": "https://api.twitch.tv/kraken/oauth2/token"
 }
