@@ -135,36 +135,7 @@ app.get('/bundle.js', function (req, res) {
 // so that the HTML we serve on first load is fresh
 /////////////////
 
-var json_streams = {}
-
-function process_api (api_data) {
-  var viewercount = api_data["viewercount"]
-  var strims = api_data["streams"]
-
-  var strim_list = []
-
-  for ( var strim in strims ) {
-    if ( Object.prototype.hasOwnProperty.call(strims, strim) ) {
-      strim_list.push({
-        strim: strim,
-        viewercount: strims[strim],
-        metadata: api_data.metadata[api_data.metaindex[strim]]
-      })
-    }
-  }
-
-  strim_list.sort(function(a,b) {
-    // give LIVE streams more weight in sorting higher
-    var amulti = 1;
-    var bmulti = 1;
-    if (amulti*a.viewercount < bmulti*b.viewercount)
-       return 1;
-    if (amulti*a.viewercount > bmulti*b.viewercount)
-      return -1;
-    return 0;
-  })
-  return strim_list
-}
+var static_api_data = {}
 
 function getApiData(){
   request.get({json:true, uri:"http://api.overrustle.com/api"}, function (e, r, resp) {
@@ -175,7 +146,7 @@ function getApiData(){
     var json = resp
     // api_data.live = r.statusCode < 400 && json.hasOwnProperty('status') && json['status'] !== 404
     //handle the streams listing here
-    json_streams = process_api(resp)
+    static_api_data = json
   })
 }
 
@@ -212,12 +183,12 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
 
   console.log(req.originalUrl)
   var props = {
-    strim_list: json_streams
+    api_data: static_api_data
   }
   res.render("layout", {
     user: req.session.user,
-    page: "streams", 
-    streams: json_streams, 
+    page: "streams",
+    react_props: props, 
     rendered_streams: React.renderToString(App(props))    
   })
 });
@@ -323,10 +294,10 @@ app.post ('/profile', function(req, res, next) {
           // 'stream', '19949118', //stream set from their profile
           // 'service', 'ustream', //service set from their profile
           'id': json["_id"], //twitch user ID from OAuth
-          'twitchuser', json["name"], //twitch username
+          'twitchuser': json["name"], //twitch username
           // 'allowchange', 0, //allows the user to change username if set to 1
-          'lastseen', new Date().toISOString(), //keep track of last seen
-          'lastip','127.0.0.1' //IP address for banning and auditing
+          'lastseen': new Date().toISOString(), //keep track of last seen
+          'lastip': '127.0.0.1' //IP address for banning and auditing
         }, function(err, result){
           req.session.user = overrustle_username
           // or
