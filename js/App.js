@@ -1,4 +1,5 @@
 var React = require('react');
+var MagicMove = require('react-magic-move');
 var classNames = require('classnames');
 
 var process_api = function(api_data) {
@@ -89,7 +90,7 @@ var StreamList = React.createClass({displayName: "StreamList",
       var visibility = stream['live'] ? 'visible' : 'hidden' 
 
       return (
-        React.createElement(Stream, {key: stream.url, stream: stream, live_class: classes, visibility: visibility})
+        React.createElement(Stream, {className: "sortableStream", key: stream.url, stream: stream, live_class: classes, visibility: visibility})
       );
     });
     var allNodes = []

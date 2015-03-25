@@ -87,7 +87,10 @@ body.embed
   border-radius: 1em;
 }
 
-/*arbitrary comment*/
+.sortableStream {
+  transition: all 500ms ease;
+  box-sizing: border-box;
+}
 
 
 /* add a little bottom space under the images */
