@@ -5,7 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="favicon.ico">
-    <title>OverRustle - <%- locals.stream ? stream : "Live Streams" %></title>
+    <% 
+    locals.page_title  = locals.page_title ? locals.page_title : null; 
+    if(!locals.page_title){
+      locals.page_title = locals.stream;    
+    }
+    %>
+    <title>OverRustle - <%- locals.page_title %></title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/overrustle.css" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

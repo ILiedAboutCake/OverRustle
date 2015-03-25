@@ -42,24 +42,20 @@
         <li>
           <div class="btn-group">
           <% if(locals.user){ %>
-            <a href="/profile">
-              <button class="btn btn-default navbar-btn" title="Profile">
-                <span class="glyphicon glyphicon-user"></span>
-              </button>
+            <a class="btn btn-default navbar-btn" href="/profile" title="Profile" >
+              <span class="glyphicon glyphicon-user"></span>
             </a>
-            <a href="/logout">
-              <button class="btn btn-default navbar-btn" title="Log Out">
-                <span class="glyphicon glyphicon-off"></span>
-              </button>
+            <a class="btn btn-default navbar-btn" href="/logout" title="Log Out">
+              <span class="glyphicon glyphicon-off"></span>
             </a>
           <% } else { %>
-            <a class="btn btn-default navbar-btn" href="<%- global.TWITCH_OAUTH_URL %>">
-              <span>Log In</span>
+            <a class="btn btn-default navbar-btn" href="<%- global.TWITCH_OAUTH_URL %>" title="Log In">
+              <span class="glyphicon glyphicon-log-in"></span>
             </a>
           <% } %>
-            <button class="btn btn-default navbar-btn" title="Settings">
-              <span>Settings</span>
-            </button>
+            <a class="btn btn-default navbar-btn" href="#" title="Settings">
+              <span class="glyphicon glyphicon-cog"></span>
+            </a>
 
           </div>
         </li>

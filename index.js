@@ -74,7 +74,7 @@ redis_client.hmset(
   'lastseen', new Date().toISOString(), //keep track of last seen
   'lastip','127.0.0.1'); //IP address for banning and auditing
 
-// maintain in index of twitch_username -> overrustle_username
+// maintain in index of twitchuser -> overrustle_username
 redis_client.set(
   'twitchuser:iliedaboutcake', 
   'dank_memester' //changable overrustle user name
@@ -194,8 +194,9 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
 });
 
 // backwards compatibility:
-app.get (['/destinychat', '/profile'], function(req, res, next){
+app.get ('/destinychat', function(req, res, next){
   // TODO: redirect to new-style URLS once the API is upgraded
+
   console.log("/destinychat?s=service&stream=stream")
   res.render("layout", {
     user: req.session.user,
@@ -216,31 +217,74 @@ app.get ('/:service/:stream', function(req, res, next) {
   }
 });
 
-app.get ('/:channel', function(req, res, next) {
-  console.log("/channel", req.originalUrl)
-  //handle the channel code here, look up the channel in redis
-  redis_client.hgetall('user:' + req.params.channel.toLowerCase(), function(err, returned) {
-    if (returned) {
-      res.render("layout", {
-        page: "service", 
-        stream: returned.stream, 
-        service: returned.service
-      })
-    } else {
-      next();
-    }
-  });
-});
-
 app.post("/channel", function(req, res, next){
-
+  console.log("/channel", req.originalUrl)
 })
 
 app.post ('/profile', function(req, res, next) {
+  console.log("POST", req.originalUrl)
+  res.end(req.originalUrl)
+})
+
+app.get ('/profile', function(req, res, next) {
+  console.log("GET", req.originalUrl)
+  if (req.session.user) {
+    res.render("layout", {
+      page: "profile", 
+      page_title: "Profile for "+req.session.user.overrustle_username,
+      user: req.session.user
+    })
+  }else{
+    res.redirect('/')
+  }
+})
+
+// TODO: support an admin user changing another user's name
+app.post('/profile/:overrustle_username', function (req, res, next) {
+
+  var current_user = req.session.user;
+  if(current_user.overrustle_username == req.body.overrustle_username){
+    var new_settings = {
+      service: req.body.service,
+      stream: req.body.stream
+    }
+    if (current_user.changable && req.body.overrustle_username.length > 0) {
+      current_user.overrustle_username = req.body.overrustle_username
+      new_settings['overrustle_username'] = current_user.overrustle_username
+      redis_client.set(
+        "twitchuser:"+current_user.twitchuser,
+        current_user.overrustle_username
+        )
+    }
+
+    redis_client.hmset(
+      'user:'+current_user.overrustle_username,
+      new_settings, 
+    function(err, result){
+      redis_client.hgetall('user:'+current_user.overrustle_username, 
+      function(err, returned) {
+        if(err){
+          return next(err)
+        }
+        // TODO: support admin changing other's data
+        req.session.user = returned;
+        res.redirect('/profile')
+      });
+    }); 
+  }else{
+    // TODO: add flash/error notifications
+    // TODO: permit admins to edit other users
+    res.redirect('/')
+  }
+})
+
+// twitch will send oauth requests 
+// that use our client_id to this path
+app.get("/oauth/twitch", function(req, res, next){
+  console.log("GET", req.originalUrl)
   if(!req.query.code){
     return next()
   }
-  //handle profile stuff
   
   request.post({
     url: constants["TWITCH_TOKEN_URL"],
@@ -249,7 +293,7 @@ app.post ('/profile', function(req, res, next) {
       client_secret: CONFIG['twitch_client_secret'],
       grant_type: "authorization_code",
       redirect_uri: CONFIG['twitch_redirect_uri'],
-      code: res.query.code
+      code: req.query.code
     },
     json: true
   }, function (e, r, body) {
@@ -258,6 +302,7 @@ app.post ('/profile', function(req, res, next) {
       return e
     }
     var jt = body;
+    console.log('twitch token body', body)
     // {
     //   "access_token": "[user access token]",
     //   "scope":[array of requested scopes]
@@ -273,6 +318,9 @@ app.post ('/profile', function(req, res, next) {
         return e
       }
       var json = resp
+      if(json['status'] >= 300){
+        console.log()
+      }
 
       // use the twitch -> overrustle index to find the right username
       redis_client.get("twitchuser:"+json['name'], function(e, reply) {
@@ -281,34 +329,61 @@ app.post ('/profile', function(req, res, next) {
           return e
         }
         // reply is null when the key is missing
+        var new_settings = {}
+        new_settings['lastseen'] = new Date().toISOString();
+        new_settings['lastip'] = req.headers.hasOwnProperty('x-forwarded-for') ? req.headers['x-forwarded-for'] : req.connection._peername.address
         var overrustle_username = reply;
         if(overrustle_username == null){
-          // ensure the index is consistent
-          redis_client.set('twitchuser:'+json['name'], json['name'])
           overrustle_username = json['name'];
+          // ensure the index is consistent
+          redis_client.set('twitchuser:'+overrustle_username, overrustle_username, redis.print)
+
+          new_settings['overrustle_username'] = overrustle_username
+          new_settings['twitchuser'] = json["name"]
+          new_settings['stream'] = json["name"]
+          new_settings['service'] = "twitch"
+          new_settings['id'] = json['_id']
+          // TODO: decide if we want to 
+          // allow new users to change their overrustle_username
+          new_settings['allowchange'] = false
+          new_settings['admin'] = false
         }
-        console.log(reply);
+        
+        console.log(reply, new_settings);
         redis_client.hmset(
           'user:'+overrustle_username,
-        {
-          // 'stream', '19949118', //stream set from their profile
-          // 'service', 'ustream', //service set from their profile
-          'id': json["_id"], //twitch user ID from OAuth
-          'twitchuser': json["name"], //twitch username
-          // 'allowchange', 0, //allows the user to change username if set to 1
-          'lastseen': new Date().toISOString(), //keep track of last seen
-          'lastip': '127.0.0.1' //IP address for banning and auditing
-        }, function(err, result){
-          req.session.user = overrustle_username
-          // or
+          new_settings, 
+        function(err, result){
           redis_client.hgetall('user:'+overrustle_username, function(err, returned) {
             if(err){
               return next(err)
             }
             req.session.user = returned;
+            res.redirect('/')
           });
         }); 
       });
     });
+  });
+});
+
+app.get('/logout', function (req, res, next) {
+  req.session.user = undefined
+  res.redirect('/')
+})
+
+app.get ('/:channel', function(req, res, next) {
+  console.log("/channel", req.originalUrl)
+  //handle the channel code here, look up the channel in redis
+  redis_client.hgetall('user:' + req.params.channel.toLowerCase(), function(err, returned) {
+    if (returned) {
+      res.render("layout", {
+        page: "service", 
+        stream: returned.stream, 
+        service: returned.service
+      })
+    } else {
+      next();
+    }
   });
 });
