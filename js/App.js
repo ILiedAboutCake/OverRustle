@@ -91,7 +91,7 @@ var StreamList = React.createClass({displayName: "StreamList",
       var visibility = stream['live'] ? 'visible' : 'hidden' 
 
       return (
-        React.createElement(Stream, {className: "sortableStream", key: stream.url, stream: stream, live_class: classes, visibility: visibility})
+        React.createElement(Stream, {key: stream.url, stream: stream, live_class: classes, visibility: visibility})
       );
     });
     var allNodes = []
@@ -115,7 +115,7 @@ var StreamList = React.createClass({displayName: "StreamList",
 var Stream = React.createClass({displayName: "Stream",
   render: function() {
     return (
-      React.createElement("div", {className: "stream col-xs-12 col-sm-4 col-md-3 col-lg-2"}, 
+      React.createElement("div", {className: "sortableStream stream col-xs-12 col-sm-4 col-md-3 col-lg-2"}, 
         React.createElement("div", {className: "thumbnail"}, 
           React.createElement("a", {href: this.props.stream.url, className: this.props.visibility}, 
             React.createElement("img", {className: "stream-thumbnail", src: this.props.stream.image_url, alt: this.props.stream.label})
