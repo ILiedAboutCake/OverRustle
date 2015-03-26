@@ -19,11 +19,11 @@
     "express-session": "^1.10.4",
     "jsonfile": "^2.0.0",
     "literalify": "^0.4.0",
-    "react": "^0.12.0",
-    "react-magic-move": "^0.1.0",
-    "react-tools": "^0.12.2",
+    "react": "^0.13.0",
+    "react-tools": "^0.13.0",
     "redis": "^0.12.1",
     "request": "^2.53.0",
-    "serve-favicon": "^2.2.0"
+    "serve-favicon": "^2.2.0",
+    "react-addons": "^0.9.1-deprecated"
   }
 }

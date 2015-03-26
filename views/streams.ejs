@@ -23,10 +23,9 @@
   </div>
 </div>
 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react-with-addons.js"></script>
-<script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
 <script src="/bundle.js"></script>
 <script type="text/javascript">
+var React = require('react')
 console.log('createing react app client side')
   var App = React.createFactory(require("./js/App"));
 React.render(App((<%- JSON.stringify(react_props) %>)), document.getElementById("strims"))

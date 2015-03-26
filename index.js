@@ -110,13 +110,14 @@ global.TWITCH_OAUTH_URL = 'https://api.twitch.tv/kraken/oauth2/authorize?respons
 var browserify = require('browserify'),
     literalify = require('literalify'),
     React = require('react');
-global.React = React;
-var MagicMove = require('./js/react-magic-move')
-require('react/addons');
+
+var addons = require('react-addons');
 
 var App = React.createFactory(require('./js/App'))
 
 var browserified_bundle = browserify()
+    .require('react')
+    .require('react-addons')
     .require('./js/App')
     .transform({global: true}, literalify.configure({react: 'window.React'}))
 function pipeBundleJS(res){
