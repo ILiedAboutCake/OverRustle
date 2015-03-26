@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "node_modules/react-tools/bin/jsx jsx/ js/ --harmony"
+    "compile": "node node_modules/react-tools/bin/jsx jsx/ js/ --harmony"
   },
   "author": "",
   "license": "ISC",
