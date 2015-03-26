@@ -1,5 +1,6 @@
 var React = require('react');
-var MagicMove = require('react-magic-move');
+global.React = React;
+var MagicMove = require('./react-magic-move');
 var classNames = require('classnames');
 
 var process_api = function(api_data) {
