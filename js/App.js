@@ -95,9 +95,11 @@ var StreamList = React.createClass({displayName: "StreamList",
       );
     });
     var allNodes = []
+    var i = 0;
     streamNodes.forEach(function(s){
       allNodes.push(s)
-      allNodes.push(React.createElement("div", {className: "clear"}))
+      i = i + 1;
+      allNodes.push(React.createElement("div", {key: i, className: "clear"}))
     })
     // console.log(allNodes)
     return (

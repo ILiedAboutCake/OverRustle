@@ -110,7 +110,8 @@ global.TWITCH_OAUTH_URL = 'https://api.twitch.tv/kraken/oauth2/authorize?respons
 var browserify = require('browserify'),
     literalify = require('literalify'),
     React = require('react');
-
+global.React = React;
+var MagicMove = require('./js/react-magic-move')
 require('react/addons');
 
 var App = React.createFactory(require('./js/App'))
