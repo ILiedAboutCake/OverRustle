@@ -100,7 +100,7 @@ var StreamList = React.createClass({displayName: "StreamList",
     })
     // console.log(allNodes)
     return (
-      React.createElement("div", {className: "streamList row stream-list"}, 
+      React.createElement(MagicMove, {className: "streamList row stream-list"}, 
         allNodes
       )
     );
