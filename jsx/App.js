@@ -103,11 +103,9 @@ var StreamList = React.createClass({
     })
     // console.log(allNodes)
     return (
-      <div>
-        <MagicMove className="streamList row stream-list">
-          {allNodes}
-        </MagicMove>
-      </div>
+      <MagicMove className="streamList row stream-list">
+        {allNodes}
+      </MagicMove>
     );
   }
 });
