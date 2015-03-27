@@ -147,6 +147,10 @@ if(empty($t))
           echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="https://www.picarto.tv/live/playerpopout.php?popit=' . $stream . '&off=1&token=undefined" scrolling="no"></iframe>';
           break;
 
+        case "riven":
+          echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://riven.moe/destiny/videoplayer.php?file=' . $stream . '.mp4" scrolling="no"></iframe>';
+          break;
+
         case "strims":
           include('strims_content.php');
 

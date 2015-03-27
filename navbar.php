@@ -3,6 +3,7 @@
 $SERVICE_OPTIONS = array(
     "twitch" => "Twitch",
     "twitch-vod" => "Twitch - VOD",
+    "riven" => "Riven - Destiny VOD",
     "hitbox" => "Hitbox",
     "castamp" => "CastAmp",
     "nsfw-chaturbate" => "Chaturbate (NSFW)",
