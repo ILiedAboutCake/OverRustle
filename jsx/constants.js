@@ -23,6 +23,10 @@ var SERVICES = {
     display_name: "Picarto",
     chat: true
   },
+  "riven":{
+    display_name: "Riven - Destiny VOD",
+    chat: false
+  },
   "castamp":{
     display_name: "CastAMP",
     chat: false
