@@ -41,11 +41,12 @@
         </li>
         <li>
           <div class="btn-group">
+          <!-- add 'active' class to approriate pages -->
           <% if(locals.user){ %>
             <a class="btn btn-default navbar-btn" href="/profile" title="Profile" >
               <span class="glyphicon glyphicon-user"></span>
             </a>
-            <a class="btn btn-default navbar-btn" href="/logout" title="Log Out">
+            <a class="btn btn-inverse navbar-btn" href="/logout" title="Log Out">
               <span class="glyphicon glyphicon-off"></span>
             </a>
           <% } else { %>

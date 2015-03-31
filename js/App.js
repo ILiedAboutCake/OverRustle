@@ -1,6 +1,6 @@
 var React = require('react');
 global.React = React;
-var MagicMove = require('./react-magic-move');
+// var MagicMove = require('./react-magic-move');
 var classNames = require('classnames');
 
 var process_api = function(api_data) {
@@ -102,8 +102,9 @@ var StreamList = React.createClass({displayName: "StreamList",
       allNodes.push(React.createElement("div", {key: i, className: "clear"}))
     })
     // console.log(allNodes)
+    // change these divs to MagicMove elements when we figure that out
     return (
-      React.createElement(MagicMove, {className: "streamList row stream-list"}, 
+      React.createElement("div", {className: "streamList row stream-list"}, 
         allNodes
       )
     );

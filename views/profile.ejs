@@ -1,5 +1,15 @@
 <div class="row">
   <div class="col-sm-4 col-sm-offset-4">
+  <% if (locals.notice){ %>
+    <% locals.notice.forEach( function(notice){ 
+      var notice_kind = Object.keys(notice)[0]
+      %>
+      <div class="alert alert-<%= notice_kind %> alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <%= notice[notice_kind] %>
+      </div>
+    <% }) %>
+  <% } %>
   <h1 align="center" style="color: white;">Profile for: <%=  user.overrustle_username %></h1>
     <h3 style="color: white;">Set Channel: &nbsp;
         <a href="/<%= user.overrustle_username %>">
@@ -17,16 +27,17 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="channelStream" style="color: white;">Channel</label>
+        <label for="channelStream" style="color: white;">Channel on that service </label>
         <input id="channelStream" type="text" name="stream" class="form-control" placeholder="Stream/Video ID"
             value="<%= user.stream %>" />
       </div>
       <div class="form-group">
-        <label for="channelStream" style="color: white;">OverRustle.com Channel Name</label>
-        <input id="channelStream" type="text" name="stream" class="form-control" placeholder="Stream/Video ID"
-            value="<%= user.stream %>" />
+        <label for="channelUsername" style="color: white;">OverRustle.com Channel Name</label>
+        <input id="channelUsername" type="text" name="overrustle_username" class="form-control" placeholder="OverRustle.com username"
+            value="<%= user.overrustle_username %>"  <%= (user.allowchange === 'true') ? '' : 'disabled' %>  />
       </div>
       <button type="submit" class="btn btn-primary">Update</button>
     </form>
+    <hr>
   </div>
 </div>

@@ -1,6 +1,6 @@
 var React = require('react');
 global.React = React;
-var MagicMove = require('./react-magic-move');
+// var MagicMove = require('./react-magic-move');
 var classNames = require('classnames');
 
 var process_api = function(api_data) {
@@ -102,10 +102,11 @@ var StreamList = React.createClass({
       allNodes.push(<div key={i} className="clear"></div>)
     })
     // console.log(allNodes)
+    // change these divs to MagicMove elements when we figure that out
     return (
-      <MagicMove className="streamList row stream-list">
+      <div className="streamList row stream-list">
         {allNodes}
-      </MagicMove>
+      </div>
     );
   }
 });

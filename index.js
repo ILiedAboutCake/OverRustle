@@ -16,7 +16,13 @@ var express = require('express');
 var favicon = require('serve-favicon');
 var redis = require('redis');
 var request = require('request');
-var app = express();
+var bodyParser = require('body-parser')
+ 
+var app = express()
+// parse application/x-www-form-urlencoded 
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json 
+app.use(bodyParser.json())
 
 var constants = require("./jsx/constants.js");
 
@@ -65,7 +71,7 @@ app.use(session({
 
 // test layout of how we should probably format redis users
 redis_client.hmset(
-  'user:dank_memester', //changable overrustle user name
+  'user:dank_memester', //change able overrustle user name
   'stream', '19949118', //stream set from their profile
   'service', 'ustream', //service set from their profile
   'id','30384275', //twitch user ID from OAuth
@@ -77,7 +83,7 @@ redis_client.hmset(
 // maintain in index of twitchuser -> overrustle_username
 redis_client.set(
   'twitchuser:iliedaboutcake', 
-  'dank_memester' //changable overrustle user name
+  'dank_memester' //change able overrustle user name
   ); 
 
 
@@ -200,12 +206,17 @@ app.get ('/destinychat', function(req, res, next){
   // TODO: redirect to new-style URLS once the API is upgraded
 
   console.log("/destinychat?s=service&stream=stream")
-  res.render("layout", {
-    user: req.session.user,
-    page: "service", 
-    stream: req.query.stream, 
-    service: req.query.s
-  })
+  // set to false when we want to drop backwards compatibility
+  if(true){
+    res.render("layout", {
+      user: req.session.user,
+      page: "service", 
+      stream: req.query.stream, 
+      service: req.query.s
+    })
+  }else{
+    res.redirect(req.query.s+"/"+req.query.stream)
+  }
 });
 
 // WARNING: if you get an ADVANCED stream with hashbangs in the URL they won't get past the form
@@ -223,17 +234,16 @@ app.post("/channel", function(req, res, next){
   console.log("/channel", req.originalUrl)
 })
 
-app.post ('/profile', function(req, res, next) {
-  console.log("POST", req.originalUrl)
-  res.end(req.originalUrl)
-})
-
 app.get ('/profile', function(req, res, next) {
   console.log("GET", req.originalUrl)
   if (req.session.user) {
+    // clear out notices
+    var notice = req.session.notice
+    req.session.notice = undefined
     res.render("layout", {
       page: "profile", 
       page_title: "Profile for "+req.session.user.overrustle_username,
+      notice: notice,
       user: req.session.user
     })
   }else{
@@ -245,18 +255,27 @@ app.get ('/profile', function(req, res, next) {
 app.post('/profile/:overrustle_username', function (req, res, next) {
 
   var current_user = req.session.user;
-  if(current_user.overrustle_username == req.body.overrustle_username){
+  console.log(req.params, req.body)
+  if(current_user.overrustle_username == req.params.overrustle_username){
     var new_settings = {
       service: req.body.service,
       stream: req.body.stream
     }
-    if (current_user.changable && req.body.overrustle_username.length > 0) {
+    if ((current_user.allowchange === "true") && req.body.overrustle_username.length > 0) {
       current_user.overrustle_username = req.body.overrustle_username
       new_settings['overrustle_username'] = current_user.overrustle_username
       redis_client.set(
         "twitchuser:"+current_user.twitchuser,
         current_user.overrustle_username
         )
+      // only allow 1 name change
+      // if(!current_user.admin){
+      //   new_settings['allowchange'] = false
+      // }
+    }else if(current_user.overrustle_username != req.body.overrustle_username){
+      // TODO: abstract notices
+      req.session.notice = req.session.notice ? req.session.notice : []
+      req.session.notice.push({"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
     }
 
     redis_client.hmset(
@@ -270,6 +289,9 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
         }
         // TODO: support admin changing other's data
         req.session.user = returned;
+        // TODO: abstract notices
+        req.session.notice = req.session.notice ? req.session.notice : []
+        req.session.notice.push({"success": "Your profile was sucessfully updated!"})
         res.redirect('/profile')
       });
     }); 
@@ -333,7 +355,7 @@ app.get("/oauth/twitch", function(req, res, next){
         // reply is null when the key is missing
         var new_settings = {}
         new_settings['lastseen'] = new Date().toISOString();
-        new_settings['lastip'] = req.headers.hasOwnProperty('x-forwarded-for') ? req.headers['x-forwarded-for'] : req.connection._peername.address
+        new_settings['lastip'] = req.headers.hasOwnProperty('x-forwarded-for') ? req.headers['x-forwarded-for'] : req.connection.remoteAddress
         var overrustle_username = reply;
         if(overrustle_username == null){
           overrustle_username = json['name'];
@@ -385,6 +407,7 @@ app.get ('/:channel', function(req, res, next) {
         service: returned.service
       })
     } else {
+      console.log('no channel found for', req.params.channel.toLowerCase())
       next();
     }
   });
