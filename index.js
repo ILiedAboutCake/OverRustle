@@ -269,9 +269,9 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
         current_user.overrustle_username
         )
       // only allow 1 name change
-      // if(!current_user.admin){
-      //   new_settings['allowchange'] = false
-      // }
+      if(current_user.admin !== "true"){
+        new_settings['allowchange'] = false
+      }
     }else if(current_user.overrustle_username != req.body.overrustle_username){
       // TODO: abstract notices
       req.session.notice = req.session.notice ? req.session.notice : []
