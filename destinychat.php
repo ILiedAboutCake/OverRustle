@@ -18,6 +18,24 @@ if(empty($t))
 {
   $t = "0";
 }
+
+//support the new way of twitch vod loading
+if($s == "twitch-vod")
+{
+  $httpsearch = strripos($stream, "http://");
+  $twitchVOD = explode("/", $stream);
+  if($httpsearch === FALSE)
+  {
+    $channel = $twitchVOD['1'];
+    $stream = $twitchVOD['2'] . $twitchVOD['3'];
+  }
+  else
+  {
+    $channel = $twitchVOD['3'];
+    $stream = $twitchVOD['4'] . $twitchVOD['5'];
+  }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +97,7 @@ if(empty($t))
   <div class="container-full fill">
     <div class="pull-left stream-box" id="map">
       <?php
-      switch(strtolower($s)) 
+      switch(strtolower($s))
       {
         case "twitch":
           echo '<iframe width="100%" height="100%" marginheight="0" marginwidth="0" frameborder="0" src="http://www.twitch.tv/' . $stream . '/embed" scrolling="no"></iframe>';
@@ -87,13 +105,14 @@ if(empty($t))
           
         case "twitch-vod":
           echo "
-            <object data='http://www.twitch.tv/widgets/archive_embed_player.swf' id='clip_embed_player_flash' type='application/x-shockwave-flash' width='100%' height='100%'>
-              <param name='movie' value='http://www.twitch.tv/widgets/archive_embed_player.swf' />
-              <param name='allowScriptAccess' value='always' />
-              <param name='allowNetworking' value='all' />
+            <object bgcolor='#000000' data='//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf' height='100%' type='application/x-shockwave-flash' width='100%'> 
               <param name='allowFullScreen' value='true' />
-              <param name='flashvars' value='initial_time=" . $t . "&start_volume=25&auto_play=true&archive_id=" . $stream . "' />
-            </object>";
+              <param name='allowNetworking' value='all' />
+              <param name='allowScriptAccess' value='always' />
+              <param name='movie' value='//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf' /> 
+              <param name='flashvars' value='channel=" . $channel . "&start_volume=50&auto_play=true&videoId=" . $stream . "&initial_time=" . $t . "' />
+            </object>
+            ";
           break;
 
         case "nsfw-chaturbate":
