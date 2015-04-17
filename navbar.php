@@ -14,6 +14,7 @@ $SERVICE_OPTIONS = array(
     "dailymotion" => "Dailymotion",
     "azubu" => "Azubu",
     "picarto" => "Picarto",
+    "livestream" => "Livestream",
     "advanced" => "Advanced"
 );
 
