@@ -55,6 +55,7 @@ if($s == "twitch-vod")
     $channel = $twitchVOD['3'];
     $stream = $twitchVOD['4'] . $twitchVOD['5'];
   }
+}
 
 //handle stream blacklists even in channels
 require_once 'blacklist.php';
