@@ -9,9 +9,22 @@ var process_api = function(api_data) {
 
   var stream_list = []
 
+  var shownsfw = false
+
+  if(typeof localStorage != 'undefined'){
+    shownsfw = localStorage.getItem("shownsfw")=="true"
+  }
+  console.log("SHOWING NSFW?", shownsfw)
+
   for ( var strim in strims ) {
     if ( Object.prototype.hasOwnProperty.call(strims, strim) ) {
-      stream_list.push(api_data.metadata[api_data.metaindex[strim]])
+      if (strim.toLowerCase().indexOf('nsfw') !== -1) {
+        if(shownsfw){
+          stream_list.push(api_data.metadata[api_data.metaindex[strim]])
+        }
+      }else{
+        stream_list.push(api_data.metadata[api_data.metaindex[strim]])
+      }
     }
   }
   // console.log(stream_list.length, ' long stream list, ex:', stream_list[0])
@@ -72,7 +85,10 @@ var StreamList = React.createClass({displayName: "StreamList",
     var list = this.props.stream_list || [];
     // console.log('rendering stream list', list.length, "long list")
     // console.log(list)
-    var streamNodes = list.map(function (stream) {
+
+    var allNodes = []
+    var i = 0;
+    list.forEach(function (stream) {
       // config the name/title/label
       if(!stream){
         stream = {}
@@ -81,6 +97,7 @@ var StreamList = React.createClass({displayName: "StreamList",
       if(stream.hasOwnProperty('name') && stream.name.length > 0){
         stream.label = stream.name+"\'s channel"
       }
+
       // config the badge/view counter
       var classes = classNames({
         'pull-right label label-as-badge': true,
@@ -88,19 +105,14 @@ var StreamList = React.createClass({displayName: "StreamList",
         'label-danger': !stream['live']
       });
 
-      var visibility = stream['live'] ? 'visible' : 'hidden' 
-
-      return (
-        React.createElement(Stream, {key: stream.url, stream: stream, live_class: classes, visibility: visibility})
+      allNodes.push(
+        React.createElement(Stream, {key: stream.url, stream: stream, live_class: classes})
       );
-    });
-    var allNodes = []
-    var i = 0;
-    streamNodes.forEach(function(s){
-      allNodes.push(s)
       i = i + 1;
-      allNodes.push(React.createElement("div", {key: i, className: "clear"}))
-    })
+      var clearkey = "clear-"+stream.url;
+
+      allNodes.push(React.createElement("div", {key: clearkey, className: "clear"}))
+    });
     // console.log(allNodes)
     // change these divs to MagicMove elements when we figure that out
     return (
@@ -118,7 +130,7 @@ var Stream = React.createClass({displayName: "Stream",
     return (
       React.createElement("div", {className: "sortableStream stream col-xs-12 col-sm-4 col-md-3 col-lg-2"}, 
         React.createElement("div", {className: "thumbnail"}, 
-          React.createElement("a", {href: this.props.stream.url, className: this.props.visibility}, 
+          React.createElement("a", {href: this.props.stream.url}, 
             React.createElement("img", {className: "stream-thumbnail", src: this.props.stream.image_url, alt: this.props.stream.label})
           ), 
           React.createElement("div", {className: "caption"}, 

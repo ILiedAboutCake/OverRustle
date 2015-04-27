@@ -8,6 +8,15 @@ var socket = io('http://api.overrustle.com/streams');
 //   socket.emit("idle", {"/strims"})
 //})
 
+$('#show-nsfw').prop('checked', localStorage.getItem("shownsfw")=="true")
+$('#show-nsfw').change(function(){
+  var shownsfw = $(this).prop('checked')
+  console.log(shownsfw)
+  localStorage.setItem("shownsfw", shownsfw);
+  // TODO: refresh streams here
+  socket.emit('api')
+})
+
 socket.on('error', function(error){
   console.log(error)
   status = "<div class='label label-warning col-md-4' role='alert'>Tracking server is currently offline.</div>"
@@ -23,20 +32,9 @@ socket.on('strims', function(api_data){
   $.each(strims, function(strim, svc){
     strim_list.push(api_data.metadata[api_data.metaindex[strim]])
   });
-  strim_list.sort(function(a,b) {
-    // give LIVE streams more weight in sorting higher
-    var amulti = a.hasOwnProperty('metadata') && a['metadata'].hasOwnProperty('live') ? 10 : 1 ;
-    var bmulti = b.hasOwnProperty('metadata') && b['metadata'].hasOwnProperty('live') ? 10 : 1 ;
-    if (amulti*a.viewercount < bmulti*b.viewercount)
-       return 1;
-    if (amulti*a.viewercount > bmulti*b.viewercount)
-      return -1;
-    return 0;
-  })
 
   $('#viewercount').html(viewercount)
   // drawMustache(strims, strim_list)
-  $(document).trigger('strim_list', [strim_list])
   console.log('sending api data', api_data);
   $(document).trigger('api_data', [api_data])
 });
