@@ -11,6 +11,7 @@ $SERVICE_OPTIONS = array(
     "youtube-playlist" => "Youtube (Playlist)",
     "mlg" => "MLG (Beta*)",
     "ustream" => "Ustream (Beta*)",
+    "vaughn" => "Vaughnlive",
     "dailymotion" => "Dailymotion",
     "azubu" => "Azubu",
     "picarto" => "Picarto",
@@ -40,7 +41,7 @@ $SERVICE_OPTIONS = array(
             if ($config['chat_enable']) {
                 $otherchat = 'Channel';
             }
-        } elseif (!empty($s) && in_array($s, array('twitch', 'hitbox', 'ustream', 'azubu'))) {
+        } elseif (!empty($s) && in_array($s, array('twitch', 'hitbox', 'ustream', 'azubu', 'vaughn'))) {
           $otherchat = ucfirst($s);
         }
 
