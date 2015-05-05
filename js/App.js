@@ -72,9 +72,16 @@ var StreamBox = React.createClass({displayName: "StreamBox",
   },
   render: function() {
     // console.log(this.state.stream_list.length, ' rendering that long list', this.state.stream_list[0])
+    this.state.live_stream_list = this.state.stream_list.filter(function (stream) {
+      return stream['live']
+    })
+    this.state.offline_stream_list = this.state.stream_list.filter(function (stream) {
+      return !stream['live']
+    })
     return (
       React.createElement("div", {className: "streamBox"}, 
-        React.createElement(StreamList, {key: "stream-list", stream_list: this.state.stream_list})
+        React.createElement(StreamList, {key: "stream-list", stream_list: this.state.live_stream_list}), 
+        React.createElement(StreamList, {key: "stream-list", stream_list: this.state.offline_stream_list})
       )
     );
   }

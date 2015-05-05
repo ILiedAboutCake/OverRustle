@@ -219,7 +219,8 @@ app.get ('/destinychat', function(req, res, next){
   }
 });
 
-// WARNING: if you get an ADVANCED stream with hashbangs in the URL they won't get past the form
+// WARNING: if you get an ADVANCED stream with 
+// hashbangs in the URL they won't get past the form
 app.get ('/:service/:stream', function(req, res, next) {
   //handle normal streaming services here
   console.log("/service/channel")
@@ -238,12 +239,10 @@ app.get ('/profile', function(req, res, next) {
   console.log("GET", req.originalUrl)
   if (req.session.user) {
     // clear out notices
-    var notice = req.session.notice
-    req.session.notice = undefined
     res.render("layout", {
       page: "profile", 
       page_title: "Profile for "+req.session.user.overrustle_username,
-      notice: notice,
+      notice: noticePop(req),
       user: req.session.user
     })
   }else{
@@ -274,8 +273,7 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
       }
     }else if(current_user.overrustle_username != req.body.overrustle_username){
       // TODO: abstract notices
-      req.session.notice = req.session.notice ? req.session.notice : []
-      req.session.notice.push({"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
+      noticeAdd(req, {"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
     }
 
     redis_client.hmset(
@@ -290,8 +288,7 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
         // TODO: support admin changing other's data
         req.session.user = returned;
         // TODO: abstract notices
-        req.session.notice = req.session.notice ? req.session.notice : []
-        req.session.notice.push({"success": "Your profile was sucessfully updated!"})
+        noticeAdd(req, {"success": "Your profile was sucessfully updated!"})
         res.redirect('/profile')
       });
     }); 
@@ -401,10 +398,20 @@ app.get ('/:channel', function(req, res, next) {
   //handle the channel code here, look up the channel in redis
   redis_client.hgetall('user:' + req.params.channel.toLowerCase(), function(err, returned) {
     if (returned) {
-      res.render("layout", {
-        page: "service", 
-        stream: returned.stream, 
-        service: returned.service
+      isBanned(returned.stream, function (berr, breturned) {
+        if(berr){
+          return next(berr)
+        }
+        if (breturned) {
+          noticeAdd(req, {"error": returned.stream+" is banned. "+breturned})
+          res.redirect('/')
+        }else{
+          res.render("layout", {
+            page: "service", 
+            stream: returned.stream, 
+            service: returned.service
+          })
+        }
       })
     } else {
       console.log('no channel found for', req.params.channel.toLowerCase())
@@ -412,3 +419,20 @@ app.get ('/:channel', function(req, res, next) {
     }
   });
 });
+
+function isBanned (stream, cb) {
+  redis_client.hmget('banlist', stream, cb)
+}
+
+
+// move to notice.js
+function noticeAdd(req, obj){
+  req.session.notice = req.session.notice ? req.session.notice : []
+  req.session.notice.push(obj)
+}
+
+function noticePop(req){
+  var tmpnotice = req.session.notice
+  req.session.notice = undefined
+  return tmpnotice
+}

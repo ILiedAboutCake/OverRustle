@@ -34,7 +34,17 @@
 
   <body>
     <% include partial/navbar.ejs %>
-    <div class="container-full fill">
+    <div class="container-full fill">    
+      <% if (locals.notice){ %>
+        <% locals.notice.forEach( function(notice){ 
+          var notice_kind = Object.keys(notice)[0]
+          %>
+          <div class="alert alert-<%= notice_kind %> alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <%= notice[notice_kind] %>
+          </div>
+        <% }) %>
+      <% } %>
       <%- include(page) %>
       <% if(!locals.service || !locals.stream){ %> 
         <div style="text-align: center; color: #FFFFFF;">
