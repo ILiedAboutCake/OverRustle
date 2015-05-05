@@ -43,8 +43,16 @@ var process_api = function(api_data) {
 // tutorial3.js
 var StreamBox = React.createClass({displayName: "StreamBox",
   getInitialState: function() {
+    var npl = process_api(this.props.api_data)
+    var new_props = {}
     // called server-side
-    return {stream_list: process_api(this.props.api_data)};
+    new_props.live_stream_list = npl.filter(function (stream) {
+      return stream['live']
+    })
+    new_props.offline_stream_list = npl.filter(function (stream) {
+      return !stream['live']
+    })
+    return new_props;
   },
   componentDidMount: function () {
     // called on client side?
@@ -55,7 +63,15 @@ var StreamBox = React.createClass({displayName: "StreamBox",
       console.log('new api data', api_data)
       var npl = process_api(api_data)
       console.log('new processed api data', npl)
-      this.setState({stream_list: npl})
+      var new_state = {
+        live_stream_list: npl.filter(function (stream) {
+          return stream['live']
+        }),
+        offline_stream_list: npl.filter(function (stream) {
+          return !stream['live']
+        })
+      }
+      this.setState(new_state)
     }.bind(this));
 
     // todo: hook into state change
@@ -72,12 +88,6 @@ var StreamBox = React.createClass({displayName: "StreamBox",
   },
   render: function() {
     // console.log(this.state.stream_list.length, ' rendering that long list', this.state.stream_list[0])
-    this.state.live_stream_list = this.state.stream_list.filter(function (stream) {
-      return stream['live']
-    })
-    this.state.offline_stream_list = this.state.stream_list.filter(function (stream) {
-      return !stream['live']
-    })
     return (
       React.createElement("div", {className: "streamBox"}, 
         React.createElement(StreamList, {key: "live-stream-list", stream_list: this.state.live_stream_list}), 
