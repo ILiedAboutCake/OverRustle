@@ -90,7 +90,9 @@ var StreamBox = React.createClass({
     // console.log(this.state.stream_list.length, ' rendering that long list', this.state.stream_list[0])
     return (
       <div className="streamBox">
+        <h3>Live Streams</h3>
         <StreamList key="live-stream-list" stream_list={this.state.live_stream_list} />
+        <h3>Offline Streams</h3>
         <StreamList key="offline-stream-list" stream_list={this.state.offline_stream_list} />
       </div>
     );
