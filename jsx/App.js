@@ -80,8 +80,8 @@ var StreamBox = React.createClass({
     })
     return (
       <div className="streamBox">
-        <StreamList key="stream-list" stream_list={this.state.live_stream_list} />
-        <StreamList key="stream-list" stream_list={this.state.offline_stream_list} />
+        <StreamList key="live-stream-list" stream_list={this.state.live_stream_list} />
+        <StreamList key="offline-stream-list" stream_list={this.state.offline_stream_list} />
       </div>
     );
   }

@@ -80,8 +80,8 @@ var StreamBox = React.createClass({displayName: "StreamBox",
     })
     return (
       React.createElement("div", {className: "streamBox"}, 
-        React.createElement(StreamList, {key: "stream-list", stream_list: this.state.live_stream_list}), 
-        React.createElement(StreamList, {key: "stream-list", stream_list: this.state.offline_stream_list})
+        React.createElement(StreamList, {key: "live-stream-list", stream_list: this.state.live_stream_list}), 
+        React.createElement(StreamList, {key: "offline-stream-list", stream_list: this.state.offline_stream_list})
       )
     );
   }
