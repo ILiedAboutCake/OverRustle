@@ -124,8 +124,10 @@ var StreamList = React.createClass({
         'label-danger': !stream['live']
       });
 
+      var shown_thumb = stream.live ? "" : "hidden"
+
       allNodes.push(
-        <Stream key={stream.url} stream={stream} live_class={classes} />
+        <Stream key={stream.url} stream={stream} shown_thumb={shown_thumb} live_class={classes} />
       );
       i = i + 1;
       var clearkey = "clear-"+stream.url;
@@ -149,7 +151,7 @@ var Stream = React.createClass({
     return (
       <div className="sortableStream stream col-xs-12 col-sm-4 col-md-3 col-lg-2">
         <div className="thumbnail">
-          <a href={this.props.stream.url}>
+          <a href={this.props.stream.url} className={this.props.shown_thumb}>
             <img className="stream-thumbnail" src={this.props.stream.image_url} alt={this.props.stream.label} />
           </a>
           <div className="caption">
