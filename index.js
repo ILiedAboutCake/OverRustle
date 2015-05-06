@@ -113,31 +113,9 @@ global.TWITCH_OAUTH_URL = 'https://api.twitch.tv/kraken/oauth2/authorize?respons
 // This is our React component, shared by server and browser thanks to browserify
 /////////////////
 // server side react js
-var browserify = require('browserify'),
-    literalify = require('literalify'),
-    React = require('react');
-
+var React = require('react');
 var addons = require('react-addons');
-
 var App = React.createFactory(require('./js/App'))
-
-var browserified_bundle = browserify()
-    .require('react')
-    .require('react-addons')
-    .require('./js/App')
-    .transform({global: true}, literalify.configure({react: 'window.React'}))
-function pipeBundleJS(res){
-  browserified_bundle.bundle().pipe(res)
-}
-
-// end server side react js
-app.get('/bundle.js', function (req, res) {
-  console.log('getting js bundle')
-  res.setHeader('Content-Type', 'text/javascript')
-  pipeBundleJS(res)
-})
-/////////////////
-
 
 // cache the stream list from the API
 // so that the HTML we serve on first load is fresh

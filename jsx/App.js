@@ -14,7 +14,7 @@ var process_api = function(api_data) {
   if(typeof localStorage != 'undefined'){
     shownsfw = localStorage.getItem("shownsfw")=="true"
   }
-  console.log("SHOWING NSFW?", shownsfw)
+  // console.log("SHOWING NSFW?", shownsfw)
 
   for ( var strim in strims ) {
     if ( Object.prototype.hasOwnProperty.call(strims, strim) ) {
@@ -112,7 +112,7 @@ var StreamList = React.createClass({
       if(!stream){
         stream = {}
       }
-      stream.label = stream.channel+" on "+stream.platform
+      stream.label = stream.channel+"<br> on "+stream.platform
       if(stream.hasOwnProperty('name') && stream.name.length > 0){
         stream.label = stream.name+"\'s channel"
       }
@@ -156,7 +156,12 @@ var Stream = React.createClass({
           </a>
           <div className="caption">
             <div>
-              <a href={this.props.stream.url} > {this.props.stream.label}</a>
+              <div className="stream-label">
+                <a href={this.props.stream.url}> 
+                  <div> {this.props.stream.channel}</div>
+                  <div> on {this.props.stream.platform}</div>
+                </a>
+              </div>
               <span className={this.props.live_class}>
                 {this.props.stream.rustlers} <span className="glyphicon glyphicon-user" aria-hidden="true"></span> 
               </span>

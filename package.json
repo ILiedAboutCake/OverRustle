@@ -4,8 +4,9 @@
   "description": "OverRustle Core",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "node node_modules/react-tools/bin/jsx jsx/ js/ --harmony"
+    "prestart": "node node_modules/react-tools/bin/jsx jsx/ js/ --harmony && node bundler.js"
   },
   "author": "",
   "license": "ISC",

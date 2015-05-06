@@ -92,6 +92,10 @@ body.embed
   box-sizing: border-box;
 }
 
+.stream-label {
+  display: inline-block;
+}
+
 
 /* add a little bottom space under the images */
 

@@ -14,7 +14,7 @@ var process_api = function(api_data) {
   if(typeof localStorage != 'undefined'){
     shownsfw = localStorage.getItem("shownsfw")=="true"
   }
-  console.log("SHOWING NSFW?", shownsfw)
+  // console.log("SHOWING NSFW?", shownsfw)
 
   for ( var strim in strims ) {
     if ( Object.prototype.hasOwnProperty.call(strims, strim) ) {
@@ -112,7 +112,7 @@ var StreamList = React.createClass({displayName: "StreamList",
       if(!stream){
         stream = {}
       }
-      stream.label = stream.channel+" on "+stream.platform
+      stream.label = stream.channel+"<br> on "+stream.platform
       if(stream.hasOwnProperty('name') && stream.name.length > 0){
         stream.label = stream.name+"\'s channel"
       }
@@ -156,7 +156,12 @@ var Stream = React.createClass({displayName: "Stream",
           ), 
           React.createElement("div", {className: "caption"}, 
             React.createElement("div", null, 
-              React.createElement("a", {href: this.props.stream.url}, " ", this.props.stream.label), 
+              React.createElement("div", {className: "stream-label"}, 
+                React.createElement("a", {href: this.props.stream.url}, 
+                  React.createElement("div", null, " ", this.props.stream.channel), 
+                  React.createElement("div", null, " on ", this.props.stream.platform)
+                )
+              ), 
               React.createElement("span", {className: this.props.live_class}, 
                 this.props.stream.rustlers, " ", React.createElement("span", {className: "glyphicon glyphicon-user", "aria-hidden": "true"})
               )
