@@ -8,15 +8,6 @@ var socket = io('http://api.overrustle.com/streams');
 //   socket.emit("idle", {"/strims"})
 //})
 
-$('#show-nsfw').prop('checked', localStorage.getItem("shownsfw")=="true")
-$('#show-nsfw').change(function(){
-  var shownsfw = $(this).prop('checked')
-  console.log(shownsfw)
-  localStorage.setItem("shownsfw", shownsfw);
-  // TODO: refresh streams here
-  socket.emit('api')
-})
-
 socket.on('error', function(error){
   console.log(error)
   status = "<div class='label label-warning col-md-4' role='alert'>Tracking server is currently offline.</div>"

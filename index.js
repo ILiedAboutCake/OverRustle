@@ -183,14 +183,16 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
 app.get ('/destinychat', function(req, res, next){
   // TODO: redirect to new-style URLS once the API is upgraded
 
-  console.log("/destinychat?s=service&stream=stream")
+  console.log("/destinychat", req.originalUrl)
   // set to false when we want to drop backwards compatibility
   if(true){
-    res.render("layout", {
-      user: req.session.user,
-      page: "service", 
-      stream: req.query.stream, 
-      service: req.query.s
+    validateBanned(req.query.stream, res, function (err){
+      res.render("layout", {
+        user: req.session.user,
+        page: "service", 
+        stream: req.query.stream, 
+        service: req.query.s
+      })
     })
   }else{
     res.redirect(req.query.s+"/"+req.query.stream)
@@ -202,8 +204,14 @@ app.get ('/destinychat', function(req, res, next){
 app.get ('/:service/:stream', function(req, res, next) {
   //handle normal streaming services here
   console.log("/service/channel")
-  if (global.SERVICE_NAMES[req.params.service]) {
-    res.render("layout", {page: "service", stream: req.params.stream, service: req.params.service})
+  if (global.SERVICE_NAMES.hasOwnProperty(req.params.service)) {
+    validateBanned(req.params.stream, res, function (err) {
+      res.render("layout", {
+        page: "service", 
+        stream: req.params.stream, 
+        service: req.params.service
+      })
+    })
   }else{
     next();
   }
@@ -376,20 +384,12 @@ app.get ('/:channel', function(req, res, next) {
   //handle the channel code here, look up the channel in redis
   redis_client.hgetall('user:' + req.params.channel.toLowerCase(), function(err, returned) {
     if (returned) {
-      isBanned(returned.stream, function (berr, breturned) {
-        if(berr){
-          return next(berr)
-        }
-        if (breturned) {
-          noticeAdd(req, {"error": returned.stream+" is banned. "+breturned})
-          res.redirect('/')
-        }else{
-          res.render("layout", {
-            page: "service", 
-            stream: returned.stream, 
-            service: returned.service
-          })
-        }
+      validateBanned(returned.stream, res, function (err) {
+        res.render("layout", {
+          page: "service", 
+          stream: returned.stream, 
+          service: returned.service
+        })
       })
     } else {
       console.log('no channel found for', req.params.channel.toLowerCase())
@@ -398,8 +398,22 @@ app.get ('/:channel', function(req, res, next) {
   });
 });
 
-function isBanned (stream, cb) {
-  redis_client.hmget('banlist', stream, cb)
+function validateBanned (stream, res, cb) {
+  isBanned(stream, function (berr, breturned) {
+    if(berr){
+      return next(berr)
+    }
+    if (breturned) {
+      noticeAdd(req, {"error": stream+" is banned. "+breturned})
+      res.redirect('/')
+    }else{
+      cb(berr)
+    }
+  })
+}
+
+function isBanned (stream, bcb) {
+  redis_client.hmget('banlist', stream, bcb)
 }
 
 

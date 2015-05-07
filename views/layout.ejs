@@ -29,12 +29,21 @@
       ga('send', 'pageview');
     </script>
     <script type="text/javascript" src="//api.OverRustle.com/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
   </head>
 
   <body>
     <% include partial/navbar.ejs %>
-    <div class="container-full fill">    
+    <div class="container-full fill"> 
+      <div id="user_settings" class="row collapse">
+        <div class="well well-sm col-md-4 col-md-offset-4">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="show-nsfw"> Show NSFW
+            </label>
+          </div>
+        </div>
+      </div> 
+
       <% if (locals.notice){ %>
         <% locals.notice.forEach( function(notice){ 
           var notice_kind = Object.keys(notice)[0]
@@ -62,7 +71,6 @@
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/overrustle.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/tab.min.js"></script>
-    <script src="//api.OverRustle.com/socket.io/socket.io.js"></script>
     <script src="//api.OverRustle.com/strims.js"></script>
 
   </body>
