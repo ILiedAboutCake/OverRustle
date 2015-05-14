@@ -30,21 +30,27 @@ var constants = require("./jsx/constants.js");
 /////////////////
 try{
   // used for the debug/staging/alpha server
-  if(process.env.REDISTOGO_URL){
-    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-    var redis_client = redis.createClient(rtg.port, rtg.hostname);
+  function makeRedisClient (redis_db) {
+    var rv = null
+    if(process.env.REDISTOGO_URL){
+      var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+      rv = redis.createClient(rtg.port, rtg.hostname);
+      rv.auth(rtg.auth.split(":")[1]);
+    }else{
+      rv = redis.createClient('6379',CONFIG['redis_address']);
+    }
+    rv.select(redis_db); 
 
-    redis_client.auth(rtg.auth.split(":")[1]);
-  }else{
-    var redis_client = redis.createClient('6379',CONFIG['redis_address']);
+    rv.on('connect', function() {
+      console.log('Connected to redis#'+redis_db.toString());
+    });
+
+    return rv
   }
 
-  redis_client.select(0); 
+  var redis_client = makeRedisClient(0);
+  var legacy_redis_client = makeRedisClient(1);
 
-  //tests redis connection
-  redis_client.on('connect', function() {
-    console.log('Connected to redis!');
-  });
 }catch (e){
   // in case redis doesn't exist
   console.log(e)
@@ -74,7 +80,7 @@ redis_client.hmset(
   'user:dank_memester', //change able overrustle user name
   'stream', '19949118', //stream set from their profile
   'service', 'ustream', //service set from their profile
-  'id','30384275', //twitch user ID from OAuth
+  'twitch_user_id','30384275', //twitch user ID from OAuth
   'twitchuser', 'iliedaboutcake', //twitch username
   'allowchange', 0, //allows the user to change username if set to 1
   'lastseen', new Date().toISOString(), //keep track of last seen
@@ -353,7 +359,7 @@ app.get("/oauth/twitch", function(req, res, next){
           new_settings['twitchuser'] = json["name"]
           new_settings['stream'] = json["name"]
           new_settings['service'] = "twitch"
-          new_settings['id'] = json['_id']
+          new_settings['twitch_user_id'] = json['_id']
           // TODO: decide if we want to 
           // allow new users to change their overrustle_username
           new_settings['allowchange'] = false
@@ -396,8 +402,20 @@ app.get ('/:channel', function(req, res, next) {
         })
       })
     } else {
-      console.log('no channel found for', req.params.channel.toLowerCase())
-      next();
+      // DELETE THIS
+      // support legacy channels as long as we feel like
+      legacy_redis_client.hgetall('channel:' + req.params.channel.toLowerCase(), function(lerr, lreturned){
+        if(lreturned){
+          res.render("layout", {
+            page: "service", 
+            stream: lreturned.stream, 
+            service: lreturned.service
+          })
+        }else{
+          console.log('no channel found for', req.params.channel.toLowerCase())
+          next();          
+        }
+      })
     }
   });
 });
