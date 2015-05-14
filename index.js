@@ -389,10 +389,24 @@ app.get('/logout', function (req, res, next) {
   res.redirect('/')
 })
 
-app.get ('/:channel', function(req, res, next) {
+app.get (['/channel', '/:channel'], function(req, res, next) {
   console.log("/channel", req.originalUrl)
+  var channel = null
+
+  // NOTE: channel will be undefined when on /channel specifically
+  // req.params still contains a key for 'channel'
+  // but it points to undefined
+  if(req.params.channel){
+    channel = req.params.channel.toLowerCase()
+  }
+
+  // LEGACY SUPPORT DELETE THIS EVENTUALLY
+  if(channel == null && req.query.hasOwnProperty('user')){
+    channel = req.query.user.toLowerCase()
+  }
+
   //handle the channel code here, look up the channel in redis
-  redis_client.hgetall('user:' + req.params.channel.toLowerCase(), function(err, returned) {
+  redis_client.hgetall('user:' + channel, function(err, returned) {
     if (returned) {
       validateBanned(returned.stream, req, res, function (err) {
         res.render("layout", {
@@ -404,7 +418,7 @@ app.get ('/:channel', function(req, res, next) {
     } else {
       // DELETE THIS
       // support legacy channels as long as we feel like
-      legacy_redis_client.hgetall('channel:' + req.params.channel.toLowerCase(), function(lerr, lreturned){
+      legacy_redis_client.hgetall('channel:' + channel, function(lerr, lreturned){
         if(lreturned){
           res.render("layout", {
             page: "service", 
@@ -412,7 +426,7 @@ app.get ('/:channel', function(req, res, next) {
             service: lreturned.service
           })
         }else{
-          console.log('no channel found for', req.params.channel.toLowerCase())
+          console.log('no channel found for', channel)
           next();          
         }
       })
