@@ -8,7 +8,9 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <% if(locals.stream){ %>
-          <li><a href="#"><span id="service-viewers">-</span></a></li>
+          <% if(locals.service === "twitch"){ %>
+            <li><a href="#"><span id="service-viewers">-</span></a></li>
+          <% } %>
           <li><a target="_blank" href="/strims"><div id="server-broadcast"></div></a></li>
         <% } %> 
         <li class="donate"><a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG"><span>Donate</span></a></li>
