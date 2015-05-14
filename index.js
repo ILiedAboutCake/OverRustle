@@ -186,7 +186,7 @@ app.get ('/destinychat', function(req, res, next){
   console.log("/destinychat", req.originalUrl)
   // set to false when we want to drop backwards compatibility
   if(true){
-    validateBanned(req.query.stream, res, function (err){
+    validateBanned(req.query.stream, req, res, function (err){
       res.render("layout", {
         user: req.session.user,
         page: "service", 
@@ -203,9 +203,10 @@ app.get ('/destinychat', function(req, res, next){
 // hashbangs in the URL they won't get past the form
 app.get ('/:service/:stream', function(req, res, next) {
   //handle normal streaming services here
-  console.log("/service/channel")
-  if (global.SERVICE_NAMES.hasOwnProperty(req.params.service)) {
-    validateBanned(req.params.stream, res, function (err) {
+  console.log("/service/channel", req.originalUrl)
+  if (global.SERVICE_NAMES.indexOf(req.params.service !== -1)) {
+    validateBanned(req.params.stream, req, res, function (err) {
+      // console.log("Good Validation!")
       res.render("layout", {
         page: "service", 
         stream: req.params.stream, 
@@ -213,6 +214,9 @@ app.get ('/:service/:stream', function(req, res, next) {
       })
     })
   }else{
+    console.log('bad channel')
+    console.log(req.params.service, 'not in:')
+    console.log(global.SERVICE_NAMES)
     next();
   }
 });
@@ -384,7 +388,7 @@ app.get ('/:channel', function(req, res, next) {
   //handle the channel code here, look up the channel in redis
   redis_client.hgetall('user:' + req.params.channel.toLowerCase(), function(err, returned) {
     if (returned) {
-      validateBanned(returned.stream, res, function (err) {
+      validateBanned(returned.stream, req, res, function (err) {
         res.render("layout", {
           page: "service", 
           stream: returned.stream, 
@@ -398,22 +402,20 @@ app.get ('/:channel', function(req, res, next) {
   });
 });
 
-function validateBanned (stream, res, cb) {
-  isBanned(stream, function (berr, breturned) {
+function validateBanned (stream, req, res, cb) {
+  redis_client.hmget('banlist', stream, function (berr, breturnedarr) {
     if(berr){
       return next(berr)
     }
+    var breturned = breturnedarr[0] 
     if (breturned) {
+      console.log('got isBanned', breturned)
       noticeAdd(req, {"error": stream+" is banned. "+breturned})
       res.redirect('/')
     }else{
       cb(berr)
     }
   })
-}
-
-function isBanned (stream, bcb) {
-  redis_client.hmget('banlist', stream, bcb)
 }
 
 
