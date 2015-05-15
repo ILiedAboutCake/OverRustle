@@ -24,7 +24,7 @@
       <div class="form-group">
         <label for="channelUsername" style="color: white;">OverRustle.com Channel Name</label>
         <input id="channelUsername" type="text" name="overrustle_username" class="form-control" placeholder="OverRustle.com username"
-            value="<%= user.overrustle_username %>"  <%= (user.allowchange === 'true') ? '' : 'disabled' %>  />
+            value="<%= user.overrustle_username %>"  <%= (user.allowchange === 'true' || user.admin === 'true') ? '' : 'disabled' %>  />
       </div>
       <button type="submit" class="btn btn-primary">Update</button>
     </form>
