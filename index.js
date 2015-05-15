@@ -226,15 +226,17 @@ app.get ('/profile', function(req, res, next) {
 
 // TODO: support an admin user changing another user's name
 app.post('/profile/:overrustle_username', function (req, res, next) {
-
+  console.log("POST", req.originalUrl);
   var current_user = req.session.user;
+  console.log("current_user:", current_user)
   console.log(req.params, req.body)
+  
   if(current_user.overrustle_username == req.params.overrustle_username){
     var new_settings = {
       service: req.body.service,
       stream: req.body.stream
     }
-    if ((current_user.allowchange === "true") && req.body.overrustle_username.length > 0) {
+    if ((current_user.admin === "true" || current_user.allowchange === "true") && req.body.overrustle_username.length > 0) {
       current_user.overrustle_username = req.body.overrustle_username
       new_settings['overrustle_username'] = current_user.overrustle_username
       redis_client.set(
