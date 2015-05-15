@@ -357,7 +357,7 @@ app.get('/logout', function (req, res, next) {
 
 // WARNING: if you get an ADVANCED stream with 
 // hashbangs in the URL they won't get past the form
-app.get (['destinychat', '/:service/:stream'], function(req, res, next) {
+app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
   //handle normal streaming services here
   console.log("/service/channel", req.originalUrl)
   
