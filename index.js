@@ -372,7 +372,7 @@ app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
     req.params.stream = req.query.stream
   }
 
-  if (global.SERVICE_NAMES.indexOf(req.params.service !== -1)) {
+  if (req.params.service && global.SERVICE_NAMES.indexOf(req.params.service !== -1)) {
     validateBanned(req.params.stream, req, res, function (err) {
       // console.log("Good Validation!")
       res.render("layout", {
@@ -386,7 +386,9 @@ app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
     console.log('bad channel')
     console.log(req.params.service, 'not in:')
     console.log(global.SERVICE_NAMES)
-    next();
+
+    noticeAdd(req, {"error": "You visited /destinychat without specifying a stream or service"})
+    return res.redirect('/')
   }
 });
 
