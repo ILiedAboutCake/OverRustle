@@ -181,6 +181,7 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
   res.render("layout", {
     user: req.session.user,
     page: "streams",
+    notice: noticePop(req),
     page_title: page_title,
     react_props: props, 
     rendered_streams: React.renderToString(App(props))    
