@@ -387,7 +387,7 @@ app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
     console.log(req.params.service, 'not in:')
     console.log(global.SERVICE_NAMES)
 
-    noticeAdd(req, {"error": "You visited /destinychat without specifying a stream or service"})
+    noticeAdd(req, {"danger": "You visited /destinychat without specifying a stream or service"})
     return res.redirect('/')
   }
 });
@@ -410,7 +410,7 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
 
   if(channel == null){
     console.log('no channel specified')
-    noticeAdd(req, {"error": "You visited /channel without specifying a channel"})
+    noticeAdd(req, {"danger": "You visited /channel without specifying a channel"})
     return res.redirect('/')
   }
 
@@ -453,7 +453,7 @@ function validateBanned (stream, req, res, cb) {
     var breturned = breturnedarr[0] 
     if (breturned) {
       console.log('got isBanned', breturned)
-      noticeAdd(req, {"error": stream+" is banned. "+breturned})
+      noticeAdd(req, {"danger": stream+" is banned. "+breturned})
       res.redirect('/')
     }else{
       cb(berr)
