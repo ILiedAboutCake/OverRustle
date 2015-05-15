@@ -177,33 +177,16 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
   var props = {
     api_data: static_api_data
   }
+  var page_title = Object.keys(static_api_data.streams).length + " Live Streams viewed by " + static_api_data.viewercount + " rustlers"
   res.render("layout", {
     user: req.session.user,
     page: "streams",
+    page_title: page_title,
     react_props: props, 
     rendered_streams: React.renderToString(App(props))    
   })
 });
 
-// backwards compatibility:
-app.get ('/destinychat', function(req, res, next){
-  // TODO: redirect to new-style URLS once the API is upgraded
-
-  console.log("/destinychat", req.originalUrl)
-  // set to false when we want to drop backwards compatibility
-  if(true){
-    validateBanned(req.query.stream, req, res, function (err){
-      res.render("layout", {
-        user: req.session.user,
-        page: "service", 
-        stream: req.query.stream, 
-        service: req.query.s
-      })
-    })
-  }else{
-    res.redirect(req.query.s+"/"+req.query.stream)
-  }
-});
 
 app.post("/channel", function(req, res, next){
   console.log("/channel", req.originalUrl)
@@ -371,16 +354,29 @@ app.get('/logout', function (req, res, next) {
   res.redirect('/')
 })
 
+
 // WARNING: if you get an ADVANCED stream with 
 // hashbangs in the URL they won't get past the form
-app.get ('/:service/:stream', function(req, res, next) {
+app.get (['destinychat', '/:service/:stream'], function(req, res, next) {
   //handle normal streaming services here
   console.log("/service/channel", req.originalUrl)
+  
+  // backwards compatibility:
+  // LEGACY SUPPORT
+  // DELETE WHEN DESIRED
+  if(req.query.hasOwnProperty("s")){
+    req.params.service = req.query.s
+  }
+  if(req.query.hasOwnProperty("stream")){
+    req.params.stream = req.query.stream
+  }
+
   if (global.SERVICE_NAMES.indexOf(req.params.service !== -1)) {
     validateBanned(req.params.stream, req, res, function (err) {
       // console.log("Good Validation!")
       res.render("layout", {
         page: "service", 
+        page_title: req.params.stream + ' on ' rq.params.service,
         stream: req.params.stream, 
         service: req.params.service
       })
@@ -409,12 +405,19 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
     channel = req.query.user.toLowerCase()
   }
 
+  if(channel == null){
+    console.log('no channel specified')
+    noticeAdd(req, {"error": "You visited /channel without specifying a channel"})
+    return res.redirect('/')
+  }
+
   //handle the channel code here, look up the channel in redis
   redis_client.hgetall('user:' + channel, function(err, returned) {
     if (returned) {
       validateBanned(returned.stream, req, res, function (err) {
         res.render("layout", {
           page: "service", 
+          page_title: channel + " streaming from " + returned.stream + " on " + returned.service,
           stream: returned.stream, 
           service: returned.service
         })
@@ -426,6 +429,7 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
         if(lreturned){
           res.render("layout", {
             page: "service", 
+            page_title: channel + " streaming from " + lreturned.stream + " on " + lreturned.service,
             stream: lreturned.stream, 
             service: lreturned.service
           })
