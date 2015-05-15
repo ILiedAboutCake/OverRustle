@@ -230,31 +230,33 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
   var current_user = req.session.user;
   console.log("current_user:", current_user)
   console.log(req.params, req.body)
-  
-  if(current_user.overrustle_username == req.params.overrustle_username){
-    var new_settings = {
-      service: req.body.service,
-      stream: req.body.stream
-    }
-    if ((current_user.admin === "true" || current_user.allowchange === "true") && req.body.overrustle_username.length > 0) {
-      current_user.overrustle_username = req.body.overrustle_username
-      new_settings['overrustle_username'] = current_user.overrustle_username
+
+  var original_username = current_user.overrustle_username
+  var new_username = req.body.overrustle_username
+
+  if(current_user.overrustle_username == original_username){
+    current_user.service = req.body.service
+    current_user.stream = req.body.stream
+
+    if ((current_user.admin === "true" || current_user.allowchange === "true") && new_username.length > 0) {
+      current_user.overrustle_username = new_username
+
       redis_client.set(
         "twitchuser:"+current_user.twitchuser,
         current_user.overrustle_username
         )
       // only allow 1 name change
       if(current_user.admin !== "true"){
-        new_settings['allowchange'] = false
+        current_user.allowchange = false
       }
-    }else if(current_user.overrustle_username != req.body.overrustle_username){
+    }else if(original_username != req.body.overrustle_username){
       // TODO: abstract notices
       noticeAdd(req, {"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
     }
 
     redis_client.hmset(
       'user:'+current_user.overrustle_username,
-      new_settings, 
+      current_user, 
     function(err, result){
       redis_client.hgetall('user:'+current_user.overrustle_username, 
       function(err, returned) {
@@ -266,8 +268,8 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
         // TODO: abstract notices
         noticeAdd(req, {"success": "Your profile was sucessfully updated!"})
         res.redirect('/profile')
-      });
-    }); 
+      })
+    })
   }else{
     // TODO: add flash/error notifications
     // TODO: permit admins to edit other users
