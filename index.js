@@ -205,28 +205,6 @@ app.get ('/destinychat', function(req, res, next){
   }
 });
 
-// WARNING: if you get an ADVANCED stream with 
-// hashbangs in the URL they won't get past the form
-app.get ('/:service/:stream', function(req, res, next) {
-  //handle normal streaming services here
-  console.log("/service/channel", req.originalUrl)
-  if (global.SERVICE_NAMES.indexOf(req.params.service !== -1)) {
-    validateBanned(req.params.stream, req, res, function (err) {
-      // console.log("Good Validation!")
-      res.render("layout", {
-        page: "service", 
-        stream: req.params.stream, 
-        service: req.params.service
-      })
-    })
-  }else{
-    console.log('bad channel')
-    console.log(req.params.service, 'not in:')
-    console.log(global.SERVICE_NAMES)
-    next();
-  }
-});
-
 app.post("/channel", function(req, res, next){
   console.log("/channel", req.originalUrl)
 })
@@ -388,6 +366,28 @@ app.get('/logout', function (req, res, next) {
   req.session.user = undefined
   res.redirect('/')
 })
+
+// WARNING: if you get an ADVANCED stream with 
+// hashbangs in the URL they won't get past the form
+app.get ('/:service/:stream', function(req, res, next) {
+  //handle normal streaming services here
+  console.log("/service/channel", req.originalUrl)
+  if (global.SERVICE_NAMES.indexOf(req.params.service !== -1)) {
+    validateBanned(req.params.stream, req, res, function (err) {
+      // console.log("Good Validation!")
+      res.render("layout", {
+        page: "service", 
+        stream: req.params.stream, 
+        service: req.params.service
+      })
+    })
+  }else{
+    console.log('bad channel')
+    console.log(req.params.service, 'not in:')
+    console.log(global.SERVICE_NAMES)
+    next();
+  }
+});
 
 app.get (['/channel', '/:channel'], function(req, res, next) {
   console.log("/channel", req.originalUrl)
