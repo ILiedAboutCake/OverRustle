@@ -376,7 +376,7 @@ app.get (['destinychat', '/:service/:stream'], function(req, res, next) {
       // console.log("Good Validation!")
       res.render("layout", {
         page: "service", 
-        page_title: req.params.stream + ' on ' req.params.service,
+        page_title: req.params.stream + ' on ' + req.params.service,
         stream: req.params.stream, 
         service: req.params.service
       })
