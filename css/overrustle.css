@@ -92,12 +92,14 @@ body.embed
   box-sizing: border-box;
 }
 
-.stream-label {
+.stream-label > a {
   display: block;
-}
-
-.stream-sublabel {
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.stream-label > a:hover{
+  white-space: normal;
 }
 
 /* add a little bottom space under the images */
