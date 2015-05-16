@@ -372,7 +372,7 @@ app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
     req.params.stream = req.query.stream
   }
 
-  if (req.params.service && global.SERVICE_NAMES.indexOf(req.params.service !== -1)) {
+  if (req.params.service && global.SERVICE_NAMES.indexOf(req.params.service) !== -1) {
     validateBanned(req.params.stream, req, res, function (err) {
       // console.log("Good Validation!")
       res.render("layout", {
