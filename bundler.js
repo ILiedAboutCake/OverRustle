@@ -1,4 +1,6 @@
 var fs = require('fs')
+// var reactTools = require('react-tools')
+// reactTools.transform()
 
 var browserify = require('browserify'),
     literalify = require('literalify');

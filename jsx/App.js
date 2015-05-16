@@ -112,9 +112,13 @@ var StreamList = React.createClass({
       if(!stream){
         stream = {}
       }
-      stream.label = stream.channel+"<br> on "+stream.platform
+
       if(stream.hasOwnProperty('name') && stream.name.length > 0){
-        stream.label = stream.name+"\'s channel"
+        stream.label = stream.name
+        stream.sublabel = "via " + stream.channel + " on " + stream.platform
+      }else{
+        stream.label = stream.channel
+        stream.sublabel = "on "+stream.platform
       }
 
       // config the badge/view counter
@@ -158,13 +162,14 @@ var Stream = React.createClass({
             <div>
               <div className="stream-label">
                 <a href={this.props.stream.url}> 
-                  <div> {this.props.stream.channel}</div>
-                  <div> on {this.props.stream.platform}</div>
+                  <div>{this.props.stream.label}
+                    <span className={this.props.live_class}>
+                      {this.props.stream.rustlers} <span className="glyphicon glyphicon-user" aria-hidden="true"></span> 
+                    </span>
+                  </div>
+                  <div className="stream-sublabel">{this.props.stream.sublabel}</div>
                 </a>
               </div>
-              <span className={this.props.live_class}>
-                {this.props.stream.rustlers} <span className="glyphicon glyphicon-user" aria-hidden="true"></span> 
-              </span>
             </div>
           </div>
         </div>

@@ -108,6 +108,17 @@ app.use("/html", express.static(__dirname + '/html'));
 app.use("/fonts", express.static(__dirname + '/fonts'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
+app.use(function (req, res, next) {
+  console.log(Date.now(), req.method, req.originalUrl);
+  res.locals.current_user = req.session.user;
+  next();
+});
+
+app.get(function (req, res, next) {
+  res.locals.notice = noticePop(req)
+  next()
+})
+
 
 global.SERVICES = constants.SERVICES;
 global.SERVICE_NAMES = Object.keys(constants.SERVICES);
@@ -173,15 +184,12 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
   // }
   // sess.views = sess.views + 1;
 
-  console.log(req.originalUrl)
   var props = {
     api_data: static_api_data
   }
   var page_title = Object.keys(static_api_data.streams).length + " Live Streams viewed by " + static_api_data.viewercount + " rustlers"
   res.render("layout", {
-    user: req.session.user,
     page: "streams",
-    notice: noticePop(req),
     page_title: page_title,
     react_props: props, 
     rendered_streams: React.renderToString(App(props))    
@@ -190,18 +198,14 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
 
 
 app.post("/channel", function(req, res, next){
-  console.log("/channel", req.originalUrl)
 })
 
 app.get ('/profile', function(req, res, next) {
-  console.log("GET", req.originalUrl)
   if (req.session.user) {
     // clear out notices
     res.render("layout", {
       page: "profile", 
-      page_title: "Profile for "+req.session.user.overrustle_username,
-      notice: noticePop(req),
-      user: req.session.user
+      page_title: "Profile for "+req.session.user.overrustle_username
     })
   }else{
     res.redirect('/')
@@ -210,7 +214,6 @@ app.get ('/profile', function(req, res, next) {
 
 // TODO: support an admin user changing another user's name
 app.post('/profile/:overrustle_username', function (req, res, next) {
-  console.log("POST", req.originalUrl);
   var current_user = req.session.user;
   console.log("current_user:", current_user)
   console.log(req.params, req.body)
@@ -264,7 +267,6 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
 // twitch will send oauth requests 
 // that use our client_id to this path
 app.get("/oauth/twitch", function(req, res, next){
-  console.log("GET", req.originalUrl)
   if(!req.query.code){
     return next()
   }
@@ -359,9 +361,7 @@ app.get('/logout', function (req, res, next) {
 // WARNING: if you get an ADVANCED stream with 
 // hashbangs in the URL they won't get past the form
 app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
-  //handle normal streaming services here
-  console.log("/service/channel", req.originalUrl)
-  
+  //handle normal streaming services here  
   // backwards compatibility:
   // LEGACY SUPPORT
   // DELETE WHEN DESIRED
@@ -393,7 +393,6 @@ app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
 });
 
 app.get (['/channel', '/:channel'], function(req, res, next) {
-  console.log("/channel", req.originalUrl)
   var channel = null
 
   // NOTE: channel will be undefined when on /channel specifically
@@ -420,7 +419,7 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
       validateBanned(returned.stream, req, res, function (err) {
         res.render("layout", {
           page: "service", 
-          page_title: channel + " streaming from " + returned.stream + " on " + returned.service,
+          page_title: channel + " via " + returned.stream + " on " + returned.service,
           stream: returned.stream, 
           service: returned.service
         })
@@ -432,7 +431,7 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
         if(lreturned){
           res.render("layout", {
             page: "service", 
-            page_title: channel + " streaming from " + lreturned.stream + " on " + lreturned.service,
+            page_title: channel + " via " + lreturned.stream + " on " + lreturned.service,
             stream: lreturned.stream, 
             service: lreturned.service
           })
@@ -442,8 +441,8 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
         }
       })
     }
-  });
-});
+  })
+})
 
 function validateBanned (stream, req, res, cb) {
   redis_client.hmget('banlist', stream, function (berr, breturnedarr) {

@@ -1,17 +1,17 @@
 <div class="row">
   <div class="col-sm-4 col-sm-offset-4">
-  <h1 align="center" style="color: white;">Profile for: <%=  user.overrustle_username %></h1>
+  <h1 align="center" style="color: white;">Profile for: <%=  current_user.overrustle_username %></h1>
     <h3 style="color: white;">Set Channel: &nbsp;
-        <a href="/<%= user.overrustle_username %>">
+        <a href="/<%= current_user.overrustle_username %>">
           <span class="label label-default">Visit Channel</span>
         </a>
     </h3>
-    <form class="form" action="profile/<%= user.overrustle_username %>" method="post" role="form">
+    <form class="form" action="profile/<%= current_user.overrustle_username %>" method="post" role="form">
       <div class="form-group">
         <label for="channelService" style="color: white;">Streaming Service</label>
         <select id="channelService" name="service" class="form-control">
           <% for(var i=0; i<SERVICE_NAMES.length; i++) { %>
-            <option value="<%= SERVICE_NAMES[i] %>" <%= user.service == SERVICE_NAMES[i] ? "selected" : "" %> ><%= SERVICES[SERVICE_NAMES[i]].display_name %></option>
+            <option value="<%= SERVICE_NAMES[i] %>" <%= current_user.service == SERVICE_NAMES[i] ? "selected" : "" %> ><%= SERVICES[SERVICE_NAMES[i]].display_name %></option>
           <% } %>
           <option value="advanced">Advanced</option>
         </select>
@@ -19,12 +19,12 @@
       <div class="form-group">
         <label for="channelStream" style="color: white;">Channel on that service </label>
         <input id="channelStream" type="text" name="stream" class="form-control" placeholder="Stream/Video ID"
-            value="<%= user.stream %>" />
+            value="<%= current_user.stream %>" />
       </div>
       <div class="form-group">
         <label for="channelUsername" style="color: white;">OverRustle.com Channel Name</label>
         <input id="channelUsername" type="text" name="overrustle_username" class="form-control" placeholder="OverRustle.com username"
-            value="<%= user.overrustle_username %>"  <%= (user.allowchange === 'true' || user.admin === 'true') ? '' : 'disabled' %>  />
+            value="<%= current_user.overrustle_username %>"  <%= (current_user.allowchange === 'true' || current_user.admin === 'true') ? '' : 'disabled' %>  />
       </div>
       <button type="submit" class="btn btn-primary">Update</button>
     </form>

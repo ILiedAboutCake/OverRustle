@@ -93,9 +93,12 @@ body.embed
 }
 
 .stream-label {
-  display: inline-block;
+  display: block;
 }
 
+.stream-sublabel {
+  white-space: nowrap;
+}
 
 /* add a little bottom space under the images */
 

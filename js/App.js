@@ -112,9 +112,13 @@ var StreamList = React.createClass({displayName: "StreamList",
       if(!stream){
         stream = {}
       }
-      stream.label = stream.channel+"<br> on "+stream.platform
+
       if(stream.hasOwnProperty('name') && stream.name.length > 0){
-        stream.label = stream.name+"\'s channel"
+        stream.label = stream.name
+        stream.sublabel = "via " + stream.channel + " on " + stream.platform
+      }else{
+        stream.label = stream.channel
+        stream.sublabel = "on "+stream.platform
       }
 
       // config the badge/view counter
@@ -158,12 +162,13 @@ var Stream = React.createClass({displayName: "Stream",
             React.createElement("div", null, 
               React.createElement("div", {className: "stream-label"}, 
                 React.createElement("a", {href: this.props.stream.url}, 
-                  React.createElement("div", null, " ", this.props.stream.channel), 
-                  React.createElement("div", null, " on ", this.props.stream.platform)
+                  React.createElement("div", null, this.props.stream.label, 
+                    React.createElement("span", {className: this.props.live_class}, 
+                      this.props.stream.rustlers, " ", React.createElement("span", {className: "glyphicon glyphicon-user", "aria-hidden": "true"})
+                    )
+                  ), 
+                  React.createElement("div", {className: "stream-sublabel"}, this.props.stream.sublabel)
                 )
-              ), 
-              React.createElement("span", {className: this.props.live_class}, 
-                this.props.stream.rustlers, " ", React.createElement("span", {className: "glyphicon glyphicon-user", "aria-hidden": "true"})
               )
             )
           )
