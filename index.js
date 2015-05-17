@@ -90,7 +90,7 @@ redis_client.hmset(
   'twitch_user_id','30384275', //twitch user ID from OAuth
   'twitchuser', 'iliedaboutcake', //twitch username
   'admin', true,
-  'allowchange', 0, //allows the user to change username if set to 1
+  'allowchange', false, //allows the user to change username if set to 1
   'lastseen', new Date().toISOString(), //keep track of last seen
   'lastip','127.0.0.1'); //IP address for banning and auditing
 
