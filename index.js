@@ -390,13 +390,24 @@ app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
         service: req.params.service
       })
     })
-  }else{
+  }else if (req.params.service || req.params.stream){
     console.log('bad channel')
     console.log(req.params.service, 'not in:')
     console.log(global.SERVICE_NAMES)
 
     noticeAdd(req, {"danger": "You visited /destinychat without specifying a stream or service"})
     return res.redirect('/')
+  }else{  
+    var props = {
+      api_data: static_api_data
+    }
+    var page_title = "Destiny.gg chat with " + Object.keys(static_api_data.streams).length + " Live Streams viewed by " + static_api_data.viewercount + " rustlers"
+    res.render("layout", {
+      page: "destinychat",
+      page_title: page_title,
+      react_props: props, 
+      rendered_streams: React.renderToString(App(props))    
+    })
   }
 });
 
