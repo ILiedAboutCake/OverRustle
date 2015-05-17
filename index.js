@@ -75,6 +75,13 @@ app.use(session({
   saveUninitialized: false
 }));
 
+
+redis_client.exists('twitchuser:iliedaboutcake', function (e, r) {
+  if(r == 1){
+    console.log("no need to add the default user, redis says ", r)
+    return
+  }
+  console.log("adding the default user to redis")
 // test layout of how we should probably format redis users
 redis_client.hmset(
   'user:dank_memester', //change able overrustle user name
@@ -82,6 +89,7 @@ redis_client.hmset(
   'service', 'ustream', //service set from their profile
   'twitch_user_id','30384275', //twitch user ID from OAuth
   'twitchuser', 'iliedaboutcake', //twitch username
+  'admin', true,
   'allowchange', 0, //allows the user to change username if set to 1
   'lastseen', new Date().toISOString(), //keep track of last seen
   'lastip','127.0.0.1'); //IP address for banning and auditing
@@ -91,7 +99,7 @@ redis_client.set(
   'twitchuser:iliedaboutcake', 
   'dank_memester' //change able overrustle user name
   ); 
-
+})
 
 /////////////////
 
