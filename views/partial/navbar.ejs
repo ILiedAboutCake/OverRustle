@@ -32,8 +32,12 @@
               <!-- 
               WARNING: URLs with hashbangs will get butchered so avoid them
                -->
-              <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/>
-              <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
+              <div class="input-group">
+                <input type="text" name="stream" type="text" class="form-control" placeholder="Stream/Video ID"/>
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-default hidden-md hidden-sm">Go</button>
+                </span>
+              </div>
             </div>
           </form>
           <!-- 
@@ -48,7 +52,7 @@
             <a class="btn btn-default navbar-btn" href="/profile" title="Profile" >
               <span class="glyphicon glyphicon-user"></span>
             </a>
-            <a class="btn btn-inverse navbar-btn" href="/logout" title="Log Out">
+            <a class="btn btn-default navbar-btn" href="/logout" title="Log Out">
               <span class="glyphicon glyphicon-off"></span>
             </a>
           <% } else { %>

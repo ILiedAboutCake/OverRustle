@@ -102,6 +102,46 @@ body.embed
   white-space: normal;
 }
 
+.footer {
+  /* position: absolute; */
+  bottom: 0;
+  margin-top: 30px;
+  width: 100%;
+  height: 110px;
+  background: -webkit-linear-gradient(#1A1A1A, #121212);
+  background: -o-linear-gradient(#1A1A1A, #121212);
+  background: -moz-linear-gradient(#1A1A1A, #121212);
+  background: linear-gradient(#1A1A1A, #121212);
+}
+
+.row {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.text-muted {
+  padding-top: 15px;
+  margin-right: 100px;
+  text-align: right;
+  overflow-y: hidden;
+}
+
+a.dank:link {color: #B8B8B8;}
+a.dank:active {color: #B8B8B8;}
+a.dank:visited {color: #B8B8B8;}
+a.dank:hover {color: #B8B8B8;}
+
+.well {
+  background-color: #232323;
+  border: 1px solid #232323;
+  margin-top: 35px;
+  padding-top: 0px;
+}
+
+h1, h2 {
+  color: #fff;
+}
+
 /* add a little bottom space under the images */
 
 /*
