@@ -204,7 +204,6 @@ app.get (['/', '/strims', '/streams'], function(req, res, next) {
   })
 });
 
-
 app.post("/channel", function(req, res, next){
 })
 
@@ -219,6 +218,70 @@ app.get ('/profile', function(req, res, next) {
     res.redirect('/')
   }
 })
+
+//THIS DOES NOT WORK
+app.get ('/admin', function(req, res, next) {
+  if (req.session.user.admin == "true") {
+ 
+    //get all the users
+    var site_users = []
+    redis_client.keys('user:*', function(err, keys) {
+      for(var i = 0, len = keys.length; i < len; i++) {
+        redis_client.hgetall(keys[i], function(err, res) {
+          site_users.push(res)
+        });
+      }
+    });
+ 
+    console.log(site_users)
+ 
+    res.render("layout", {
+      page: "admin", 
+      page_title: "Admin Signed in as " + req.session.user.overrustle_username,
+      users: site_users
+    })
+  }else{
+    res.redirect('/')
+  }
+})
+
+//get all of dat dirty NSA info from their profile
+app.get ('/admin/:overrustle_username', function(req, res, next) {
+  if (req.session.user.admin == "true") {
+  
+  redis_client.hgetall("user:"+req.params.overrustle_username, function(err, resp) {
+    user_info = resp
+
+    res.render("layout", {
+      page: "adminuser", 
+      page_title: "Editing: " + user_info.overrustle_username,
+      user: user_info
+    })
+  });
+
+  }else{
+    res.redirect('/')
+  }
+})
+
+//update their profile
+app.post ('/admin/:overrustle_username', function(req, res, next) {
+  if (req.session.user.admin == "true") {
+  
+  console.log(req.body)
+  //TODO: Make the update user button do something
+
+  res.render("layout", {
+    page: "adminuser", 
+    page_title: "Editing: " + user_info.overrustle_username,
+  })
+
+  }else{
+    res.redirect('/')
+  }
+})
+
+
 
 // TODO: support an admin user changing another user's name
 app.post('/profile/:overrustle_username', function (req, res, next) {
@@ -472,7 +535,7 @@ function validateBanned (stream, req, res, cb) {
     if (breturned) {
       console.log('got isBanned', breturned)
       noticeAdd(req, {"danger": stream+" is banned. "+breturned})
-      res.redirect('/')
+      res.redirect('/banned')
     }else{
       cb(berr)
     }

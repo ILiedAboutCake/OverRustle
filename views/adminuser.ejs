@@ -1,0 +1,88 @@
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 well-lg well">
+    <h1 align="center">Editing user: <%=  user.overrustle_username %></h1>
+
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default" id="panel1">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                Profile
+              </h4>
+            </div>
+
+            <div class="panel-collapse">
+              <form class="form" action="/admin/<%= user.overrustle_username %>" method="post" role="form">
+                <div class="panel-body">
+                  <b>Twitch username:</b> <%=  user.twitchuser %><br />
+                  <b>Last seen logged in at:</b> <%=  user.lastseen %><br />
+                  <b>Is admin:</b> <%=  user.admin %>
+                  <div class="form-group">
+                    <label for="channelUsername">Channel Name:</label>
+                    <input id="channelUsername" type="text" name="overrustle_username" class="form-control" placeholder="OverRustle.com username"
+                        value="<%= user.overrustle_username %>"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="channelStream">Channel on that service:</label>
+                    <input id="channelStream" type="text" name="stream" class="form-control" placeholder="Stream/Video ID"
+                        value="<%= user.stream %>" />
+                  </div>
+                  <div class="form-group">
+                    <label for="channelService">Streaming Service:</label>
+                    <select id="channelService" name="service" class="form-control">
+                      <% for(var i=0; i<SERVICE_NAMES.length; i++) { %>
+                        <option value="<%= SERVICE_NAMES[i] %>" <%= current_user.service == SERVICE_NAMES[i] ? "selected" : "" %> ><%= SERVICES[SERVICE_NAMES[i]].display_name %></option>
+                      <% } %>
+                      <option value="advanced">Advanced</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="channelNamechange">Can change own username:</label>
+                    <select id="channelNamechange" name="namechange" class="form-control">
+                      <option value="false">False</option>
+                      <option value="true">True</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Update User</button>
+                </div>
+              </form>
+            </div>
+        </div>
+
+        <div class="panel panel-default" id="panel2">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-target="#connections" href="#connections" class="collapsed">
+                  IP Info
+                </a>
+              </h4>
+            </div>
+
+            <div id="connections" class="panel-collapse collapse">
+                <div class="panel-body">
+                  IP Address: <%=  user.lastip %>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="panel panel-default" id="panel3">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                Options
+              </h4>
+            </div>
+
+            <div class="panel-collapse">
+                <div class="panel-body">
+                  <a class="btn btn-primary" href="<%=  user.overrustle_username %>">Visit Channel</a>
+                  <a class="btn btn-danger" href="/admin/<%=  user.overrustle_username %>/banstream">Ban Stream</a>
+                  <a class="btn btn-danger" href="/admin/<%=  user.overrustle_username %>/ipban">IP Ban User</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+  </div>
+</div>
