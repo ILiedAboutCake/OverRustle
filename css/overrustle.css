@@ -10,6 +10,7 @@ body
 	padding: 0;
 	margin: 0;
   height: inherit;
+  color: #C7C7C7;
 }
 
 body.embed
@@ -139,7 +140,26 @@ a.dank:hover {color: #B8B8B8;}
 }
 
 h1, h2 {
-  color: #fff;
+  color: #C7C7C7;
+}
+
+.panel-group {
+  background-color: #232323;
+}
+
+.panel-default {
+  background-color: #3c3c3c;
+  border-color: #3c3c3c;
+}
+
+.panel-default>.panel-heading {
+  background-color: #2d2d2d;
+  border-color: #2d2d2d;
+  color: #c7c7c7;
+}
+
+.panel-default>.panel-heading+.panel-collapse>.panel-body {
+  border-top-color: #2d2d2d;
 }
 
 /* add a little bottom space under the images */
