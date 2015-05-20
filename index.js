@@ -303,8 +303,11 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
     user.service = req.body.service
     user.stream = req.body.stream
     var new_username = req.body.overrustle_username
+    if(current_user.admin === "true"){
+      user.allowchange = req.body.allowchange
+    }
 
-    if ((user.admin === "true" || user.allowchange === "true") && new_username.length > 0) {
+    if ((current_user.admin === "true" || user.allowchange === "true") && new_username.length > 0) {
       user.overrustle_username = new_username
 
       redis_client.set(
