@@ -85,6 +85,7 @@ redis_client.exists('twitchuser:iliedaboutcake', function (e, r) {
 // test layout of how we should probably format redis users
 redis_client.hmset(
   'user:dank_memester', //change able overrustle user name
+  'overrustle_username', 'dank_memester',
   'stream', '19949118', //stream set from their profile
   'service', 'ustream', //service set from their profile
   'twitch_user_id','30384275', //twitch user ID from OAuth
@@ -268,8 +269,6 @@ app.get ('/admin', function(req, res, next) {
 
 //get all of dat dirty NSA info from their profile
 app.get ('/admin/:overrustle_username', function(req, res, next) {
-  if (req.session.user.admin == "true") {
-  
   redis_client.hgetall("user:"+req.params.overrustle_username, function(err, resp) {
     user_info = resp
 
@@ -279,74 +278,63 @@ app.get ('/admin/:overrustle_username', function(req, res, next) {
       user: user_info
     })
   });
-
-  }else{
-    res.redirect('/')
-  }
 })
 
-//update their profile
-app.post ('/admin/:overrustle_username', function(req, res, next) {  
-  // console.log(req.body)
-  //TODO: Make the update user button do something
-  res.render("layout", {
-    page: "adminuser", 
-    page_title: "Editing: " + user_info.overrustle_username,
-  })
-})
-
-
-
-// TODO: support an admin user changing another user's name
-app.post('/profile/:overrustle_username', function (req, res, next) {
+// edit a username -- admin editing, or user editing
+app.post('/profile/:original_overrustle_username', function (req, res, next) {
   var current_user = req.session.user;
+  var original_username = req.params.original_overrustle_username;
+  
   console.log("current_user:", current_user)
-  console.log(req.params, req.body)
+  console.log('editing user:', 'original_username', req.params, 'new_data', req.body)
 
-  var original_username = current_user.overrustle_username
-  var new_username = req.body.overrustle_username
+  if(current_user.admin != "true" && current_user.overrustle_username != original_username){
+    noticeAdd(req, {"danger":"You're not allowed to edit "+original_username+"\'s channel"})
+    return res.redirect('/')
+  }
 
-  if(current_user.overrustle_username == original_username){
-    current_user.service = req.body.service
-    current_user.stream = req.body.stream
 
-    if ((current_user.admin === "true" || current_user.allowchange === "true") && new_username.length > 0) {
-      current_user.overrustle_username = new_username
+  new Promise(function (resolve, reject){
+    redis_client.hgetall("user:"+original_username, function(err, resp) {
+      if (err) reject(err);
+      resolve(resp)
+    })
+  }).then(function(user){
+    user.service = req.body.service
+    user.stream = req.body.stream
+    var new_username = req.body.overrustle_username
+
+    if ((user.admin === "true" || user.allowchange === "true") && new_username.length > 0) {
+      user.overrustle_username = new_username
 
       redis_client.set(
-        "twitchuser:"+current_user.twitchuser,
-        current_user.overrustle_username
+        "twitchuser:"+user.twitchuser,
+        user.overrustle_username
         )
       // only allow 1 name change
       if(current_user.admin !== "true"){
-        current_user.allowchange = false
+        user.allowchange = false
       }
-    }else if(original_username != req.body.overrustle_username){
+    }else if(original_username != new_username){
       // TODO: abstract notices
       noticeAdd(req, {"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
     }
 
     redis_client.hmset(
-      'user:'+current_user.overrustle_username,
-      current_user, 
+      'user:'+user.overrustle_username,
+      user, 
     function(err, result){
-      redis_client.hgetall('user:'+current_user.overrustle_username, 
-      function(err, returned) {
-        if(err){
-          return next(err)
-        }
-        // TODO: support admin changing other's data
-        req.session.user = returned;
-        // TODO: abstract notices
-        noticeAdd(req, {"success": "Your profile was sucessfully updated!"})
-        res.redirect('/profile')
-      })
+      noticeAdd(req, {"success": user.overrustle_username+"\'s profile updated sucessfully!"})
+      if(req.session.user.overrustle_username === original_username){
+        req.session.user = user
+      }
+      if(req.session.user.admin === 'true'){
+        res.redirect('/admin/'+user.overrustle_username)
+      }else{
+        res.redirect('/profile')      
+      }
     })
-  }else{
-    // TODO: add flash/error notifications
-    // TODO: permit admins to edit other users
-    res.redirect('/')
-  }
+  })
 })
 
 // twitch will send oauth requests 
@@ -419,7 +407,7 @@ app.get("/oauth/twitch", function(req, res, next){
           new_settings['twitch_user_id'] = json['_id']
           // TODO: decide if we want to 
           // allow new users to change their overrustle_username
-          new_settings['allowchange'] = false
+          new_settings['allowchange'] = true
           new_settings['admin'] = false
         }
         
