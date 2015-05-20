@@ -90,8 +90,8 @@ redis_client.hmset(
   'service', 'ustream', //service set from their profile
   'twitch_user_id','30384275', //twitch user ID from OAuth
   'twitchuser', 'iliedaboutcake', //twitch username
-  'admin', true,
-  'allowchange', false, //allows the user to change username if set to 1
+  'admin', 'true',
+  'allowchange', 'false', //allows the user to change username if set to 1
   'lastseen', new Date().toISOString(), //keep track of last seen
   'lastip','127.0.0.1'); //IP address for banning and auditing
 
@@ -299,37 +299,72 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
       if (err) reject(err);
       resolve(resp)
     })
-  }).then(function(user){
-    user.service = req.body.service
-    user.stream = req.body.stream
-    var new_username = req.body.overrustle_username
-    if(current_user.admin === "true"){
-      user.allowchange = req.body.allowchange
-    }
+  }).then(function (user){
+    // merge in new user settings
+    return new Promise(function (resolve, reject){
+      var new_username = req.body.overrustle_username
+      user.service = req.body.service
+      user.stream = req.body.stream
 
-    if ((current_user.admin === "true" || user.allowchange === "true") && new_username.length > 0) {
-      user.overrustle_username = new_username
+      // only an admin can grant name changes
+      if(current_user.admin === "true"){
+        user.allowchange = req.body.allowchange
+      }else{
+        console.log("NOPE you cant give yourself a name change")
+      }
 
+      // figure out if you're allowed to change your name
+      var canChange = (current_user.admin === "true" || user.allowchange === "true") && new_username.length > 0
+      if (!canChange && original_username != new_username) {
+        // trying to change your name despite being unable to
+        noticeAdd(req, {"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
+        return resolve(user)
+      }
+      // if we're not changing the name, don't bother 
+      // checking for duplicates
+      if(new_username == original_username){
+        return resolve(user)
+      }
+      redis_client.exists("user:"+new_username, function (err, rsp) {
+        var does_exist = rsp == 1
+        if(does_exist){
+          noticeAdd(req, {"danger":"You\'re Not allowed to change your name to an existing user\'s name: "+new_username})
+        }else{
+          user.overrustle_username = new_username
+        }
+        // only allow 1 name change
+        if(current_user.admin !== "true"){
+          console.log("not an admin, so no more name changes")
+          user.allowchange = "false"
+        }
+        resolve(user)
+      })
+    })
+  }).then(function (user){
+    // set the twitch -> overrustle index
+    return new Promise(function (resolve, reject){
       redis_client.set(
         "twitchuser:"+user.twitchuser,
-        user.overrustle_username
-        )
-      // only allow 1 name change
-      if(current_user.admin !== "true"){
-        user.allowchange = false
-      }
-    }else if(original_username != new_username){
-      // TODO: abstract notices
-      noticeAdd(req, {"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
-    }
-
+        user.overrustle_username,
+        function (err, reply) {
+          if(err) reject(err);
+          resolve(user)
+        }
+      )
+    })
+  }).then(function (user){
     redis_client.hmset(
       'user:'+user.overrustle_username,
       user, 
     function(err, result){
+      if(err){
+        return next(err)
+      }
       noticeAdd(req, {"success": user.overrustle_username+"\'s profile updated sucessfully!"})
       if(req.session.user.overrustle_username === original_username){
         req.session.user = user
+      }else{
+        console.log("DERP not setting an admin's session to another persons")
       }
       if(req.session.user.admin === 'true'){
         res.redirect('/admin/'+user.overrustle_username)
@@ -410,8 +445,8 @@ app.get("/oauth/twitch", function(req, res, next){
           new_settings['twitch_user_id'] = json['_id']
           // TODO: decide if we want to 
           // allow new users to change their overrustle_username
-          new_settings['allowchange'] = true
-          new_settings['admin'] = false
+          new_settings['allowchange'] = "true"
+          new_settings['admin'] = "false"
         }
         
         console.log(reply, new_settings);

@@ -32,14 +32,15 @@
                       <% for(var i=0; i<SERVICE_NAMES.length; i++) { %>
                         <option value="<%= SERVICE_NAMES[i] %>" <%= current_user.service == SERVICE_NAMES[i] ? "selected" : "" %> ><%= SERVICES[SERVICE_NAMES[i]].display_name %></option>
                       <% } %>
-                      <option value="advanced">Advanced</option>
+                      <option value="advanced" <%= current_user.service == "advanced" ? "selected" : "" %>
+                      >Advanced</option>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="channelNamechange">Can change own username:</label>
                     <select id="channelNamechange" name="allowchange" class="form-control">
-                      <option value="false">False</option>
-                      <option value="true">True</option>
+                      <option value="false" <%= current_user.allowchange == "false" ? 'selected="selected"' : '' %>>False</option>
+                      <option value="true" <%= current_user.allowchange == "true" ? 'selected="selected"' : '' %>>True</option>
                     </select>
                   </div>
                   <button type="submit" class="btn btn-primary">Update User</button>
