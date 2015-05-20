@@ -26,6 +26,7 @@ socket.on('strims', function(api_data){
   });
 
   $('#viewercount').html(viewercount)
+  
   // drawMustache(strims, strim_list)
   console.log('sending api data', api_data);
   $(document).trigger('api_data', [api_data])

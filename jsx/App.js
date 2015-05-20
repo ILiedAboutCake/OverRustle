@@ -15,6 +15,10 @@ var process_api = function(api_data) {
     shownsfw = localStorage.getItem("shownsfw")=="true"
   }
   // console.log("SHOWING NSFW?", shownsfw)
+  if(typeof document != 'undefined' && document.hasOwnProperty('title')){
+    document.title = Object.keys(strims).length + " Live Streams viewed by " + api_data.viewercount + " rustlers"
+  }
+
 
   for ( var strim in strims ) {
     if ( Object.prototype.hasOwnProperty.call(strims, strim) ) {
