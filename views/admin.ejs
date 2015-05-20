@@ -1,8 +1,8 @@
 <div class="row">
-  <div class="col-sm-8 col-sm-offset-2 well well-lg">
-    <h1 align="center">Hello, <%=  current_user.overrustle_username %></h1>
+  <div class="col-sm-10 col-sm-offset-1 well well-lg">
+    <h1 align="center">Hullo, <%=  current_user.overrustle_username %></h1>
 
-    <table class="table">
+    <table class="table table-striped">
       <thead>      
         <tr>
           <th>Channel</th>
@@ -16,7 +16,7 @@
       <tbody>
         <% users.forEach(function(user){ %>
           <tr>
-            <td><a href="/admin/<%= user.overrustle_username %>"><%= user.overrustle_username %></a></td>
+            <td><a href="/admin/<%= user.overrustle_username %>" class="btn btn-primary btn-xs"><%= user.overrustle_username %></a></td>
             <td><%= user.twitchuser %></td>
             <td><%= user.service %></td>
             <td><%= user.stream %></td>

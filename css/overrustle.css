@@ -162,6 +162,26 @@ h1, h2 {
   border-top-color: #2d2d2d;
 }
 
+.table {
+  background-color: 
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td {
+  background-color: #343434;
+}
+
+.table-striped>tbody>tr:nth-child(even)>td {
+  background-color: #424242;
+}
+
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+  border-top: 1px solid #232323;
+}
+
+.table>thead>tr>th {
+  border-bottom: 3px solid #343434;
+}
+
 /* add a little bottom space under the images */
 
 /*
