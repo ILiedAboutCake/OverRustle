@@ -293,6 +293,7 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
     return res.redirect('/')
   }
 
+  var new_username = req.body.overrustle_username
 
   new Promise(function (resolve, reject){
     redis_client.hgetall("user:"+original_username, function(err, resp) {
@@ -302,7 +303,6 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
   }).then(function (user){
     // merge in new user settings
     return new Promise(function (resolve, reject){
-      var new_username = req.body.overrustle_username
       user.service = req.body.service
       user.stream = req.body.stream
 
@@ -353,25 +353,40 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
       )
     })
   }).then(function (user){
-    redis_client.hmset(
-      'user:'+user.overrustle_username,
-      user, 
-    function(err, result){
-      if(err){
-        return next(err)
-      }
-      noticeAdd(req, {"success": user.overrustle_username+"\'s profile updated sucessfully!"})
-      if(req.session.user.overrustle_username === original_username){
-        req.session.user = user
-      }else{
-        console.log("DERP not setting an admin's session to another persons")
-      }
-      if(req.session.user.admin === 'true'){
-        res.redirect('/admin/'+user.overrustle_username)
-      }else{
-        res.redirect('/profile')      
-      }
+    return new Promise(function (resolve, reject){
+      redis_client.hmset('user:'+user.overrustle_username, user, function(err, result){
+        if(err){
+          return console.error(err)
+        }
+        noticeAdd(req, {"success": user.overrustle_username+"\'s profile updated sucessfully!"})
+        if(req.session.user.overrustle_username === original_username){
+          req.session.user = user
+        }else{
+          console.log("DERP not setting an admin's session to another persons")
+        }
+        resolve(user)
+      })
     })
+  }).then(function (user) {
+    // if we made a successful name change
+    // clean out the old record
+    return new Promise(function (resolve, reject){
+      if (user.overrustle_username == original_username) {
+        return resolve(user)
+      }
+      redis_client.del('user:'+original_username, function(err, resp){
+        if(err){
+          console.error(err)
+        }
+        resolve(user)
+      })
+    })
+  }).then(function (user) {
+    if(req.session.user.admin === 'true'){
+      res.redirect('/admin/'+user.overrustle_username)
+    }else{
+      res.redirect('/profile')      
+    }
   })
 })
 
