@@ -117,12 +117,14 @@ app.use("/fonts", express.static(__dirname + '/fonts'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 app.use(function (req, res, next) {
+  console.log("middleware setting current user")
   console.log(Date.now(), req.method, req.originalUrl);
   res.locals.current_user = req.session.user;
   next();
 });
 
-app.get(function (req, res, next) {
+app.use(function (req, res, next) {
+  console.log("middleware popping notices")
   res.locals.notice = noticePop(req)
   next()
 })
@@ -220,29 +222,47 @@ app.get ('/profile', function(req, res, next) {
 })
 
 //THIS DOES NOT WORK
-app.get ('/admin', function(req, res, next) {
-  if (req.session.user.admin == "true") {
- 
-    //get all the users
-    var site_users = []
-    redis_client.keys('user:*', function(err, keys) {
-      for(var i = 0, len = keys.length; i < len; i++) {
-        redis_client.hgetall(keys[i], function(err, res) {
-          site_users.push(res)
-        });
-      }
+
+app.use('/admin*', function(req, res, next){
+  if(req.session.user && req.session.user.admin == "true"){
+    next()
+  }else{
+    noticeAdd(req, {"danger": "You are not allowed to access that page"})
+    res.redirect('/')
+  }
+})
+
+var Promise = require('bluebird')
+
+app.get ('/admin', function(req, res, next) {  
+   //get all the users
+  var site_users = []
+
+  new Promise(function (resolve, reject) {
+    redis_client.keys('user:*', function (err, keys) {
+      if (err) reject(err);
+      resolve(keys);
     });
- 
-    console.log(site_users)
- 
+  })
+  .then(function (keys) {
+    return Promise.all(keys.map(function (key) {
+      return new Promise(function (resolve, reject) {
+        redis_client.hgetall(key, function (err, res) {
+          if (err) reject(err);
+          site_users.push(res);
+          resolve();
+        });
+      });
+    }));
+  })
+  .then(function () {
+    console.log(site_users);
     res.render("layout", {
-      page: "admin", 
+      page: "admin",
       page_title: "Admin Signed in as " + req.session.user.overrustle_username,
       users: site_users
     })
-  }else{
-    res.redirect('/')
-  }
+  });
 })
 
 //get all of dat dirty NSA info from their profile
@@ -338,6 +358,10 @@ app.post('/profile/:overrustle_username', function (req, res, next) {
 // twitch will send oauth requests 
 // that use our client_id to this path
 app.get("/oauth/twitch", function(req, res, next){
+  if(req.query.error){
+    noticeAdd(req, {"danger":"Twitch Login did not work. Twitch says: "+req.query.error+": "+req.query.error_description})
+    return res.redirect('/')
+  }
   if(!req.query.code){
     return next()
   }
@@ -415,7 +439,8 @@ app.get("/oauth/twitch", function(req, res, next){
               return next(err)
             }
             req.session.user = returned;
-            res.redirect('/')
+            noticeAdd(req, {"success":"Congrats "+overrustle_username+", You are now logged into OverRustle.com"})
+            res.redirect('/profile')
           });
         }); 
       });
@@ -425,6 +450,7 @@ app.get("/oauth/twitch", function(req, res, next){
 
 app.get('/logout', function (req, res, next) {
   req.session.user = undefined
+  noticeAdd(req, {"success":"You logged out sucessfully!"})
   res.redirect('/')
 })
 
@@ -550,6 +576,7 @@ function noticeAdd(req, obj){
 }
 
 function noticePop(req){
+  console.log("flushing notices!")
   var tmpnotice = req.session.notice
   req.session.notice = undefined
   return tmpnotice

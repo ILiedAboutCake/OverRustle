@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^2.9.25",
     "body-parser": "^1.12.2",
     "browserify": "^9.0.3",
     "classnames": "^1.1.4",
@@ -21,7 +22,7 @@
     "express-session": "^1.10.4",
     "jsonfile": "^2.0.0",
     "literalify": "^0.4.0",
-    "react": "^0.13.0",
+    "react": "^0.13.3",
     "react-addons": "^0.9.1-deprecated",
     "react-tools": "^0.13.0",
     "redis": "^0.12.1",
