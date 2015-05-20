@@ -117,14 +117,14 @@ app.use("/fonts", express.static(__dirname + '/fonts'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
 app.use(function (req, res, next) {
-  console.log("middleware setting current user")
+  // console.log("middleware setting current user")
   console.log(Date.now(), req.method, req.originalUrl);
   res.locals.current_user = req.session.user;
   next();
 });
 
 app.use(function (req, res, next) {
-  console.log("middleware popping notices")
+  // console.log("middleware popping notices")
   res.locals.notice = noticePop(req)
   next()
 })
@@ -227,6 +227,7 @@ app.use('/admin*', function(req, res, next){
   if(req.session.user && req.session.user.admin == "true"){
     next()
   }else{
+    console.log("nonadmin user:", req.session.user)
     noticeAdd(req, {"danger": "You are not allowed to access that page"})
     res.redirect('/')
   }
@@ -256,7 +257,7 @@ app.get ('/admin', function(req, res, next) {
     }));
   })
   .then(function () {
-    console.log(site_users);
+    // console.log(site_users);
     res.render("layout", {
       page: "admin",
       page_title: "Admin Signed in as " + req.session.user.overrustle_username,
@@ -285,20 +286,13 @@ app.get ('/admin/:overrustle_username', function(req, res, next) {
 })
 
 //update their profile
-app.post ('/admin/:overrustle_username', function(req, res, next) {
-  if (req.session.user.admin == "true") {
-  
-  console.log(req.body)
+app.post ('/admin/:overrustle_username', function(req, res, next) {  
+  // console.log(req.body)
   //TODO: Make the update user button do something
-
   res.render("layout", {
     page: "adminuser", 
     page_title: "Editing: " + user_info.overrustle_username,
   })
-
-  }else{
-    res.redirect('/')
-  }
 })
 
 
@@ -576,7 +570,7 @@ function noticeAdd(req, obj){
 }
 
 function noticePop(req){
-  console.log("flushing notices!")
+  // console.log("flushing notices!")
   var tmpnotice = req.session.notice
   req.session.notice = undefined
   return tmpnotice

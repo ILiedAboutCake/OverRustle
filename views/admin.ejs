@@ -1,24 +1,30 @@
 <div class="row">
-  <div class="col-sm-8 col-sm-offset-2 well-lg">
-    <h1 align="center">Hello, <%=  current_user.twitchuser %></h1>
+  <div class="col-sm-8 col-sm-offset-2 well well-lg">
+    <h1 align="center">Hello, <%=  current_user.overrustle_username %></h1>
 
-    <table class="table table-striped">
-      <tr>
-        <th>Channel</th>
-        <th>Twitch User</th>
-        <th>Service</th>
-        <th>Stream</th>
-        <th>Last Seen</th>
-        <th>Known IP</th>
-      </tr>
-      <tr>
-        <tD>Channel</tD>
-        <tD>Twitch User</tD>
-        <tD>Service</tD>
-        <tD>Stream</tD>
-        <tD>Last Seen</tD>
-        <tD>Known IP</tD>
-      </tr>
+    <table class="table">
+      <thead>      
+        <tr>
+          <th>Channel</th>
+          <th>Twitch User</th>
+          <th>Service</th>
+          <th>Stream</th>
+          <th>Last Seen</th>
+          <th>Known IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(function(user){ %>
+          <tr>
+            <td><a href="/admin/<%= user.overrustle_username %>"><%= user.overrustle_username %></a></td>
+            <td><%= user.twitchuser %></td>
+            <td><%= user.service %></td>
+            <td><%= user.stream %></td>
+            <td><%= user.lastseen %></td>
+            <td><%= user.lastip %></td>
+          </tr>
+        <% }) %>
+      </tbody>
 
     </table>
 
