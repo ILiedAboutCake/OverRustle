@@ -9,8 +9,10 @@ function twitchAPI() {
     },
    
     success: function(apiData) {
+      if(apiData.status < 400){
       var output = formatNumber(apiData.stream.viewers) + " Viewers";
-      document.getElementById("service-viewers").innerHTML = output;
+      document.getElementById("service-viewers").innerHTML = output;        
+      }
     }
   });
 } 
