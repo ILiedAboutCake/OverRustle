@@ -56,10 +56,17 @@
       <% } %>
       <%- include(page) %>
       <% if(!locals.service || !locals.stream){ %> 
-       <footer class="footer">
+      <footer class="footer container">
+        <div class="row">
+        <div class="col-md-6 footer-left">
+          <a href="https://play.google.com/store/apps/details?id=gg.destiny.app">
+            <img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png">
+          </a>
+        </div>
+        <div class="col-md-6 footer-right">
           <p class="text-muted">
             OverRustle.com, a <a href="http://destiny.gg" class="dank">destiny.gg</a> Community<br />
-            By <a href="//twitter.com/ILiedAboutCake" class="dank">ILiedAboutCake</a> and <a href="#" class="dank">hephaestus</a> <br />
+            By <a href="//twitter.com/ILiedAboutCake" class="dank">ILiedAboutCake</a> and <a href="//twitter.com/hayksaakian" class="dank">hephaestus</a> <br />
             Support us via
               <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6TUMKXJ23YGQG" class="dank">Paypal</a>,
               <a href="https://www.linode.com/?r=57232eb9908d0f24a8907e61106c88f475248ac7" class="dank">Linode</a>,
@@ -68,6 +75,8 @@
 
             <a href="http://api.overrustle.com/api" class="dank">API</a>
             </p>
+        </div>
+        </div>
       </footer>
       <% } %>
     </div>
