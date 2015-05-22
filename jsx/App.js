@@ -16,7 +16,7 @@ var process_api = function(api_data) {
   }
   // console.log("SHOWING NSFW?", shownsfw)
   if(typeof document != 'undefined' && document.hasOwnProperty('title')){
-    document.title = Object.keys(strims).length + " Live Streams viewed by " + api_data.viewercount + " rustlers"
+    document.title = Object.keys(strims).length + " Live Streams viewed by " + api_data.viewercount + " rustlers - OverRustle"
   }
 
 

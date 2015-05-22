@@ -1,6 +1,7 @@
 
 // client side code
-var socket = io('http://api.overrustle.com/streams');
+// var socket = io('http://api.overrustle.com/streams');
+var socket = io('http://localhost:9998/streams');
 
 // socket.on('connect', function(){
 //   console.log("Connected SOCKET")
