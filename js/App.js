@@ -5,9 +5,7 @@ var classNames = require('classnames');
 
 var process_api = function(api_data) {
   // console.log('processing api data ', api_data)
-  var strims = api_data["streams"]
-
-  var stream_list = []
+  var stream_list = api_data["stream_list"]
 
   var shownsfw = false
 
@@ -19,29 +17,12 @@ var process_api = function(api_data) {
     document.title = Object.keys(strims).length + " Live Streams viewed by " + api_data.viewercount + " rustlers - OverRustle"
   }
 
-
-  for ( var strim in strims ) {
-    if ( Object.prototype.hasOwnProperty.call(strims, strim) ) {
-      if (strim.toLowerCase().indexOf('nsfw') !== -1) {
-        if(shownsfw){
-          stream_list.push(api_data.metadata[api_data.metaindex[strim]])
-        }
-      }else{
-        stream_list.push(api_data.metadata[api_data.metaindex[strim]])
-      }
-    }
+  if(!shownsfw){
+    // filter out NSFW streams if needed
+    stream_list = stream_list.filter(function(stream){
+      return stream['platform'].toLowerCase().indexOf('nsfw') === -1
+    })
   }
-  // console.log(stream_list.length, ' long stream list, ex:', stream_list[0])
-  stream_list.sort(function(a,b) {
-    // give LIVE streams more weight in sorting higher
-    var amulti = a.hasOwnProperty('live') && a['live'] ? 1000 : 1 ;
-    var bmulti = b.hasOwnProperty('live') && b['live'] ? 1000 : 1 ;
-    if (amulti*a.rustlers < bmulti*b.rustlers)
-       return 1;
-    if (amulti*a.rustlers > bmulti*b.rustlers)
-      return -1;
-    return 0;
-  })
   return stream_list
 }
 // tutorial3.js
@@ -77,18 +58,6 @@ var StreamBox = React.createClass({displayName: "StreamBox",
       }
       this.setState(new_state)
     }.bind(this));
-
-    // todo: hook into state change
-    // $.ajax({
-    //   url: this.props.url,
-    //   dataType: 'json',
-    //   success: function(data) {
-    //     this.setState({data: data});
-    //   }.bind(this),
-    //   error: function(xhr, status, err) {
-    //     console.error(this.props.url, status, err.toString());
-    //   }.bind(this)
-    // });
   },
   render: function() {
     // console.log(this.state.stream_list.length, ' rendering that long list', this.state.stream_list[0])

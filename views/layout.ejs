@@ -43,17 +43,18 @@
           </div>
         </div>
       </div> 
-
-      <% if (locals.notice){ %>
-        <% locals.notice.forEach( function(notice){ 
-          var notice_kind = Object.keys(notice)[0]
-          %>
-          <div class="alert alert-<%= notice_kind %> alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <%= notice[notice_kind] %>
-          </div>
-        <% }) %>
-      <% } %>
+      <div class="notifications">
+        <% if (locals.notice){ %>
+          <% locals.notice.forEach( function(notice){ 
+            var notice_kind = Object.keys(notice)[0]
+            %>
+            <div class="alert alert-<%= notice_kind %> alert-dismissible fade in" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <%= notice[notice_kind] %>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
       <%- include(page) %>
       <% if(!locals.service || !locals.stream){ %> 
       <footer class="footer container">
