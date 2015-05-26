@@ -390,6 +390,9 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
   })
 })
 
+// TODO: 
+// enforce uniqueness of platform+channel (service+stream)
+
 // twitch will send oauth requests 
 // that use our client_id to this path
 app.get("/oauth/twitch", function(req, res, next){

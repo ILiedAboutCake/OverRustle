@@ -12,9 +12,10 @@ var process_api = function(api_data) {
   if(typeof localStorage != 'undefined'){
     shownsfw = localStorage.getItem("shownsfw")=="true"
   }
-  // console.log("SHOWING NSFW?", shownsfw)
-  if(typeof document != 'undefined' && document.hasOwnProperty('title')){
-    document.title = Object.keys(strims).length + " Live Streams viewed by " + api_data.viewercount + " rustlers - OverRustle"
+  console.log("SHOWING NSFW?", shownsfw)
+  if(typeof document != 'undefined' && document['title']){
+    console.log('setting title')
+    document.title = stream_list.length + " Live Streams viewed by " + api_data.viewercount + " rustlers - OverRustle"
   }
 
   if(!shownsfw){
@@ -31,8 +32,11 @@ var StreamBox = React.createClass({
     var npl = process_api(this.props.api_data)
     var new_props = {}
     // called server-side
+    new_props.featured_stream_list = npl.filter(function (stream){
+      return stream['live'] && stream['featured']
+    })
     new_props.live_stream_list = npl.filter(function (stream) {
-      return stream['live']
+      return stream['live'] && !stream['featured']
     })
     new_props.offline_stream_list = npl.filter(function (stream) {
       return !stream['live']
@@ -49,8 +53,11 @@ var StreamBox = React.createClass({
       var npl = process_api(api_data)
       console.log('new processed api data', npl)
       var new_state = {
+        featured_stream_list: npl.filter(function (stream) {
+          return stream['live'] && stream['featured']
+        }),
         live_stream_list: npl.filter(function (stream) {
-          return stream['live']
+          return stream['live'] && !stream['featured']
         }),
         offline_stream_list: npl.filter(function (stream) {
           return !stream['live']
@@ -61,8 +68,15 @@ var StreamBox = React.createClass({
   },
   render: function() {
     // console.log(this.state.stream_list.length, ' rendering that long list', this.state.stream_list[0])
+    var featured_parts = []
+    featured_parts
+    if(this.state.featured_stream_list.length > 0){
+      featured_parts.push(<h3>Featured Streams</h3>)
+      featured_parts.push(<StreamList key="featured-stream-list" stream_list={this.state.featured_stream_list} />)
+    }
     return (
       <div className="streamBox">
+        {featured_parts}
         <h3>Live Streams</h3>
         <StreamList key="live-stream-list" stream_list={this.state.live_stream_list} />
         <h3>Offline Streams</h3>
@@ -102,6 +116,8 @@ var StreamList = React.createClass({
       });
 
       var shown_thumb = stream.live ? "" : "hidden"
+      // TODO: consider moving this to the API server
+      stream.url = stream['canonical_url'] ? stream['canonical_url'] : stream.url
 
       allNodes.push(
         <Stream key={stream.url} stream={stream} shown_thumb={shown_thumb} live_class={classes} />
