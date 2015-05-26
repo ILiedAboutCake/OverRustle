@@ -130,7 +130,6 @@ app.use(function (req, res, next) {
   next()
 })
 
-
 global.SERVICES = constants.SERVICES;
 global.SERVICE_NAMES = Object.keys(constants.SERVICES);
 global.TWITCH_OAUTH_URL = 'https://api.twitch.tv/kraken/oauth2/authorize?response_type=code' +
@@ -589,6 +588,18 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
     }
   })
 })
+
+//handle 404s
+app.use(function(req, res, next) {
+  res.status(400);
+  url = req.url;
+    res.render('layout', {
+      page: '404',
+      page_title: 'Not Found', 
+      url: url 
+    }
+  );
+});
 
 function validateBanned (stream, req, res, cb) {
   redis_client.hmget('banlist', stream, function (berr, breturnedarr) {
