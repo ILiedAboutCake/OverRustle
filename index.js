@@ -591,7 +591,7 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
 
 //handle 404s
 app.use(function(req, res, next) {
-  res.status(400);
+  res.status(404);
   url = req.url;
     res.render('layout', {
       page: '404',
