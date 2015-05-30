@@ -623,7 +623,7 @@ function validateBanned (stream, req, res, cb) {
     if (breturned) {
       console.log('got isBanned', breturned)
       noticeAdd(req, {"danger": stream+" is banned. "+breturned})
-      res.redirect('/banned')
+      res.redirect('/')
     }else{
       cb(berr)
     }
