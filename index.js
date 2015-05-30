@@ -279,6 +279,19 @@ app.get ('/admin/:overrustle_username', function(req, res, next) {
   });
 })
 
+app.post ('/admin/ban', function (req, res, next){
+
+  var name = req.body.name
+  var reason = req.body.reason
+  redis_client.hmset('banlist', name, reason, function (err, result){
+    if(err){
+      return console.error(err)
+    }
+    noticeAdd(req, {"success": "Banned "+name+" for "+reason})
+    res.redirect('/admin')
+  })
+})
+
 // edit a username -- admin editing, or user editing
 app.post('/profile/:original_overrustle_username', function (req, res, next) {
   var current_user = req.session.user;

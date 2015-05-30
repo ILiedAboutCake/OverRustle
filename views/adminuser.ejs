@@ -76,7 +76,19 @@
             <div class="panel-collapse">
                 <div class="panel-body">
                   <a class="btn btn-primary" href="/<%=  user.overrustle_username %>">Visit Channel</a>
+                  <form action="/admin/ban" class="form-inline">
+                    <div class="form-group">
+                      <label for="ban_name">Name</label>
+                      <input type="text" class="form-control" id="ban_name" placeholder="stream or channel" name="name" value="<%= locals.overrustle_username ? locals.overrustle_username : '' %>">
+                    </div>
+                    <div class="form-group">
+                      <label for="ban_reason">Reason</label>
+                      <input type="text" class="form-control" id="ban_reason" placeholder="reason" name="reason">
+                    </div>
+                    <button type="submit" class="btn btn-default">Ban Channel</button>
+                  </form>
                   <a class="btn btn-danger" href="/admin/<%=  user.overrustle_username %>/banstream">Ban Stream</a>
+
                   <a class="btn btn-danger" href="/admin/<%=  user.overrustle_username %>/ipban">IP Ban User</a>
                 </div>
             </div>
