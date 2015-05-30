@@ -1,7 +1,7 @@
 <form action="/admin/ban" method="POST" class="form-inline">
   <div class="form-group">
     <label for="ban_name">Name</label>
-    <input type="text" class="form-control" id="ban_name" placeholder="stream or channel" name="name" value="<%= locals.user ? locals.user.overrustle_username : '' %>">
+    <input type="text" class="form-control" id="ban_name" placeholder="stream or channel" name="name" value="<%= locals.user ? locals.user.stream : '' %>">
   </div>
   <div class="form-group">
     <label for="ban_reason">Reason</label>
