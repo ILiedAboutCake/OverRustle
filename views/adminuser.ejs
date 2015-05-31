@@ -44,6 +44,8 @@
                     </select>
                   </div>
                   <button type="submit" class="btn btn-primary">Update User</button>
+                  <a class="btn btn-info" href="/<%=  user.overrustle_username %>">Visit Channel</a>
+                  <a class="btn btn-info" href="/admin">Back to Admin</a>
                 </div>
               </form>
             </div>
@@ -69,21 +71,26 @@
         <div class="panel panel-default" id="panel3">
             <div class="panel-heading">
               <h4 class="panel-title">
-                Options
+                Ban
               </h4>
             </div>
 
             <div class="panel-collapse">
                 <div class="panel-body">
-                  <a class="btn btn-primary" href="/<%=  user.overrustle_username %>">Visit Channel</a>
-                  <% include ban_form.ejs %>
-                  <a class="btn btn-danger" href="/admin/<%=  user.overrustle_username %>/banstream">Ban Stream</a>
-
-                  <a class="btn btn-danger" href="/admin/<%=  user.overrustle_username %>/ipban">IP Ban User</a>
+                <form action="/admin/ban" method="POST" class="form-inline">
+                  <div class="form-group">
+                    <label for="ban_name">Name:</label>
+                    <input type="text" class="form-control" id="ban_name" placeholder="stream or channel" name="name" value="<%= locals.user ? locals.user.stream : '' %>">
+                  </div>
+                  <div class="form-group">
+                    <label for="ban_reason">Reason:</label>
+                    <input type="text" class="form-control" id="ban_reason" placeholder="reason" name="reason">
+                  </div>
+                  <button type="submit" class="btn btn-danger">Add Ban</button>
+                  </form>
                 </div>
             </div>
         </div>
-
 
     </div>
 
