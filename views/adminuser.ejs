@@ -62,7 +62,11 @@
 
             <div id="connections" class="panel-collapse collapse">
                 <div class="panel-body">
-                  IP Address: <%=  user.lastip %>
+                  IP Address: <%=  user.lastip %><br />
+                  IP Lookup: 
+                    <a class="btn btn-primary btn-xs" href="http://whois.domaintools.com/<%=  user.lastip %>">Domain Tools</a> 
+                    <a class="btn btn-primary btn-xs" href="http://whatismyipaddress.com/ip/<%=  user.lastip %>">What Is My IP</a> 
+                    <a class="btn btn-primary btn-xs" href="http://www.iplocation.net/?query=<%=  user.lastip %>">IP Location</a>
                 </div>
             </div>
 
