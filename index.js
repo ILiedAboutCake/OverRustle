@@ -120,14 +120,30 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(function (req, res, next) {
   // console.log("middleware setting current user")
   console.log(Date.now(), req.method, req.originalUrl);
-  res.locals.current_user = req.session.user;
-  next();
+  if (req.session.user_id) {  
+    redis_client.hgetall("user:"+req.session.user_id, function(err, resp) {
+      if(err){
+        return next(err)
+      }
+      req.session.user = resp;
+      req.session.save(function (serr){
+        if(serr){
+          return next(serr)
+        }
+        res.locals.current_user = req.session.user;
+      })
+    });
+  }else{
+    next()
+  }
 });
 
 app.use(function (req, res, next) {
   // console.log("middleware popping notices")
-  res.locals.notice = noticePop(req)
-  next()
+  noticePop(req).then(function (notice){
+    res.locals.notice = notice
+    next()
+  })
 })
 
 global.SERVICES = constants.SERVICES;
@@ -229,7 +245,9 @@ app.use('/admin*', function(req, res, next){
   }else{
     console.log("nonadmin user:", req.session.user)
     noticeAdd(req, {"danger": "You are not allowed to access that page"})
-    res.redirect('/')
+    .then(function(){
+      res.redirect('/')    
+    })
   }
 })
 
@@ -288,7 +306,9 @@ app.post ('/admin/ban', function (req, res, next){
       return console.error(err)
     }
     noticeAdd(req, {"success": "Banned "+name+" for "+reason})
-    res.redirect('/admin')
+    .then(function(){
+      res.redirect('/admin')    
+    })
   })
 })
 
@@ -301,11 +321,12 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
   console.log('editing user:', 'original_username', req.params, 'new_data', req.body)
 
   if(current_user.admin != "true" && current_user.overrustle_username != original_username){
-    noticeAdd(req, {"danger":"You're not allowed to edit "+original_username+"\'s channel"})
-    return res.redirect('/')
+    return noticeAdd(req, {"danger":"You're not allowed to edit "+original_username+"\'s channel"}).then(function(){
+      res.redirect('/')    
+    })
   }
 
-  var new_username = req.body.overrustle_username
+  var new_username = req.body.overrustle_username.toLowerCase()
 
   new Promise(function (resolve, reject){
     redis_client.hgetall("user:"+original_username, function(err, resp) {
@@ -329,30 +350,35 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
       var canChange = (current_user.admin === "true" || user.allowchange === "true") && new_username.length > 0
       if (!canChange && original_username != new_username) {
         // trying to change your name despite being unable to
-        noticeAdd(req, {"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
-        return resolve(user)
+        return noticeAdd(req, {"warning": "You can\'t change your overustle.com username more than once. Ask ILiedAboutCake or hephaestus for a name change."})
+        .then(function (){
+          resolve([current_user, user])
+        })
       }
       // if we're not changing the name, don't bother 
       // checking for duplicates
       if(new_username == original_username){
-        return resolve(user)
+        return resolve([current_user, user])
       }
-      redis_client.exists("user:"+new_username, function (err, rsp) {
+      return redis_client.exists("user:"+new_username, function (err, rsp) {
         var does_exist = rsp == 1
         if(does_exist){
-          noticeAdd(req, {"danger":"You\'re Not allowed to change your name to an existing user\'s name: "+new_username})
+          return noticeAdd(req, {"danger":"You\'re Not allowed to change your name to an existing user\'s name: "+new_username})
+          .then(function(){
+            resolve([current_user, user])
+          })
         }else{
           user.overrustle_username = new_username
+          resolve([current_user, user])
         }
-        // only allow 1 name change
-        if(current_user.admin !== "true"){
-          console.log("not an admin, so no more name changes")
-          user.allowchange = "false"
-        }
-        resolve(user)
       })
     })
-  }).then(function (user){
+  }).spread(function (current_user, user){
+    // only allow 1 name change
+    if(current_user.admin !== "true"){
+      console.log("not an admin, so no more name changes")
+      user.allowchange = "false"
+    }
     // set the twitch -> overrustle index
     return new Promise(function (resolve, reject){
       redis_client.set(
@@ -371,12 +397,20 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
           return console.error(err)
         }
         noticeAdd(req, {"success": user.overrustle_username+"\'s profile updated sucessfully!"})
+        // make sure you're not changing **from another person's** name
         if(req.session.user.overrustle_username === original_username){
           req.session.user = user
+          req.session.user_id = user.overrustle_username
+          req.session.save(function (serr){
+            if(serr){
+              reject(serr)            
+            }
+            resolve(user)
+          })
         }else{
           console.log("DERP not setting an admin's session to another persons")
+          resolve(user)
         }
-        resolve(user)
       })
     })
   }).then(function (user) {
@@ -385,13 +419,14 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
     return new Promise(function (resolve, reject){
       if (user.overrustle_username == original_username) {
         return resolve(user)
+      }else{
+        redis_client.del('user:'+original_username, function(err, resp){
+          if(err){
+            console.error(err)
+          }
+          resolve(user)
+        })
       }
-      redis_client.del('user:'+original_username, function(err, resp){
-        if(err){
-          console.error(err)
-        }
-        resolve(user)
-      })
     })
   }).then(function (user) {
     if(req.session.user.admin === 'true'){
@@ -489,8 +524,14 @@ app.get("/oauth/twitch", function(req, res, next){
               return next(err)
             }
             req.session.user = returned;
-            noticeAdd(req, {"success":"Congrats "+overrustle_username+", You are now logged into OverRustle.com"})
-            res.redirect('/profile')
+            req.session.user_id = overrustle_username
+            req.session.save(function (sess_err){
+              if(sess_err){
+                return next(sess_err)
+              }
+              noticeAdd(req, {"success":"Congrats "+overrustle_username+", You are now logged into OverRustle.com"})
+              res.redirect('/profile')
+            })
           });
         }); 
       });
@@ -500,8 +541,13 @@ app.get("/oauth/twitch", function(req, res, next){
 
 app.get('/logout', function (req, res, next) {
   req.session.user = undefined
-  noticeAdd(req, {"success":"You logged out sucessfully!"})
-  res.redirect('/')
+  req.session.save(function (err){
+    if(err){
+      return next(err)
+    }
+    noticeAdd(req, {"success":"You logged out sucessfully!"})
+    res.redirect('/')    
+  })
 })
 
 
@@ -629,13 +675,29 @@ function validateBanned (stream, req, res, cb) {
 
 // move to notice.js
 function noticeAdd(req, obj){
-  req.session.notice = req.session.notice ? req.session.notice : []
-  req.session.notice.push(obj)
+  return new Promise(function (resolve, reject){
+    req.session.notice = req.session.notice ? req.session.notice : []
+    req.session.notice.push(obj)
+    req.session.save(function (err){
+      if(err){
+        return reject(err)
+      }
+      resolve()
+    })    
+  })
 }
 
 function noticePop(req){
-  // console.log("flushing notices!")
-  var tmpnotice = req.session.notice
-  req.session.notice = undefined
-  return tmpnotice
+  return new Promise(function (resolve, reject){
+    // console.log("flushing notices!")
+    var tmpnotice = req.session.notice
+    req.session.notice = undefined
+    req.session.save(function (err) {
+      if(err){
+        return reject(err)
+      }
+      resolve(tmpnotice)
+    })
+  })
 }
+
