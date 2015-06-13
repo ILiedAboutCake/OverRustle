@@ -509,14 +509,10 @@ app.get('/logout', function (req, res, next) {
 // hashbangs in the URL they won't get past the form
 app.get (['/destinychat', '/:service/:stream'], function(req, res, next) {
   //handle normal streaming services here  
-  // backwards compatibility:
-  // LEGACY SUPPORT
-  // DELETE WHEN DESIRED
-  if(req.query.hasOwnProperty("s")){
-    req.params.service = req.query.s
-  }
-  if(req.query.hasOwnProperty("stream")){
-    req.params.stream = req.query.stream
+
+  // redirect to modern urls from the form
+  if(req.query.hasOwnProperty("s") || req.query.hasOwnProperty("stream")){
+    return res.redirect("/"+req.query.s+"/"+req.query.stream)
   }
 
   if (req.params.service && global.SERVICE_NAMES.indexOf(req.params.service) !== -1) {
@@ -562,7 +558,7 @@ app.get (['/channel', '/:channel'], function(req, res, next) {
 
   // LEGACY SUPPORT DELETE THIS EVENTUALLY
   if(channel == null && req.query.hasOwnProperty('user')){
-    channel = req.query.user.toLowerCase()
+    return res.redirect('/'+req.query.user)
   }
 
   if(channel == null){
