@@ -120,17 +120,22 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(function (req, res, next) {
   // console.log("middleware setting current user")
   console.log(Date.now(), req.method, req.originalUrl);
-  if (req.session.user_id) {  
+  if (req.session.user_id) {
+    console.log('fetching sessions user', req.session.user_id)
     redis_client.hgetall("user:"+req.session.user_id, function(err, resp) {
+      // console.log(resp, err)
       if(err){
+        console.error('error fetching user', err)
         return next(err)
       }
       req.session.user = resp;
       req.session.save(function (serr){
         if(serr){
+          console.error('error saving user', serr)
           return next(serr)
         }
         res.locals.current_user = req.session.user;
+        next()
       })
     });
   }else{
@@ -227,12 +232,14 @@ app.post("/channel", function(req, res, next){
 
 app.get ('/profile', function(req, res, next) {
   if (req.session.user) {
+    // console.log('rendering layout')
     // clear out notices
     res.render("layout", {
       page: "profile", 
       page_title: "Profile for "+req.session.user.overrustle_username
     })
   }else{
+    // console.log('redirecting home')
     res.redirect('/')
   }
 })
