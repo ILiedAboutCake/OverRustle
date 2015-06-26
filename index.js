@@ -122,19 +122,18 @@ app.use(function (req, res, next) {
   console.log(Date.now(), req.method, req.originalUrl);
   if (req.session.user_id) {
     console.log('fetching sessions user', req.session.user_id)
-    redis_client.hgetall("user:"+req.session.user_id, function(err, resp) {
+    redis_client.hgetall("user:"+req.session.user_id, function(err, found_user) {
       // console.log(resp, err)
       if(err){
         console.error('error fetching user', err)
         return next(err)
       }
-      req.session.user = resp;
       req.session.save(function (serr){
         if(serr){
           console.error('error saving user', serr)
           return next(serr)
         }
-        res.locals.current_user = req.session.user;
+        res.locals.current_user = found_user;
         next()
       })
     });
@@ -231,12 +230,12 @@ app.post("/channel", function(req, res, next){
 })
 
 app.get ('/profile', function(req, res, next) {
-  if (req.session.user) {
+  if (res.locals.current_user) {
     // console.log('rendering layout')
     // clear out notices
     res.render("layout", {
       page: "profile", 
-      page_title: "Profile for "+req.session.user.overrustle_username
+      page_title: "Profile for "+res.locals.current_user.overrustle_username
     })
   }else{
     // console.log('redirecting home')
@@ -247,10 +246,10 @@ app.get ('/profile', function(req, res, next) {
 //THIS DOES NOT WORK
 
 app.use('/admin*', function(req, res, next){
-  if(req.session.user && req.session.user.admin == "true"){
+  if(res.locals.current_user && res.locals.current_user.admin == "true"){
     next()
   }else{
-    console.log("nonadmin user:", req.session.user)
+    console.log("nonadmin user:", res.locals.current_user)
     noticeAdd(req, {"danger": "You are not allowed to access that page"})
     .then(function(){
       res.redirect('/')    
@@ -285,7 +284,7 @@ app.get ('/admin', function(req, res, next) {
     // console.log(site_users);
     res.render("layout", {
       page: "admin",
-      page_title: "Admin Signed in as " + req.session.user.overrustle_username,
+      page_title: "Admin Signed in as " + res.locals.current_user.overrustle_username,
       users: site_users
     })
   });
@@ -321,7 +320,7 @@ app.post ('/admin/ban', function (req, res, next){
 
 // edit a username -- admin editing, or user editing
 app.post('/profile/:original_overrustle_username', function (req, res, next) {
-  var current_user = req.session.user;
+  var current_user = res.locals.current_user;
   var original_username = req.params.original_overrustle_username;
   
   console.log("current_user:", current_user)
@@ -405,8 +404,8 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
         }
         noticeAdd(req, {"success": user.overrustle_username+"\'s profile updated sucessfully!"})
         // make sure you're not changing **from another person's** name
-        if(req.session.user.overrustle_username === original_username){
-          req.session.user = user
+        if(res.locals.current_user.overrustle_username === original_username){
+          res.locals.current_user = user
           req.session.user_id = user.overrustle_username
           req.session.save(function (serr){
             if(serr){
@@ -436,7 +435,7 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
       }
     })
   }).then(function (user) {
-    if(req.session.user.admin === 'true'){
+    if(res.locals.current_user.admin === 'true'){
       res.redirect('/admin/'+user.overrustle_username)
     }else{
       res.redirect('/profile')      
@@ -530,7 +529,7 @@ app.get("/oauth/twitch", function(req, res, next){
             if(err){
               return next(err)
             }
-            req.session.user = returned;
+            res.locals.current_user = returned;
             req.session.user_id = overrustle_username
             req.session.save(function (sess_err){
               if(sess_err){
@@ -548,6 +547,7 @@ app.get("/oauth/twitch", function(req, res, next){
 
 app.get('/logout', function (req, res, next) {
   req.session.user = undefined
+  req.session.user_id = undefined
   req.session.save(function (err){
     if(err){
       return next(err)
