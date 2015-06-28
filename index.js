@@ -332,7 +332,11 @@ app.post('/profile/:original_overrustle_username', function (req, res, next) {
     })
   }
 
-  var new_username = req.body.overrustle_username.toLowerCase()
+  // TODO:
+  // validate that overrustle_username in body is the same as original name
+  // unless user is able to change it
+
+  var new_username = req.body.overrustle_username ? req.body.overrustle_username.toLowerCase() : original_username.toLowerCase()
 
   new Promise(function (resolve, reject){
     redis_client.hgetall("user:"+original_username, function(err, resp) {
