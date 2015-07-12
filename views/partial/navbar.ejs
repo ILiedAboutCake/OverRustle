@@ -17,10 +17,10 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <% if(locals.service && SERVICES.hasOwnProperty(service) && SERVICES[service].chat){ %>
-          <li class="active hidden-md hidden-sm"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>
-          <li class="hidden-md hidden-sm"><a href="#otherchat" role="tab" data-toggle="tab"> <%= SERVICES[locals.service].display_name %> Chat</a></li>
+          <li class="active"><a href="#destinychat" role="tab" data-toggle="tab">Destiny Chat</a></li>
+          <li class=""><a href="#otherchat" role="tab" data-toggle="tab"> <%= SERVICES[locals.service].display_name %> Chat</a></li>
         <% } %> 
-        <li>
+        <li class="hidden-md hidden-sm">
           <form action="destinychat" class="navbar-form navbar-left" role="search">
             <div class="form-group">
               <select name="s" class="form-control">
