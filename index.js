@@ -65,10 +65,25 @@ var RedisStore = require('connect-redis')(session);
 //   app.set('trust proxy', 1) // trust first proxy
 //   sess.cookie.secure = true // serve secure cookies
 // }
+
+var connect_redis_options = {
+  db: 0
+}
+
+if(process.env.REDISTOGO_URL){
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+
+  connect_redis_options.port = rtg.port
+  connect_redis_options.host = rtg.hostname
+  connect_redis_options.pass = rtg.auth.split(":")[1]
+}else{
+  connect_redis_options.port = 6379
+  connect_redis_options.host = CONFIG['redis_address']
+}
+
+
 app.use(session({
-  store: new RedisStore({
-    "client": redis_client
-  }),
+  store: new RedisStore(connect_redis_options),
   // cookie: { maxAge: 60000*60*24*30 }
   secret: CONFIG['session_secret'],
   resave: false,
@@ -230,6 +245,11 @@ app.post("/channel", function(req, res, next){
 })
 
 app.get ('/profile', function(req, res, next) {
+  // set header don't cache
+  res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.setHeader('Expires', '-1');
+  res.setHeader('Pragma', 'no-cache');
+
   if (res.locals.current_user) {
     // console.log('rendering layout')
     // clear out notices
@@ -246,6 +266,12 @@ app.get ('/profile', function(req, res, next) {
 //THIS DOES NOT WORK
 
 app.use('/admin*', function(req, res, next){
+  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.header('Expires', '-1');
+  res.header('Pragma', 'no-cache');
+  // set header: don't cache
+  // then nginx doesn't cache it
+
   if(res.locals.current_user && res.locals.current_user.admin == "true"){
     next()
   }else{
