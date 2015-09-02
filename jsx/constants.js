@@ -52,8 +52,8 @@ var SERVICES = {
     chat: false
   },
   "afreeca":{
-    display_name: "Afreeca",
-    chat: true
+    display_name: "Afreeca (KR)",
+    chat: false
   },
   "dailymotion":{
     display_name: "Dailymotion",
