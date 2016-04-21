@@ -19,10 +19,6 @@ var SERVICES = {
     display_name: "Azubu",
     chat: true
   },
-  "picarto":{
-    display_name: "Picarto",
-    chat: true
-  },
   "vaughn":{
     display_name: "VaughnLive",
     chat: true

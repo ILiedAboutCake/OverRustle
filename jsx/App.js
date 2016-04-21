@@ -35,8 +35,11 @@ var StreamBox = React.createClass({
     new_props.featured_stream_list = npl.filter(function (stream){
       return stream['live'] && stream['featured']
     })
+    new_props.live_rustler_list = npl.filter(function (stream){
+      return stream['live'] && stream.hasOwnProperty('name') && stream.name.length > 0
+    })
     new_props.live_stream_list = npl.filter(function (stream) {
-      return stream['live'] && !stream['featured']
+      return stream['live'] && !stream['featured'] && (!stream.hasOwnProperty('name') || stream.name.length == 0)
     })
     new_props.offline_stream_list = npl.filter(function (stream) {
       return !stream['live']
@@ -56,8 +59,11 @@ var StreamBox = React.createClass({
         featured_stream_list: npl.filter(function (stream) {
           return stream['live'] && stream['featured']
         }),
+        live_rustler_list: npl.filter(function (stream){
+          return stream['live'] && stream.hasOwnProperty('name') && stream.name.length > 0
+        }),
         live_stream_list: npl.filter(function (stream) {
-          return stream['live'] && !stream['featured']
+          return stream['live'] && !stream['featured'] && (!stream.hasOwnProperty('name') || stream.name.length == 0)
         }),
         offline_stream_list: npl.filter(function (stream) {
           return !stream['live']
@@ -69,14 +75,22 @@ var StreamBox = React.createClass({
   render: function() {
     // console.log(this.state.stream_list.length, ' rendering that long list', this.state.stream_list[0])
     var featured_parts = []
-    featured_parts
+
     if(this.state.featured_stream_list.length > 0){
       featured_parts.push(<h3>Featured Streams</h3>)
       featured_parts.push(<StreamList key="featured-stream-list" stream_list={this.state.featured_stream_list} />)
     }
+
+    var live_rustler_parts = []
+
+    if(this.state.live_rustler_list.length > 0){
+      live_rustler_parts.push(<h3>Live OverRustle Streamers</h3>)
+      live_rustler_parts.push(<StreamList key="live-rustler-list" stream_list={this.state.live_rustler_list} />)
+    }
     return (
       <div className="streamBox">
         {featured_parts}
+        {live_rustler_parts}
         <h3>Live Streams</h3>
         <StreamList key="live-stream-list" stream_list={this.state.live_stream_list} />
         <h3>Offline Streams</h3>
