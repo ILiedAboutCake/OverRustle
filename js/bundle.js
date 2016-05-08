@@ -37,8 +37,11 @@ var StreamBox = React.createClass({displayName: "StreamBox",
     new_props.featured_stream_list = npl.filter(function (stream){
       return stream['live'] && stream['featured']
     })
+    new_props.live_rustler_list = npl.filter(function (stream){
+      return stream['live'] && stream.hasOwnProperty('name') && stream.name.length > 0
+    })
     new_props.live_stream_list = npl.filter(function (stream) {
-      return stream['live'] && !stream['featured']
+      return stream['live'] && !stream['featured'] && (!stream.hasOwnProperty('name') || stream.name.length == 0)
     })
     new_props.offline_stream_list = npl.filter(function (stream) {
       return !stream['live']
@@ -58,8 +61,11 @@ var StreamBox = React.createClass({displayName: "StreamBox",
         featured_stream_list: npl.filter(function (stream) {
           return stream['live'] && stream['featured']
         }),
+        live_rustler_list: npl.filter(function (stream){
+          return stream['live'] && stream.hasOwnProperty('name') && stream.name.length > 0
+        }),
         live_stream_list: npl.filter(function (stream) {
-          return stream['live'] && !stream['featured']
+          return stream['live'] && !stream['featured'] && (!stream.hasOwnProperty('name') || stream.name.length == 0)
         }),
         offline_stream_list: npl.filter(function (stream) {
           return !stream['live']
@@ -71,14 +77,22 @@ var StreamBox = React.createClass({displayName: "StreamBox",
   render: function() {
     // console.log(this.state.stream_list.length, ' rendering that long list', this.state.stream_list[0])
     var featured_parts = []
-    featured_parts
+
     if(this.state.featured_stream_list.length > 0){
       featured_parts.push(React.createElement("h3", null, "Featured Streams"))
       featured_parts.push(React.createElement(StreamList, {key: "featured-stream-list", stream_list: this.state.featured_stream_list}))
     }
+
+    var live_rustler_parts = []
+
+    if(this.state.live_rustler_list.length > 0){
+      live_rustler_parts.push(React.createElement("h3", null, "Live OverRustle Streamers"))
+      live_rustler_parts.push(React.createElement(StreamList, {key: "live-rustler-list", stream_list: this.state.live_rustler_list}))
+    }
     return (
       React.createElement("div", {className: "streamBox"}, 
         featured_parts, 
+        live_rustler_parts, 
         React.createElement("h3", null, "Live Streams"), 
         React.createElement(StreamList, {key: "live-stream-list", stream_list: this.state.live_stream_list}), 
         React.createElement("h3", null, "Offline Streams"), 
@@ -242,6 +256,12 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
+/*!
+  Copyright (c) 2015 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+
 function classNames() {
 	var classes = '';
 	var arg;
@@ -268,9 +288,16 @@ function classNames() {
 	return classes.substr(1);
 }
 
-// safely export classNames in case the script is included directly on a page
+// safely export classNames for node / browserify
 if (typeof module !== 'undefined' && module.exports) {
 	module.exports = classNames;
+}
+
+// safely export classNames for RequireJS
+if (typeof define !== 'undefined' && define.amd) {
+	define('classnames', [], function() {
+		return classNames;
+	});
 }
 
 },{}],3:[function(require,module,exports){

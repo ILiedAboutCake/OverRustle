@@ -11,16 +11,16 @@ var SERVICES = {
     display_name: "Ustream",
     chat: true
   },
+  "streamup":{
+    display_name: "Streamup",
+    chat: true
+  },
   "hitbox":{
     display_name: "hitbox",
     chat: true
   },
   "azubu":{
     display_name: "Azubu",
-    chat: true
-  },
-  "picarto":{
-    display_name: "Picarto",
     chat: true
   },
   "vaughn":{
