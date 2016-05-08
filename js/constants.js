@@ -31,10 +31,6 @@ var SERVICES = {
     display_name: "Riven - Destiny VOD",
     chat: false
   },
-  "castamp":{
-    display_name: "CastAMP",
-    chat: false
-  },
   "nsfw-chaturbate":{
     display_name: "Chaturbate (NSFW)",
     chat: false
