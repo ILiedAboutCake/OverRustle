@@ -13,7 +13,7 @@ var SERVICES = {
   },
   "streamup":{
     display_name: "Streamup",
-    chat: true
+    chat: false
   },
   "hitbox":{
     display_name: "hitbox",
