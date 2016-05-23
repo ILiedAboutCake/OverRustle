@@ -29,7 +29,7 @@ var SERVICES = {
   },
   "overpowered":{
     display_name: "Overpowered",
-    chat: true    
+    chat: false    
   },
   "riven":{
     display_name: "Riven - Destiny VOD",
