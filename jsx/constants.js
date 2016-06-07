@@ -27,6 +27,10 @@ var SERVICES = {
     display_name: "VaughnLive",
     chat: true
   },
+  "overpowered":{
+    display_name: "Overpowered",
+    chat: false    
+  },
   "riven":{
     display_name: "Riven - Destiny VOD",
     chat: false

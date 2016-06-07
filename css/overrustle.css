@@ -181,6 +181,39 @@ h1, h2 {
   border-bottom: 3px solid #343434;
 }
 
+.chat-box {
+  position: relative;
+  padding-left: 5px;
+}
+
+#chat-panel-resize-bar {
+  width: 5px;
+  position: absolute;
+  top: 5px;
+  left: 0;
+  bottom: 5px;
+  cursor: col-resize;
+  z-index: 200;
+  transition: background-color 0.25s ease;
+  border-radius: 2px;
+}
+#chat-panel-resize-bar:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+#chat-panel-resize-bar.active {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 49;
+}
+
 /* add a little bottom space under the images */
 
 /*
