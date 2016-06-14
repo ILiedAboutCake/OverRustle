@@ -23,7 +23,6 @@
     "jsonfile": "^2.0.0",
     "literalify": "^0.4.0",
     "react": "^0.13.3",
-    "react-addons": "^0.9.1-deprecated",
     "react-tools": "^0.13.0",
     "redis": "^0.12.1",
     "request": "^2.53.0",

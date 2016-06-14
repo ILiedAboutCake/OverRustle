@@ -176,7 +176,6 @@ global.TWITCH_OAUTH_URL = 'https://api.twitch.tv/kraken/oauth2/authorize?respons
 /////////////////
 // server side react js
 var React = require('react');
-var addons = require('react-addons');
 var App = React.createFactory(require('./js/App'))
 
 // cache the stream list from the API
