@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "node node_modules/react-tools/bin/jsx jsx/ js/ --harmony && node bundler.js"
+    "prestart": "babel jsx/ -d js/ && node bundler.js"
   },
   "author": "",
   "license": "ISC",
@@ -23,9 +23,13 @@
     "jsonfile": "^2.0.0",
     "literalify": "^0.4.0",
     "react": "^0.13.3",
-    "react-tools": "^0.13.0",
     "redis": "^0.12.1",
     "request": "^2.53.0",
     "serve-favicon": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-plugin-transform-react-display-name": "^6.8.0",
+    "babel-plugin-transform-react-jsx": "^6.8.0"
   }
 }
