@@ -1,18 +1,17 @@
-function formatNumber (num) {
-	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+function formatNumber(num) {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
 
-
-$('#show-nsfw').prop('checked', localStorage.getItem("shownsfw")=="true")
-$('#show-nsfw').change(function(){
-  var shownsfw = $(this).prop('checked')
-  console.log(shownsfw)
+$('#show-nsfw').prop('checked', localStorage.getItem("shownsfw") == "true");
+$('#show-nsfw').change(function () {
+  var shownsfw = $(this).prop('checked');
+  console.log(shownsfw);
   localStorage.setItem("shownsfw", shownsfw);
   // TODO: refresh streams here
-  if(typeof socket !== 'undefined'){
-    socket.emit('api')    
+  if (typeof socket !== 'undefined') {
+    socket.emit('api');
   }
-})
+});
 
 // chat resizing
 var overlay = $('<div class="overlay"></div>');
@@ -31,7 +30,7 @@ function resizeFrames(nwidth) {
   localStorage.setItem('chatwidth', nwidth);
 }
 
-resizebar.on('mousedown.chatresize', function(e) {
+resizebar.on('mousedown.chatresize', function (e) {
   e.preventDefault();
 
   resizebar.addClass('active');
@@ -41,7 +40,7 @@ resizebar.on('mousedown.chatresize', function(e) {
   var offsetX = e.clientX;
   var sx = resizebar.position().left;
 
-  $(document).on('mouseup.chatresize', function(e) {
+  $(document).on('mouseup.chatresize', function (e) {
     e.preventDefault();
 
     resizebar.removeClass('active');
@@ -54,12 +53,10 @@ resizebar.on('mousedown.chatresize', function(e) {
     $(document).unbind('mousemove.chatresize');
     $(document).unbind('mouseup.chatresize');
 
-    resizeFrames(chatpanel.offset().left
-      + chatpanel.outerWidth()
-      - resizebar.offset().left);
+    resizeFrames(chatpanel.offset().left + chatpanel.outerWidth() - resizebar.offset().left);
   });
 
-  $(document).on('mousemove.chatresize', function(e) {
+  $(document).on('mousemove.chatresize', function (e) {
     e.preventDefault();
 
     resizebar.css('left', sx + e.clientX - offsetX);

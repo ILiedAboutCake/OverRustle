@@ -1,66 +1,66 @@
 var SERVICES = {
-  "twitch":{
+  "twitch": {
     display_name: "Twitch",
     chat: true
   },
-  "twitch-vod":{
+  "twitch-vod": {
     display_name: "Twitch VOD",
     chat: true
   },
-  "ustream":{
+  "ustream": {
     display_name: "Ustream",
     chat: true
   },
-  "streamup":{
+  "streamup": {
     display_name: "Streamup",
     chat: false
   },
-  "hitbox":{
+  "hitbox": {
     display_name: "hitbox",
     chat: true
   },
-  "hitbox-vod":{
+  "hitbox-vod": {
     display_name: "hitbox VOD",
     chat: false
   },
-  "azubu":{
+  "azubu": {
     display_name: "Azubu",
     chat: true
   },
-  "vaughn":{
+  "vaughn": {
     display_name: "VaughnLive",
     chat: true
   },
-  "overpowered":{
+  "overpowered": {
     display_name: "Overpowered",
-    chat: true    
+    chat: false
   },
-  "riven":{
+  "riven": {
     display_name: "Riven - Destiny VOD",
     chat: false
   },
-  "nsfw-chaturbate":{
+  "nsfw-chaturbate": {
     display_name: "Chaturbate (NSFW)",
     chat: false
   },
-  "youtube":{
+  "youtube": {
     display_name: "YouTube",
     chat: false
   },
-  "youtube-playlist":{
+  "youtube-playlist": {
     display_name: "YouTube (Playlist)",
     chat: false
   },
-  "mlg":{
+  "mlg": {
     display_name: "MLG",
     chat: false
   },
-  "dailymotion":{
+  "dailymotion": {
     display_name: "Dailymotion",
     chat: false
   }
-}
+};
 module.exports = {
   "SERVICES": SERVICES,
   "TWITCH_TOKEN_URL": "https://api.twitch.tv/kraken/oauth2/token"
-}
+};
