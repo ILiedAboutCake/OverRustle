@@ -34,7 +34,6 @@ if(needs_write){
 
   browserify()
   .require('react')
-  .require('react-addons')
   .require('./js/App')
   .transform({global: true}, literalify.configure({react: 'window.React'}))
   .bundle(function (err, b) {
