@@ -19,6 +19,10 @@ var SERVICES = {
     display_name: "hitbox",
     chat: true
   },
+  "hitbox-vod":{
+    display_name: "hitbox VOD",
+    chat: false
+  },
   "azubu":{
     display_name: "Azubu",
     chat: true
