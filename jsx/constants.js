@@ -31,8 +31,8 @@ var SERVICES = {
     display_name: "VaughnLive",
     chat: true
   },
-  "overpowered":{
-    display_name: "Overpowered",
+  "angelthump":{
+    display_name: "AngelThump",
     chat: false    
   },
   "riven":{
