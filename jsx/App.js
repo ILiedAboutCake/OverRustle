@@ -21,7 +21,7 @@ var process_api = function(api_data) {
   if(!shownsfw){
     // filter out NSFW streams if needed
     stream_list = stream_list.filter(function(stream){
-      return stream['platform'].toLowerCase().indexOf('nsfw') === -1
+      return stream['platform'].toLowerCase().indexOf('nsfw') === -1 && stream['channel'].toLowerCase().indexOf('nsfw') === -1;
     })
   }
   return stream_list
