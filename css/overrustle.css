@@ -260,3 +260,25 @@ right now this only handles lg, sm, and xs
     text-align: right;
   }
 }
+
+input.form-control,
+select.form-control,
+.btn-group>.navbar-btn,
+.input-group-btn>.btn,
+#channelUsername {
+    background-color: #222;
+    color: #FFFFFF;
+    border-color: #f20000;
+}
+input.form-control::-webkit-input-placeholder {
+    color: #FFFFFF;
+}
+input.form-control::-moz-placeholder {
+    color: #FFFFFF;
+}
+input.form-control:-ms-input-placeholder {
+    color: #FFFFFF;
+}
+input.form-control:-moz-placeholder {
+    color: #FFFFFF;
+}
