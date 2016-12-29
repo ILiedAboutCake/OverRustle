@@ -185,7 +185,7 @@ var App = React.createFactory(require('./js/App'))
 var static_api_data = {}
 
 function getApiData(){
-  request.get({json:true, uri:"http://api.overrustle.com/api"}, function (e, r, resp) {
+  request.get({json:true, uri:"https://api.overrustle.com/api"}, function (e, r, resp) {
     if(e){
       console.log("error getting new data", JSON.stringify(e))
       return e
@@ -203,7 +203,7 @@ var apiRefresher = setInterval(getApiData, 2000)
 
 // For the Future:
 // This will require a rewrite on the server side to implement correctly
-// var socket = require('socket.io-client')('http://api.overrustle.com/streams');
+// var socket = require('socket.io-client')('https://api.overrustle.com/streams');
 // socket.on('connect', function(){
 //   console.log("Connected SOCKET")
 //   // we cannot infer this from the referrer because <------------ IMPORTANT
