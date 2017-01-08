@@ -11,6 +11,10 @@ var SERVICES = {
     display_name: "Dailymotion",
     chat: false
   },
+  "facebook": {
+    display_name: "Facebook",
+    chat: false
+  },
   "hitbox": {
     display_name: "Hitbox",
     chat: true
